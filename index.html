@@ -63,7 +63,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem
 .tick-item{display:flex;align-items:center;gap:10px;padding:0 28px;border-right:1px solid rgba(0,0,0,0.12);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;text-transform:uppercase;color:#111;letter-spacing:0.3px}
 .tick-price{color:rgba(0,0,0,0.5)}
 .tick-sep{width:4px;height:4px;border-radius:50%;background:rgba(0,0,0,0.2)}
-.cats-wrap{background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,0.05);position:sticky;top:62px;z-index:100}
+.cats-wrap{background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,0.05);position:sticky;top:62px;z-index:100;overflow-x:auto}
 .cats{display:flex;gap:4px;padding:0.75rem 2rem;overflow-x:auto;max-width:960px;margin:0 auto}
 .cats::-webkit-scrollbar{display:none}
 .cat{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;white-space:nowrap;padding:7px 18px;border-radius:5px;cursor:pointer;border:1px solid rgba(255,255,255,0.07);color:rgba(255,255,255,0.3);background:transparent;transition:all 0.15s;letter-spacing:0.3px}
@@ -71,6 +71,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem
 .cat.on{background:#C9A227;color:#111;border-color:#C9A227}
 .main-wrap{max-width:960px;margin:0 auto;padding:2rem}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.25rem}
+.sec-head.sub{border-left:3px solid #C9A227;padding-left:12px;margin-top:0.5rem}
 .sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:0.3px}
 .sec-sub{font-size:12px;color:rgba(255,255,255,0.22);margin-left:10px}
 .sec-link{font-size:13px;color:#C9A227;text-decoration:none;font-weight:500}
@@ -336,7 +337,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Paletas Royal Padel</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Palas de Control</span><span class="sec-sub">⚪ Redondo · Punto dulce amplio · Todos los niveles</span></div>
 </div>
 <div class="grid">
@@ -567,7 +568,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     </div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Palas de Ataque</span><span class="sec-sub">🔴 Máxima potencia · Carbono · Nivel avanzado</span></div>
 </div>
 <div class="grid">
@@ -799,7 +800,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
   </div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Palas Polivalentes</span><span class="sec-sub">🟡 Equilibrio potencia-control · Fibra + Carbono</span></div>
 </div>
 <div class="grid">
@@ -925,7 +926,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     </div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Palas Niños y Recreativas</span><span class="sec-sub">🟢 Kids · Junior · Beach · Frontón</span></div>
 </div>
 <div class="grid">
@@ -1050,7 +1051,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
       </div>
     </div>
 </div>
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Accesorios</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
@@ -1236,7 +1237,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 </div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Indumentaria Masculina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
@@ -1407,7 +1408,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 </div>
 </div>
 
-<div class="sec-head" style="margin-top:2rem;">
+<div class="sec-head sub">
 <div><span class="sec-title">Indumentaria Femenina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
