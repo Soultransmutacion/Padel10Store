@@ -1673,34 +1673,39 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <script>
 let cartCount=0;
 function addToCart(btn){cartCount++;const badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}btn.textContent='Agregado';btn.classList.add('added');setTimeout(()=>{btn.textContent='Consultar';btn.classList.remove('added');},2000);}
+
+document.addEventListener('DOMContentLoaded',function(){
+
 document.querySelectorAll('.cat').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const f=btn.dataset.cat;document.querySelectorAll('.card').forEach(c=>{c.style.display=(f==='all'||c.dataset.cat===f)?'':'none';});});});
-(function(){
-const overlay=document.getElementById('productModal');
-const closeBtn=document.getElementById('modalClose');
-const imgEl=document.getElementById('modalImg');
-const nameEl=document.getElementById('modalName');
-const catEl=document.getElementById('modalCat');
-const priceEl=document.getElementById('modalPrice');
-const transferEl=document.getElementById('modalTransfer');
-const cuotasEl=document.getElementById('modalCuotas');
-const qtyValEl=document.getElementById('qtyVal');
-const qtyPlusEl=document.getElementById('qtyPlus');
-const qtyMinusEl=document.getElementById('qtyMinus');
-const subtotalEl=document.getElementById('modalSubtotal');
-const buyBtn=document.getElementById('modalBuyBtn');
-const wpBtn=document.getElementById('modalWpBtn');
-let currentPrice=0,qty=1;
+
+var overlay=document.getElementById('productModal');
+var closeBtn=document.getElementById('modalClose');
+var imgEl=document.getElementById('modalImg');
+var nameEl=document.getElementById('modalName');
+var catEl=document.getElementById('modalCat');
+var priceEl=document.getElementById('modalPrice');
+var transferEl=document.getElementById('modalTransfer');
+var cuotasEl=document.getElementById('modalCuotas');
+var qtyValEl=document.getElementById('qtyVal');
+var qtyPlusEl=document.getElementById('qtyPlus');
+var qtyMinusEl=document.getElementById('qtyMinus');
+var subtotalEl=document.getElementById('modalSubtotal');
+var buyBtn=document.getElementById('modalBuyBtn');
+var wpBtn=document.getElementById('modalWpBtn');
+var currentPrice=0,qty=1;
+
 function parsePrice(s){return s?parseInt(s.replace(/[^0-9]/g,''))||0:0;}
 function formatPrice(n){return '$'+n.toLocaleString('es-AR');}
-function updateSub(){subtotalEl.textContent=formatPrice(currentPrice*qty);}
+function updateSub(){if(subtotalEl)subtotalEl.textContent=formatPrice(currentPrice*qty);}
+
 function openModal(card){
-const ci=card.querySelector('.card-img img');
-const cn=card.querySelector('.card-name');
-const cc=card.querySelector('.card-cat');
-const cp=card.querySelector('.card-price');
-const divs=[...card.querySelectorAll('.card-body div')];
-const ct=divs.find(d=>d.textContent.includes('Transferencia'));
-const cq=divs.find(d=>d.textContent.includes('cuotas'));
+var ci=card.querySelector('.card-img img');
+var cn=card.querySelector('.card-name');
+var cc=card.querySelector('.card-cat');
+var cp=card.querySelector('.card-price');
+var divs=Array.prototype.slice.call(card.querySelectorAll('.card-body div'));
+var ct=null,cq=null;
+for(var i=0;i<divs.length;i++){if(divs[i].textContent.indexOf('Transferencia')>-1)ct=divs[i];if(divs[i].textContent.indexOf('cuotas')>-1)cq=divs[i];}
 imgEl.src=ci?ci.src:'';imgEl.alt=cn?cn.textContent.trim():'';
 nameEl.textContent=cn?cn.textContent.trim():'';
 catEl.textContent=cc?cc.textContent.trim():'';
@@ -1708,28 +1713,33 @@ priceEl.textContent=cp?cp.textContent.trim():'';
 transferEl.textContent=ct?ct.textContent.trim():'';
 cuotasEl.textContent=cq?cq.textContent.trim():'';
 currentPrice=parsePrice(cp?cp.textContent:'');
-qty=1;qtyValEl.textContent=1;updateSub();
-buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');
-const pN=encodeURIComponent(nameEl.textContent);
-const pP=encodeURIComponent(priceEl.textContent);
-wpBtn.onclick=()=>{window.open('https://wa.me/5493413000000?text=Hola!+Me+interesa:+'+pN+'+Precio:+'+pP,'_blank');};
+qty=1;if(qtyValEl)qtyValEl.textContent=1;updateSub();
+if(buyBtn){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');}
+var pN=encodeURIComponent(nameEl.textContent);
+var pP=encodeURIComponent(priceEl.textContent);
+if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413000000?text=Hola!+Me+interesa:+'+pN+'+Precio:+'+pP,'_blank');};
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
+
 function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';}
-document.querySelectorAll('.card').forEach(card=>{
-const ci=card.querySelector('.card-img');
-const cn=card.querySelector('.card-name');
-if(ci)ci.addEventListener('click',e=>{e.stopPropagation();openModal(card);});
-if(cn){cn.style.cursor='pointer';cn.addEventListener('click',e=>{e.stopPropagation();openModal(card);});}
+
+document.querySelectorAll('.card').forEach(function(card){
+var ci=card.querySelector('.card-img');
+var cn=card.querySelector('.card-name');
+if(ci)ci.addEventListener('click',function(e){e.stopPropagation();openModal(card);});
+if(cn){cn.style.cursor='pointer';cn.addEventListener('click',function(e){e.stopPropagation();openModal(card);});}
 });
-qtyPlusEl.addEventListener('click',()=>{qty=Math.min(qty+1,20);qtyValEl.textContent=qty;updateSub();});
-qtyMinusEl.addEventListener('click',()=>{qty=Math.max(qty-1,1);qtyValEl.textContent=qty;updateSub();});
-buyBtn.addEventListener('click',()=>{cartCount++;const badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(()=>{buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
-closeBtn.addEventListener('click',closeModal);
-overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
-})();
-(function(){const c=document.getElementById('hCanvas');if(!c)return;const ctx=c.getContext('2d');let W,H,pts=[];function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;pts=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5}));}function draw(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,162,39,0.35)';ctx.fill();});pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{const dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle='rgba(201,162,39,'+(0.12*(1-d/120))+')';ctx.lineWidth=.5;ctx.stroke();}}));requestAnimationFrame(draw);}resize();draw();window.addEventListener('resize',resize);})();</script>
+
+if(qtyPlusEl)qtyPlusEl.addEventListener('click',function(){qty=Math.min(qty+1,20);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
+if(qtyMinusEl)qtyMinusEl.addEventListener('click',function(){qty=Math.max(qty-1,1);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
+if(buyBtn)buyBtn.addEventListener('click',function(){cartCount++;var badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
+if(closeBtn)closeBtn.addEventListener('click',closeModal);
+if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
+
+});
+
+(function(){var c=document.getElementById('hCanvas');if(!c)return;var ctx=c.getContext('2d');var W,H,pts=[];function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;pts=[];for(var i=0;i<60;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});}function draw(){ctx.clearRect(0,0,W,H);for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,162,39,0.35)';ctx.fill();}for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(201,162,39,'+(0.12*(1-d/120))+')';ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}resize();draw();window.addEventListener('resize',resize);})();</script>
 <!-- MODAL PRODUCTO -->
 <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true">
 <div class="modal-box">
