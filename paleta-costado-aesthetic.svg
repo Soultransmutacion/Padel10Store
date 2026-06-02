@@ -1,0 +1,172 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000">
+  <defs>
+    <radialGradient id="bgGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" style="stop-color:#1a1200;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </radialGradient>
+    <radialGradient id="glowGold" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#FFD700;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#FFD700;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="paddleSideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a1800;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#c9a227;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#FFD700;stop-opacity:1" />
+      <stop offset="70%" style="stop-color:#c9a227;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a0f00;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="faceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d0d0d;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0d0d0d;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0d0d0d" />
+      <stop offset="20%" style="stop-color:#c9a227" />
+      <stop offset="50%" style="stop-color:#FFD700" />
+      <stop offset="80%" style="stop-color:#c9a227" />
+      <stop offset="100%" style="stop-color:#0d0d0d" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="shadow">
+      <feDropShadow dx="15" dy="15" stdDeviation="20" flood-color="#FFD700" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="800" height="1000" fill="url(#bgGrad)"/>
+  
+  <!-- Glow ambiental -->
+  <ellipse cx="400" cy="400" rx="320" ry="320" fill="url(#glowGold)" opacity="0.6"/>
+  
+  <!-- Partículas decorativas -->
+  <circle cx="80" cy="150" r="2" fill="#FFD700" opacity="0.5"/>
+  <circle cx="720" cy="200" r="1.5" fill="#FFD700" opacity="0.4"/>
+  <circle cx="150" cy="700" r="2" fill="#FFD700" opacity="0.3"/>
+  <circle cx="680" cy="750" r="1.5" fill="#FFD700" opacity="0.5"/>
+  <circle cx="50" cy="500" r="1" fill="#FFD700" opacity="0.6"/>
+  <circle cx="750" cy="450" r="2" fill="#FFD700" opacity="0.3"/>
+  <circle cx="200" cy="100" r="1.5" fill="#c9a227" opacity="0.4"/>
+  <circle cx="600" cy="900" r="1" fill="#c9a227" opacity="0.5"/>
+  
+  <!-- PALETA DE COSTADO - Vista lateral izquierda -->
+  
+  <!-- Sombra de la paleta -->
+  <g filter="url(#shadow)">
+    <!-- Cara frontal (ligeramente inclinada para dar perspectiva de costado) -->
+    <!-- Marco lateral de la paleta (el canto) - esto es la vista de costado -->
+    <rect x="270" y="100" width="55" height="560" rx="28" ry="28" 
+          fill="url(#paddleSideGrad)" stroke="#FFD700" stroke-width="1.5"/>
+  </g>
+  
+  <!-- Cara principal de la paleta (vista de costado, la cara visible) -->
+  <rect x="325" y="100" width="170" height="560" rx="12" ry="12"
+        fill="url(#faceGrad)" stroke="#c9a227" stroke-width="1"/>
+  
+  <!-- Marco dorado de la cara -->
+  <rect x="330" y="105" width="160" height="550" rx="10" ry="10"
+        fill="none" stroke="#FFD700" stroke-width="2.5" opacity="0.8"/>
+  
+  <!-- Detalle de carbono/textura en la cara -->
+  <pattern id="carbon" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+    <rect width="10" height="10" fill="#111"/>
+    <path d="M0 5 L10 5" stroke="#1a1a1a" stroke-width="0.5"/>
+    <path d="M5 0 L5 10" stroke="#1a1a1a" stroke-width="0.5"/>
+  </pattern>
+  <rect x="335" y="110" width="150" height="440" rx="8" fill="url(#carbon)" opacity="0.8"/>
+  
+  <!-- Logo Padel10 en la cara - central -->
+  <text x="410" y="290" font-family="Arial Black, sans-serif" font-size="28" 
+        font-weight="900" fill="#FFD700" text-anchor="middle" 
+        filter="url(#softGlow)" letter-spacing="2">PADEL</text>
+  <text x="410" y="330" font-family="Arial Black, sans-serif" font-size="52" 
+        font-weight="900" fill="#FFD700" text-anchor="middle"
+        filter="url(#glow)" letter-spacing="-2">10</text>
+  <text x="410" y="365" font-family="Arial, sans-serif" font-size="16" 
+        font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="5"
+        opacity="0.9">STORE</text>
+        
+  <!-- Líneas decorativas en la cara -->
+  <line x1="345" y1="390" x2="475" y2="390" stroke="#FFD700" stroke-width="1" opacity="0.5"/>
+  <line x1="345" y1="220" x2="475" y2="220" stroke="#FFD700" stroke-width="1" opacity="0.5"/>
+  
+  <!-- Detalle en la parte superior de la cara -->
+  <ellipse cx="410" cy="158" rx="50" ry="12" fill="none" stroke="#c9a227" 
+           stroke-width="1" opacity="0.6"/>
+  
+  <!-- Textura de agujeros en la paleta (característica del pádel) -->
+  <circle cx="370" cy="440" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="395" cy="440" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="420" cy="440" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="445" cy="440" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="370" cy="460" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="395" cy="460" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="420" cy="460" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="445" cy="460" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="370" cy="480" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="395" cy="480" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="420" cy="480" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  <circle cx="445" cy="480" r="5" fill="#0d0d0d" stroke="#333" stroke-width="1"/>
+  
+  <!-- Zona del mango en la cara -->
+  <rect x="380" y="545" width="60" height="100" rx="5" fill="#1a0f00" 
+        stroke="#c9a227" stroke-width="1"/>
+  
+  <!-- El canto lateral (parte izquierda) - borde de la paleta -->
+  <rect x="270" y="100" width="55" height="450" rx="27" ry="27"
+        fill="url(#paddleSideGrad)"/>
+        
+  <!-- Detalle inferior del canto -->
+  <rect x="295" y="545" width="30" height="115" rx="5" 
+        fill="url(#handleGrad)"/>
+  
+  <!-- MANGO (HANDLE) -->
+  <!-- Mango canto lateral -->
+  <rect x="278" y="650" width="40" height="230" rx="8"
+        fill="url(#handleGrad)"/>
+  <!-- Mango cara frontal -->
+  <rect x="318" y="650" width="144" height="230" rx="6"
+        fill="#111111" stroke="#c9a227" stroke-width="1"/>
+  
+  <!-- Grip del mango (líneas de agarre) -->
+  <line x1="320" y1="680" x2="460" y2="680" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="700" x2="460" y2="700" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="720" x2="460" y2="720" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="740" x2="460" y2="740" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="760" x2="460" y2="760" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="780" x2="460" y2="780" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="800" x2="460" y2="800" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="820" x2="460" y2="820" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  <line x1="320" y1="840" x2="460" y2="840" stroke="#c9a227" stroke-width="1.5" opacity="0.6"/>
+  
+  <!-- Tope del mango (butt cap) -->
+  <rect x="270" y="872" width="192" height="28" rx="10" fill="#FFD700"/>
+  <text x="366" y="892" font-family="Arial, sans-serif" font-size="10" 
+        font-weight="700" fill="#000" text-anchor="middle" letter-spacing="3">P10</text>
+  
+  <!-- Cordón (lanyar) -->
+  <path d="M 366 900 Q 366 940 400 950 Q 434 940 434 900" 
+        fill="none" stroke="#FFD700" stroke-width="3" opacity="0.8"/>
+  
+  <!-- Línea de suelo / reflexión -->
+  <rect x="200" y="960" width="400" height="4" rx="2" fill="#FFD700" opacity="0.15"/>
+  <ellipse cx="400" cy="968" rx="180" ry="12" fill="#FFD700" opacity="0.06"/>
+  
+  <!-- Branding en esquina -->
+  <text x="60" y="60" font-family="Arial Black, sans-serif" font-size="14" 
+        fill="#FFD700" opacity="0.5" letter-spacing="4">PADEL 10 STORE</text>
+  <line x1="40" y1="70" x2="220" y2="70" stroke="#FFD700" stroke-width="0.5" opacity="0.3"/>
+</svg>
