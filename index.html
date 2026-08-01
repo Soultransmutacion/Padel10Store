@@ -1787,7 +1787,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <span class="fav">&#9825;</span>
       </div>
       <div class="card-body">
-        <div class="card-cat">Mochila &middot; Bullpadel</div>
+        <div class="card-cat">Mochila &middot; Siux</div>
         <div class="card-name">Mochila Blanca/Azul Lateral</div>
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Blanco y celeste &middot; Talle &uacute;nico</div>
@@ -1874,11 +1874,14 @@ var qtyMinusEl=document.getElementById('qtyMinus');
 var subtotalEl=document.getElementById('modalSubtotal');
 var buyBtn=document.getElementById('modalBuyBtn');
 var wpBtn=document.getElementById('modalWpBtn');
-var currentPrice=0,qty=1;
+var stockBadgeEl=document.getElementById('modalStockBadge');
+var shipBadgeEl=document.getElementById('modalShipBadge');
+var qtyRowEl=document.getElementById('modalQtyRow');
+var currentPrice=0,qty=1,isConsultar=false;
 
 function parsePrice(s){return s?parseInt(s.replace(/[^0-9]/g,''))||0:0;}
 function formatPrice(n){return '$'+n.toLocaleString('es-AR');}
-function updateSub(){if(subtotalEl)subtotalEl.textContent=formatPrice(currentPrice*qty);}
+function updateSub(){if(!subtotalEl)return;if(isConsultar){subtotalEl.textContent='PRECIO A CONSULTAR';return;}subtotalEl.textContent=formatPrice(currentPrice*qty);}
 
 function openModal(card){
 var ci=card.querySelector('.card-img img');
@@ -1894,12 +1897,22 @@ catEl.textContent=cc?cc.textContent.trim():'';
 priceEl.textContent=cp?cp.textContent.trim():'';
 transferEl.textContent=ct?ct.textContent.trim():'';
 cuotasEl.textContent=cq?cq.textContent.trim():'';
-currentPrice=parsePrice(cp?cp.textContent:'');
+var priceTextRaw=cp?cp.textContent.trim():'';
+isConsultar=/consultar/i.test(priceTextRaw);
+currentPrice=isConsultar?0:parsePrice(priceTextRaw);
+if(stockBadgeEl)stockBadgeEl.style.display=isConsultar?'none':'';
+if(shipBadgeEl)shipBadgeEl.style.display=isConsultar?'none':'';
+if(qtyRowEl)qtyRowEl.style.display=isConsultar?'none':'';
 qty=1;if(qtyValEl)qtyValEl.textContent=1;updateSub();
 if(buyBtn){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');}
-var pN=encodeURIComponent(nameEl.textContent);
-var pP=encodeURIComponent(priceEl.textContent);
-if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text=Hola!+Me+interesa:+'+pN+'+Precio:+'+pP,'_blank');};
+var waMsg;
+if(isConsultar){
+  waMsg='Hola! Quiero consultar el precio y el stock disponible de: '+nameEl.textContent+'.';
+}else{
+  waMsg='Hola! Me interesa: '+nameEl.textContent+'. Precio: '+priceEl.textContent+'. Quiero confirmar stock disponible.';
+}
+var pM=encodeURIComponent(waMsg);
+if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
 
@@ -1936,8 +1949,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-info">
 <div class="modal-badge-row">
 <span class="modal-badge cat" id="modalCat"></span>
-<span class="modal-badge stock">&#10004; Stock disponible</span>
-<span class="modal-badge ship">Envio gratis</span>
+<span class="modal-badge stock" id="modalStockBadge">&#10004; Stock disponible</span>
+<span class="modal-badge ship" id="modalShipBadge">Envio gratis</span>
 </div>
 <div class="modal-name" id="modalName"></div>
 <div>
@@ -1946,7 +1959,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-cuotas" id="modalCuotas"></div>
 </div>
 <hr class="modal-divider">
-<div class="modal-qty-row">
+<div class="modal-qty-row" id="modalQtyRow">
 <span class="modal-qty-label">Cantidad</span>
 <div class="modal-qty-ctrl">
 <button class="qty-btn" id="qtyMinus">&#8722;</button>
