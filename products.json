@@ -1,10 +1,17 @@
 {
   "meta": {
-    "version": 1,
-    "generadoEl": "2026-08-01T05:13:23.733Z",
-    "fuente": "index.html (rama asesor-ia-padel10store)",
-    "nota": "Catalogo extraido automaticamente del HTML publicado en Padel10Store. Los campos dentro de especificaciones se dejan en null porque no existen datos confirmados en el sitio: no deben inventarse. El precio y precioTransferencia son null cuando el sitio muestra 'Consultar' (precioConsultar=true), en cuyo caso el precio y el stock deben confirmarse por WhatsApp.",
-    "totalProductos": 92
+    "version": 2,
+    "generadoEl": "2026-08-01T05:57:54.348Z",
+    "fuente": "index.html + fichas oficiales de fabricantes/distribuidores (Etapa 1.5)",
+    "nota": "Los valores null en especificaciones significan dato no confirmado por una fuente oficial; nunca deben ser inventados por el asistente de IA. El campo 'fuentes' contiene las URLs oficiales usadas para verificar cada pala. Cuando 'nivelRecomendadoEsInferencia' o 'estiloJuegoEsInferencia' es true, el valor es una inferencia razonada a partir de datos tecnicos y no una afirmacion oficial del fabricante.",
+    "totalProductos": 92,
+    "etapa": "1.5",
+    "cambiosEtapa1_5": [
+      "Correccion de codificacion de caracteres (mojibake) en todo el archivo",
+      "Correccion de marca/id de 'Mochila Blanca/Azul Lateral' (Bullpadel -> Siux) tras verificar consistencia de carpeta de imagen y contraste con el resto de productos de cada marca",
+      "Agregado de especificaciones tecnicas verificadas para palas, con campo fuentes por producto",
+      "Separacion explicita entre datos objetivos, clasificacion comercial del sitio e inferencias de nivel/estilo de juego"
+    ]
   },
   "productos": [
     {
@@ -21,17 +28,27 @@
       "imagen": "Palas%20royal%202/ANIVERSARIO_36.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": "multifiber",
+        "materialMarco": "carbono k12",
+        "nucleo": "foam",
+        "espesor": "38mm",
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/japan-fiber-blue-zncec1/"
+      ]
     },
     {
       "id": "royal-padel-aniversario-36-light",
@@ -47,17 +64,27 @@
       "imagen": "Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/aniversario-36-light-dpowd/"
+      ]
     },
     {
       "id": "royal-padel-cross-black-26",
@@ -73,17 +100,27 @@
       "imagen": "Palas%20royal%202/CROSS_BLACK_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/cross-black/"
+      ]
     },
     {
       "id": "royal-padel-cross-eva-26",
@@ -99,17 +136,27 @@
       "imagen": "Palas%20royal%202/CROSS_EVA_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": "eva soft",
+        "espesor": "38mm",
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/cross-eva/"
+      ]
     },
     {
       "id": "royal-padel-cross-woman-26",
@@ -125,17 +172,27 @@
       "imagen": "Palas%20royal%202/CROSS_WOMAN_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/cross-woman/"
+      ]
     },
     {
       "id": "royal-padel-europe-fiber-26",
@@ -151,17 +208,27 @@
       "imagen": "Palas%20royal%202/EUROPE_FIBER_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/europe-fiber-negra-1oj3h/"
+      ]
     },
     {
       "id": "royal-padel-europe-lite",
@@ -177,17 +244,27 @@
       "imagen": "Palas%20royal%202/EUROPE_LITE.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
         "peso": null,
+        "materialCaras": "multifiber",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": "38mm",
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/europe-lite/"
+      ]
     },
     {
       "id": "royal-padel-evolution",
@@ -203,17 +280,27 @@
       "imagen": "Palas%20royal%202/EVOLUTION.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/evolution/"
+      ]
     },
     {
       "id": "royal-padel-m27-gris",
@@ -229,17 +316,27 @@
       "imagen": "Palas%20royal%203/M27_-_GRIS.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": "carbono",
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/m27-gris-uu4ni/"
+      ]
     },
     {
       "id": "royal-padel-m27-carbono",
@@ -255,17 +352,27 @@
       "imagen": "Palas%20royal%203/M27_CARBONO.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de carbono",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/m27-carbono-q2trd/"
+      ]
     },
     {
       "id": "royal-padel-m27-light",
@@ -281,17 +388,27 @@
       "imagen": "Palas%20royal%203/M27_LIGHT.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/m27-light-9vt07/"
+      ]
     },
     {
       "id": "royal-padel-p38",
@@ -307,17 +424,25 @@
       "imagen": "Palas%20royal%203/P38.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": "No se encontro pagina oficial vigente para este modelo en royalpadel.com.ar (posible modelo descontinuado, de temporada anterior, o variante sin ficha propia)."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "royal-padel-torino-woman",
@@ -333,17 +458,25 @@
       "imagen": "palas%20royal/TORINO_WOMAN.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": "No se encontro pagina oficial vigente para este modelo en royalpadel.com.ar (posible modelo descontinuado, de temporada anterior, o variante sin ficha propia)."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "royal-padel-toro-black",
@@ -359,17 +492,27 @@
       "imagen": "palas%20royal/TORO_BLACK.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "lagrima",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/toro-black/"
+      ]
     },
     {
       "id": "royal-padel-toro-white",
@@ -385,17 +528,27 @@
       "imagen": "palas%20royal/TORO_WHITE.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "control",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/toro-white/"
+      ]
     },
     {
       "id": "royal-padel-aniv36-pink-2026",
@@ -411,17 +564,27 @@
       "imagen": "Palas%20royal%202/ANIV36_PINK_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "redondo",
         "balance": null,
-        "peso": null,
+        "peso": "350-360 g",
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/aniv36-pink-2026-zj5kv/"
+      ]
     },
     {
       "id": "royal-padel-aniversario-36-poly-espanola",
@@ -437,17 +600,25 @@
       "imagen": "Palas%20royal%202/ANIVERSARIO36_POLY_ESPAOLA.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": "No se encontro pagina oficial vigente para este modelo en royalpadel.com.ar (posible modelo descontinuado, de temporada anterior, o variante sin ficha propia)."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "royal-padel-europe-carbono",
@@ -463,17 +634,27 @@
       "imagen": "Palas%20royal%202/EUROPE_CARBONO.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": "avanzado",
+        "nivelRecomendadoEsInferencia": true,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/europe-carbono/"
+      ]
     },
     {
       "id": "royal-padel-europe-lite-europea-2026",
@@ -489,17 +670,27 @@
       "imagen": "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/europe-lite-europea-2026-xlf0e/"
+      ]
     },
     {
       "id": "royal-padel-gran-torino-fiber-bronce",
@@ -515,17 +706,25 @@
       "imagen": "Palas%20royal%202/GRAN_TORINO_FIBER_-_Bronce_-.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": "No se encontro pagina oficial vigente para este modelo en royalpadel.com.ar (posible modelo descontinuado, de temporada anterior, o variante sin ficha propia)."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "royal-padel-japan-r-26",
@@ -541,17 +740,27 @@
       "imagen": "Palas%20royal%203/JAPAN_R_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
-        "peso": null,
+        "peso": "360-375 g",
+        "materialCaras": "fibra de vidrio con ventanas de carbono",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": "intermedio",
+        "nivelRecomendadoEsInferencia": true,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/japan-r-26-1vn33/"
+      ]
     },
     {
       "id": "royal-padel-japan-rpro-bordeaux-europea-2026",
@@ -567,17 +776,27 @@
       "imagen": "Palas%20royal%203/JAPAN_RPRO_BORDEAUS_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
-        "balance": null,
-        "peso": null,
+        "balance": "alto",
+        "peso": "360-380 g",
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/japan-rpro-bordeaus-europea-2026-0g3g9/"
+      ]
     },
     {
       "id": "royal-padel-r30-black",
@@ -593,17 +812,27 @@
       "imagen": "Palas%20royal%203/R30_BLACK.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/r30-black-kkcfx/"
+      ]
     },
     {
       "id": "royal-padel-r30-white-europea-2026",
@@ -619,17 +848,25 @@
       "imagen": "Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": "No se encontro pagina oficial vigente para este modelo en royalpadel.com.ar (posible modelo descontinuado, de temporada anterior, o variante sin ficha propia)."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "royal-padel-trial-2026",
@@ -645,17 +882,27 @@
       "imagen": "palas%20royal/TRIAL_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/trial-2026-4o0je/"
+      ]
     },
     {
       "id": "royal-padel-whip-extreme-europea-2026",
@@ -671,17 +918,27 @@
       "imagen": "palas%20royal/WHIP_EXTREME_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
-        "balance": null,
-        "peso": null,
+        "balance": "medio",
+        "peso": "360-380 g",
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/whip-extreme-europea-2026-z1k25/"
+      ]
     },
     {
       "id": "royal-padel-whip-light-europea-2026",
@@ -697,17 +954,27 @@
       "imagen": "palas%20royal/WHIP_LIGHT_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio y carbono",
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/whip-light-europea-2026-qdsdl/"
+      ]
     },
     {
       "id": "royal-padel-whip-poly-europea-2026",
@@ -723,17 +990,27 @@
       "imagen": "palas%20royal/WHIP_POLY_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
-        "peso": null,
+        "peso": "360-375 g",
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam de alta densidad",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/whip-poly-europea-2026-dr5jf/"
+      ]
     },
     {
       "id": "royal-padel-whip-pro-2026",
@@ -749,17 +1026,27 @@
       "imagen": "palas%20royal/WHIP_PRO_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/whip-pro-2026-6dcdp/"
+      ]
     },
     {
       "id": "royal-padel-whip-pro-2026-woman",
@@ -775,17 +1062,27 @@
       "imagen": "palas%20royal/WHIP_PRO_2026_-_woman.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio y carbono",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ataque",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/whip-pro-2026-woman-enhe8/"
+      ]
     },
     {
       "id": "royal-padel-calavera-mxc-dama",
@@ -801,17 +1098,27 @@
       "imagen": "Palas%20royal%202/CALAVERA_MXC_dama.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/calavera-mxc-dama-boab0/"
+      ]
     },
     {
       "id": "royal-padel-calavera-mxc-hombre",
@@ -827,17 +1134,27 @@
       "imagen": "Palas%20royal%202/CALAVERA_MXC_hombre.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/calavera-mxc-hombre-1mwra/"
+      ]
     },
     {
       "id": "royal-padel-calavera-mxc-white",
@@ -853,17 +1170,27 @@
       "imagen": "Palas%20royal%202/CALAVERA_MXC_WHITE.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/calavera-mxc-white-twwvv/"
+      ]
     },
     {
       "id": "royal-padel-cross-pro",
@@ -879,17 +1206,27 @@
       "imagen": "Palas%20royal%202/CROSS_PRO.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
+        "forma": "diamante",
         "balance": null,
-        "peso": null,
+        "peso": "365-380 g",
+        "materialCaras": "multifiber",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/cross-pro/"
+      ]
     },
     {
       "id": "royal-padel-cross-pro-lite",
@@ -905,17 +1242,27 @@
       "imagen": "Palas%20royal%202/CROSS_PRO_LITE.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/cross-pro-lite/"
+      ]
     },
     {
       "id": "royal-padel-kit-m27-lite-bolso",
@@ -931,17 +1278,27 @@
       "imagen": "Palas%20royal%203/Kit_M27_lite_Bolso_paletero.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/kit-m27-lite-bolso-paletero-f7rt6/"
+      ]
     },
     {
       "id": "royal-padel-kit-whip-pro-woman-bolso",
@@ -957,17 +1314,27 @@
       "imagen": "Palas%20royal%203/Kit_Whip_pro_woman_Bolso_paletero.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/kit-whip-pro-woman-bolso-paletero-epr2g/"
+      ]
     },
     {
       "id": "royal-padel-tigra-26",
@@ -983,17 +1350,27 @@
       "imagen": "palas%20royal/TIGRA_26.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
-        "peso": null,
+        "peso": "360-375 g",
+        "materialCaras": "fibra de vidrio con ventanas de carbono",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": "intermedio",
+        "nivelRecomendadoEsInferencia": true,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "polivalente",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/tigra-kdk4m/"
+      ]
     },
     {
       "id": "royal-padel-beach",
@@ -1009,17 +1386,27 @@
       "imagen": "Palas%20royal%202/BEACH.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/beach/"
+      ]
     },
     {
       "id": "royal-padel-fronton-fibra",
@@ -1035,17 +1422,27 @@
       "imagen": "Palas%20royal%202/FRONTON_FIBRA.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": "foam",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/fronton-fibra/"
+      ]
     },
     {
       "id": "royal-padel-junior-multicolor-2026",
@@ -1061,17 +1458,27 @@
       "imagen": "Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/junior-multicolor-2026-l917x/"
+      ]
     },
     {
       "id": "royal-padel-junior-pink-2026",
@@ -1087,17 +1494,27 @@
       "imagen": "Palas%20royal%203/JUNIOR_PINK_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/junior-pink-2026-sx0ga/"
+      ]
     },
     {
       "id": "royal-padel-kids",
@@ -1113,17 +1530,27 @@
       "imagen": "Palas%20royal%203/KIDS.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/kids/"
+      ]
     },
     {
       "id": "royal-padel-kids-multicolor-aqua",
@@ -1139,17 +1566,27 @@
       "imagen": "Palas%20royal%203/KIDS_multicolor_aqua.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/kids-multicolor-aqua-ntb5x/"
+      ]
     },
     {
       "id": "royal-padel-kids-rosa",
@@ -1165,17 +1602,27 @@
       "imagen": "Palas%20royal%203/KIDS_ROSA.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/kids-rosa/"
+      ]
     },
     {
       "id": "royal-padel-pickleball-ventana",
@@ -1191,17 +1638,27 @@
       "imagen": "Palas%20royal%203/PICKLEBALL_VENTANA.webp",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": "fibra de vidrio",
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "ninos",
+        "notas": null
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.royalpadel.com.ar/productos/pickleball-ventana/"
+      ]
     },
     {
       "id": "royal-padel-cubregrip",
@@ -2127,17 +2584,27 @@
       "imagen": "bullpadel/paleta_flow_legend_gris.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
+        "forma": "diamante",
+        "balance": "26 cm (punto de balance medido desde el puño)",
+        "peso": "350-360 g",
+        "materialCaras": "Fibrix",
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": "38mm",
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "bull-padel",
+        "notas": "Superficie de juego declarada por el fabricante: 523 cm²."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.bullpadel.com/es/5687-pala-bullpadel-flow-legend.html"
+      ]
     },
     {
       "id": "bullpadel-ionic-pwr",
@@ -2153,17 +2620,27 @@
       "imagen": "bullpadel/paleta_ionic_pwr_azul.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
+        "forma": "diamante",
+        "balance": "medio",
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": "CarbonTube (fibra de carbono)",
+        "nucleo": "MultiEva",
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "bull-padel",
+        "notas": "Datos tomados de un articulo oficial de Bullpadel sobre la linea del producto; no se confirmo el peso ni el grosor exactos de la version vigente en la tienda oficial."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.bullpadel.com/es/blog/el-futuro-ya-esta-aqui-la-nueva-linea-next-n339"
+      ]
     },
     {
       "id": "bullpadel-mochila-delfina-blanca-azul",
@@ -2257,17 +2734,27 @@
       "imagen": "siux/paleta_fenix_pro5_naranja.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
+        "forma": "diamante",
+        "balance": "alto",
         "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
+        "dureza": "10/10 (duro)",
+        "genero": "unisex",
+        "nivelRecomendado": "profesional",
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": "potencia",
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "siux",
+        "notas": "Nivel de juego y tipo de juego son clasificaciones oficiales publicadas por el fabricante en su ficha de especificaciones, no inferencias. Gama: PRO. Acabado: 3D. Superficie: 24K."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.siuxpadel.com/products/siux-fenix-pro-5"
+      ]
     },
     {
       "id": "siux-trilogy-go-5",
@@ -2283,17 +2770,25 @@
       "imagen": "siux/paleta_trilogy_go5_verde.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "siux",
+        "notas": "No se encontro pagina oficial vigente en siuxpadel.com para este modelo (no aparece en el sitemap de productos activos ni en busqueda directa); posible modelo descontinuado o de una temporada/linea anterior (\"GO\")."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "siux-diablo-pro-4",
@@ -2309,17 +2804,25 @@
       "imagen": "siux/paleta_diablo_pro4_roja.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "siux",
+        "notas": "No se encontro pagina oficial vigente en siuxpadel.com para este modelo (no aparece en el sitemap de productos activos ni en busqueda directa); posible modelo descontinuado o de una temporada/linea anterior (\"GO\")."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
       "id": "siux-electra-go-4",
@@ -2335,22 +2838,30 @@
       "imagen": "siux/paleta_electra_go4_amarilla.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
         "forma": null,
         "balance": null,
         "peso": null,
+        "materialCaras": null,
+        "materialMarco": null,
+        "nucleo": null,
+        "espesor": null,
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "siux",
+        "notas": "No se encontro pagina oficial vigente en siuxpadel.com para este modelo (no aparece en el sitemap de productos activos ni en busqueda directa); posible modelo descontinuado o de una temporada/linea anterior (\"GO\")."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": []
     },
     {
-      "id": "bullpadel-mochila-blanca-azul-lateral",
+      "id": "siux-mochila-blanca-azul-lateral",
       "nombre": "Mochila Blanca/Azul Lateral",
-      "marca": "Bullpadel",
+      "marca": "Siux",
       "tipoProducto": "Mochila",
       "seccion": "Paletas Siux",
       "filtro": "siux",
@@ -2387,17 +2898,27 @@
       "imagen": "adidas/paleta_metalbone_carbon_ctrl.jpg",
       "tieneImagen": true,
       "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
+        "forma": "redonda",
+        "balance": "neutro",
+        "peso": "360-375 g",
+        "materialCaras": "carbono 6K",
+        "materialMarco": null,
+        "nucleo": "EVA Soft Performance",
+        "espesor": "38mm",
         "dureza": null,
-        "material": null,
-        "genero": null
+        "genero": null,
+        "nivelRecomendado": null,
+        "nivelRecomendadoEsInferencia": false,
+        "estiloJuego": null,
+        "estiloJuegoEsInferencia": false,
+        "clasificacionComercialSitio": "adidas",
+        "notas": "adidas.com bloqueo el acceso mediante un sistema de verificacion anti-bots que no intentamos evadir; los datos se tomaron de la ficha tecnica de Decathlon como distribuidor oficial autorizado de adidas padel. Estructura de cuadro: octogonal."
       },
       "stockConfirmado": false,
-      "fuente": "index.html"
+      "fuente": "index.html",
+      "fuentes": [
+        "https://www.decathlon.es/es/p/pala-de-padel-adultos-adidas-metalbone-carbon-ctrl-2026/381470/m9001828"
+      ]
     }
   ]
 }
