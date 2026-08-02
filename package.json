@@ -1,0 +1,17 @@
+{
+    "name": "padel10store-asesor-ia",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Asesor de Palas con IA de Padel10Store (Etapa 2) - funcion serverless en Vercel con Anthropic via AI Gateway",
+    "main": "api/padel-assistant.js",
+    "scripts": {
+          "test": "node tests/padel-advisor.test.js",
+          "validate-catalog": "node validate-catalog.js"
+    },
+    "dependencies": {
+          "@anthropic-ai/sdk": "^0.32.1"
+    },
+    "engines": {
+          "node": ">=18"
+    }
+}
