@@ -2,7 +2,7 @@
 
 const { runAdvisor, classifyError } = require('../lib/padel-advisor');
 
-const MAX_BODY_CHARS = 6000;
+const MAX_BODY_CHARS = 10000;
 const REQUEST_TIMEOUT_MS = 20000;
 
 const ERROR_MESSAGES = {
