@@ -32,39 +32,16 @@ jobs:
       - name: Ejecutar npm test
         run: npm test
 
-      - name: Detectar archivos .js creados o modificados
-        id: changed
+      - name: node --check sobre todos los archivos .js versionados (excluye node_modules)
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          else
-            BASE_SHA="${{ github.event.before }}"
-          fi
-          if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA" 2>/dev/null; then
-            FILES=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "${{ github.sha }}" -- '*.js')
-          else
-            FILES=$(git ls-files '*.js')
-          fi
-          echo "Archivos .js a verificar:"
-          echo "$FILES"
-          {
-            echo "files<<EOF"
-            echo "$FILES"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: node --check sobre archivos .js creados o modificados
-        run: |
-          FILES="${{ steps.changed.outputs.files }}"
-          if [ -z "$FILES" ]; then
-            echo "No hay archivos .js nuevos o modificados para verificar en este evento."
-            exit 0
-          fi
+          COUNT=0
           STATUS=0
-          while IFS= read -r f; do
-            if [ -n "$f" ] && [ -f "$f" ]; then
+          while IFS= read -r -d '' f; do
+            if [ -f "$f" ]; then
+              COUNT=$((COUNT+1))
               echo "Verificando sintaxis: $f"
               node --check "$f" || STATUS=1
             fi
-          done <<< "$FILES"
+          done < <(git ls-files -z -- '*.js' ':(glob)!node_modules/**' ':(glob)!**/node_modules/**')
+          echo "Total de archivos .js versionados verificados: $COUNT"
           exit $STATUS
