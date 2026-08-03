@@ -1,8 +1,5 @@
 'use strict';
 
-const assert = require('assert');
-'use strict';
-
 /**
 * Pruebas de logica del Asesor de Palas (Etapa 2 + Etapa 2.1).
 * No llaman al modelo de IA ni al AI Gateway: solo ejercitan
