@@ -273,6 +273,11 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .modal-buy-btn.added{background:rgba(201,162,39,0.12);color:#C9A227;border:1px solid rgba(201,162,39,0.3)}
 .modal-wp-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#fff;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .modal-wp-btn:hover{background:rgba(37,211,102,0.25);border-color:rgba(37,211,102,0.5)}
+.modal-buynow-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;background:#111;border:1px solid rgba(201,162,39,0.6);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-buynow-btn:hover{background:rgba(201,162,39,0.12)}
+.modal-buynow-btn:disabled{opacity:0.6;cursor:not-allowed}
+.modal-buynow-btn[hidden]{display:none}
+.mp-buy-error{width:100%;font-size:12px;color:#f2b8b8;text-align:center;margin-top:-6px}
 .modal-trust-row{display:flex;gap:8px}
 .modal-trust-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:8px 4px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px}
 .modal-trust-icon{font-size:15px}
@@ -418,7 +423,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-black-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_BLACK_26.webp" alt="Cross Black '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1876,6 +1881,7 @@ var buyBtn=document.getElementById('modalBuyBtn');
 var wpBtn=document.getElementById('modalWpBtn');
 var stockBadgeEl=document.getElementById('modalStockBadge');
 var shipBadgeEl=document.getElementById('modalShipBadge');
+var buyNowBtn=document.getElementById('modalBuyNowBtn');
 var qtyRowEl=document.getElementById('modalQtyRow');
 var currentPrice=0,qty=1,isConsultar=false;
 
@@ -1913,6 +1919,21 @@ if(isConsultar){
 }
 var pM=encodeURIComponent(waMsg);
 if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
+var buyNowProductId=card.dataset?card.dataset.productId:'';
+if(buyNowBtn){
+if(buyNowProductId){
+buyNowBtn.hidden=false;
+buyNowBtn.dataset.productId=buyNowProductId;
+buyNowBtn.disabled=false;
+buyNowBtn.textContent='Comprar ahora';
+buyNowBtn.dataset.mpBusy='';
+var existingErr=buyNowBtn.nextElementSibling;
+if(existingErr&&existingErr.classList&&existingErr.classList.contains('mp-buy-error')){existingErr.textContent='';}
+}else{
+buyNowBtn.hidden=true;
+buyNowBtn.removeAttribute('data-product-id');
+}
+}
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
 
@@ -1970,6 +1991,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 </div>
 <hr class="modal-divider">
 <button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
+<button class="modal-buynow-btn" id="modalBuyNowBtn" data-mp-buy-button hidden>Comprar ahora</button>
 <button class="modal-wp-btn" id="modalWpBtn">Consultar por WhatsApp</button>
 <div class="modal-trust-row">
 <div class="modal-trust-item"><span class="modal-trust-icon">&#128274;</span><span class="modal-trust-text">Pago seguro</span></div>
@@ -1982,6 +2004,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 </div>
   <link rel="stylesheet" href="widget/padel-advisor.css">
   <div id="padel-advisor-root"></div>
-  <script src="widget/padel-advisor.js" defer></script>
+  <script src="widget/mercadopago-buy.js" defer></script>
+<script src="widget/padel-advisor.js" defer></script>
 </body>
 </html>
