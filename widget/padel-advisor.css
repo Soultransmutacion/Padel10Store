@@ -182,10 +182,10 @@ animation-delay: 0.3s;
 
 .pa-card {
 /* flex-shrink: 0 evita que, dentro del contenedor .pa-messages (flex-column
-   con overflow-y:auto), la tarjeta se comprima por debajo de su alto real de
-   contenido cuando la conversacion acumula muchos mensajes. Sin esto, el
-   navegador la encogia a un alto minimo y overflow:hidden recortaba casi todo
-   el contenido (imagen, precio, caracteristicas y botones quedaban ocultos). */
+con overflow-y:auto), la tarjeta se comprima por debajo de su alto real de
+contenido cuando la conversacion acumula muchos mensajes. Sin esto, el
+navegador la encogia a un alto minimo y overflow:hidden recortaba casi todo
+el contenido (imagen, precio, caracteristicas y botones quedaban ocultos). */
 flex-shrink: 0;
 align-self: stretch;
 background: #111;
@@ -304,6 +304,31 @@ color: #fff;
 
 .pa-card-btn-secondary:hover {
 background: rgba(37, 211, 102, 0.25);
+}
+
+/* Prueba controlada de Mercado Pago Checkout Pro (SANDBOX): boton
+"Comprar ahora", visible unicamente en la tarjeta del producto de prueba
+habilitado. */
+.pa-card-btn-buy {
+background: #111;
+border: 1px solid rgba(201, 162, 39, 0.6);
+color: #C9A227;
+}
+
+.pa-card-btn-buy:hover {
+background: rgba(201, 162, 39, 0.12);
+}
+
+.pa-card-btn-buy:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+}
+
+.mp-buy-error {
+width: 100%;
+font-size: 11px;
+color: #f2b8b8;
+margin-top: 4px;
 }
 
 .pa-fallback {
