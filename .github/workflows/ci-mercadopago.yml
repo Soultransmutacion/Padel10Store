@@ -1,0 +1,70 @@
+name: CI Mercado Pago (Preview - asesor-ia-padel10store)
+
+on:
+  push:
+    branches:
+      - asesor-ia-padel10store
+  pull_request:
+    branches:
+      - asesor-ia-padel10store
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: npm test + node --check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias (npm install, sin package-lock.json)
+        run: npm install
+
+      - name: Ejecutar npm test
+        run: npm test
+
+      - name: Detectar archivos .js creados o modificados
+        id: changed
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_SHA="${{ github.event.before }}"
+          fi
+          if [ -n "$BASE_SHA" ] && git cat-file -e "$BASE_SHA" 2>/dev/null; then
+            FILES=$(git diff --name-only --diff-filter=ACMR "$BASE_SHA" "${{ github.sha }}" -- '*.js')
+          else
+            FILES=$(git ls-files '*.js')
+          fi
+          echo "Archivos .js a verificar:"
+          echo "$FILES"
+          {
+            echo "files<<EOF"
+            echo "$FILES"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: node --check sobre archivos .js creados o modificados
+        run: |
+          FILES="${{ steps.changed.outputs.files }}"
+          if [ -z "$FILES" ]; then
+            echo "No hay archivos .js nuevos o modificados para verificar en este evento."
+            exit 0
+          fi
+          STATUS=0
+          while IFS= read -r f; do
+            if [ -n "$f" ] && [ -f "$f" ]; then
+              echo "Verificando sintaxis: $f"
+              node --check "$f" || STATUS=1
+            fi
+          done <<< "$FILES"
+          exit $STATUS
