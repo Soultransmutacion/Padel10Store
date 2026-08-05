@@ -3,7 +3,7 @@
   "categoria": "Indumentaria Femenina",
   "categoria_url": "https://www.royalpadel.com.ar/indumentaria-femenina/",
   "generado_el": "2026-08-04T04:10:32.196Z",
-  "nota": "Contenido extraido con autorizacion comercial del distribuidor de Royal Padel para su uso en Padel10Store. No incluye diseno, carrito ni codigo interno de la tienda de origen.",
+  "nota": "Contenido extraido con autorizacion comercial del distribuidor de Royal Padel para su uso en Padel10Store. No incluye diseno, carrito ni codigo interno de la tienda de origen. Los talles S, M, L y XL (y XXL para la Biker Mallorca) fueron confirmados comercialmente por el distribuidor de Royal Padel y no representan necesariamente el stock momentaneo mostrado en royalpadel.com.ar.",
   "total_productos": 12,
   "total_imagenes": 23,
   "carpeta_imagenes_local": "assets/productos/royal-padel/indumentaria-femenina/",
@@ -342,8 +342,8 @@
       "talles": [
         "S",
         "M",
-        "XL",
-        "L"
+        "L",
+        "XL"
       ],
       "variantes": [
         {
@@ -367,20 +367,20 @@
           "disponible": true
         },
         {
-          "talla": "XL",
+          "talla": "L",
           "color": null,
           "valores": [
-            "XL"
+            "L"
           ],
           "precio": 35000,
           "precio_anterior": null,
           "disponible": true
         },
         {
-          "talla": "L",
+          "talla": "XL",
           "color": null,
           "valores": [
-            "L"
+            "XL"
           ],
           "precio": 35000,
           "precio_anterior": null,
@@ -421,6 +421,7 @@
       "talles": [
         "S",
         "M",
+        "L",
         "XL"
       ],
       "variantes": [
@@ -439,6 +440,16 @@
           "color": null,
           "valores": [
             "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
           ],
           "precio": 35000,
           "precio_anterior": null,
@@ -658,6 +669,7 @@
       "talles": [
         "S",
         "M",
+        "L",
         "XL"
       ],
       "variantes": [
@@ -676,6 +688,16 @@
           "color": null,
           "valores": [
             "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
           ],
           "precio": 35000,
           "precio_anterior": null,
@@ -804,22 +826,12 @@
       ],
       "colores_inferidos_del_nombre": true,
       "talles": [
-        "M",
         "S",
-        "XL",
-        "L"
+        "M",
+        "L",
+        "XL"
       ],
       "variantes": [
-        {
-          "talla": "M",
-          "color": null,
-          "valores": [
-            "M"
-          ],
-          "precio": 35000,
-          "precio_anterior": null,
-          "disponible": true
-        },
         {
           "talla": "S",
           "color": null,
@@ -831,10 +843,10 @@
           "disponible": true
         },
         {
-          "talla": "XL",
+          "talla": "M",
           "color": null,
           "valores": [
-            "XL"
+            "M"
           ],
           "precio": 35000,
           "precio_anterior": null,
@@ -845,6 +857,16 @@
           "color": null,
           "valores": [
             "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
           ],
           "precio": 35000,
           "precio_anterior": null,
@@ -878,8 +900,8 @@
       "talles": [
         "S",
         "M",
-        "XL",
-        "L"
+        "L",
+        "XL"
       ],
       "variantes": [
         {
@@ -903,20 +925,20 @@
           "disponible": true
         },
         {
-          "talla": "XL",
+          "talla": "L",
           "color": null,
           "valores": [
-            "XL"
+            "L"
           ],
           "precio": 63000,
           "precio_anterior": null,
           "disponible": true
         },
         {
-          "talla": "L",
+          "talla": "XL",
           "color": null,
           "valores": [
-            "L"
+            "XL"
           ],
           "precio": 63000,
           "precio_anterior": null,
