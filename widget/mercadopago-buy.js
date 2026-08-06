@@ -68,6 +68,7 @@ function handleBuyClick(button) {
   if (button.dataset.mpBusy === '1') return;
   var productId = button.dataset.productId;
   if (!productId) return;
+  var talle = button.dataset.talle || '';
 
   var originalText = button.textContent;
   clearError(button);
@@ -78,7 +79,7 @@ function handleBuyClick(button) {
   fetch(ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ productId: productId }),
+    body: JSON.stringify(talle ? { productId: productId, talle: talle } : { productId: productId }),
   })
     .then(function (response) {
       return response

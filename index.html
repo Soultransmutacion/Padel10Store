@@ -1911,7 +1911,7 @@ function renderGalleryImage(){if(!galleryImages.length)return;imgEl.src=galleryI
 function setupGallery(product){var imagenes=(product&&Array.isArray(product.imagenes)&&product.imagenes.length)?product.imagenes.slice():((product&&product.imagen)?[product.imagen]:null);if(!imagenes||!imagenes.length){galleryImages=[];galleryIndex=0;if(galleryPrevBtn)galleryPrevBtn.hidden=true;if(galleryNextBtn)galleryNextBtn.hidden=true;if(galleryDotsEl)galleryDotsEl.innerHTML='';return;}galleryImages=imagenes;galleryIndex=0;renderGalleryImage();var multi=galleryImages.length>1;if(galleryPrevBtn)galleryPrevBtn.hidden=!multi;if(galleryNextBtn)galleryNextBtn.hidden=!multi;if(galleryDotsEl){galleryDotsEl.innerHTML='';if(multi){galleryImages.forEach(function(_,idx){var dot=document.createElement('span');dot.className='gallery-dot'+(idx===0?' active':'');dot.addEventListener('click',function(){galleryIndex=idx;renderGalleryImage();});galleryDotsEl.appendChild(dot);});}}}
 if(galleryPrevBtn)galleryPrevBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;renderGalleryImage();});
 if(galleryNextBtn)galleryNextBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex+1)%galleryImages.length;renderGalleryImage();});
-function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(talleMsgEl)talleMsgEl.textContent='';Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
+function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(buyNowBtn)buyNowBtn.dataset.talle=t;if(talleMsgEl)talleMsgEl.textContent='';Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
 var cartLines=[];
 var cartDrawerOverlay=document.getElementById('cartDrawerOverlay');
 var cartDrawerEl=document.getElementById('cartDrawer');
@@ -1976,7 +1976,7 @@ if(isConsultar){
 }
 var pM=encodeURIComponent(waMsg);
 if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
-var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
+var buyNowProductId=(product&&(PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1||(Array.isArray(product.talles)&&product.talles.length>0)))?product.id:'';
 if(buyNowBtn){
 if(buyNowProductId){
 buyNowBtn.hidden=false;
@@ -1984,6 +1984,7 @@ buyNowBtn.dataset.productId=buyNowProductId;
 buyNowBtn.disabled=false;
 buyNowBtn.textContent='Comprar ahora';
 buyNowBtn.dataset.mpBusy='';
+buyNowBtn.dataset.talle=window.__selectedTalle||'';
 var existingErr=buyNowBtn.nextElementSibling;
 if(existingErr&&existingErr.classList&&existingErr.classList.contains('mp-buy-error')){existingErr.textContent='';}
 }else{

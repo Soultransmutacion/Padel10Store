@@ -101,7 +101,7 @@ module.exports = async function handler(req, res) {
       // 6) El producto, su nombre y su precio salen exclusivamente del
       // catalogo del servidor. Solo el producto de prueba habilitado puede
       // comprarse en esta etapa.
-      const productResult = getPurchasableProduct(validation.productId);
+      const productResult = getPurchasableProduct(validation.productId, validation.talle);
           if (!productResult.ok) {
                   return sendGenericError(res, 400);
           }
@@ -123,6 +123,7 @@ module.exports = async function handler(req, res) {
       const preferencePayload = buildPreferencePayload({
               product: productResult.product,
               backUrls,
+            talle: productResult.talle,
       });
 
       let mpResponse;
