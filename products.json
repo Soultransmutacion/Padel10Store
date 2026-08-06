@@ -2259,112 +2259,8 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-campera-inflable-mixta-beige",
-      "nombre": "Campera Inflable Mixta Beige",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 85000,
-      "precioConsultar": false,
-      "precioTransferencia": 72250,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/16-33947bf88c2c71530417588012612802-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-campera-inflable-negra-mixta",
-      "nombre": "Campera Inflable Negra Mixta",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 85000,
-      "precioConsultar": false,
-      "precioTransferencia": 72250,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/1-1-06101d94b417ac6b5b17588014572414-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-remera-mallorca-white-and-flowers-bordeaux",
-      "nombre": "Remera Mallorca White and Flowers Bordeaux",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 35000,
-      "precioConsultar": false,
-      "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr056-1-76b24fef0ab4c1867417689277631101-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-remera-mallorca-white-and-flowers-pink",
-      "nombre": "Remera Mallorca White and Flowers Pink",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 35000,
-      "precioConsultar": false,
-      "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr058-1-2b3e8dcd6f2df2b82317689276186898-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-pollera-mallorca-black",
-      "nombre": "Pollera Mallorca Black",
+      "id": "royal-padel-pollera-mallorca-negra",
+      "nombre": "Pollera Mallorca Negra",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2373,8 +2269,18 @@
       "precioConsultar": false,
       "precioTransferencia": 53550,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_5247-13bb0d3a9bd3059f8217655383301272-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
@@ -2389,60 +2295,8 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-pollera-mallorca-pink",
-      "nombre": "Pollera Mallorca Pink",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 63000,
-      "precioConsultar": false,
-      "precioTransferencia": 53550,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_5245-e48ff20ec58279c1ae17655382220829-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-campera-deportiva-pink",
-      "nombre": "Campera Deportiva Pink",
-      "marca": "Royal Padel",
-      "tipoProducto": "Ropa Mujer",
-      "seccion": "Indumentaria Femenina",
-      "filtro": "Indumentaria",
-      "precio": 55000,
-      "precioConsultar": false,
-      "precioTransferencia": 46750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc067-1-7bdf3e6dd8bae1f93b17643347934891-480-0.webp",
-      "tieneImagen": true,
-      "especificaciones": {
-        "nivel": null,
-        "estiloJuego": null,
-        "forma": null,
-        "balance": null,
-        "peso": null,
-        "dureza": null,
-        "material": null,
-        "genero": null
-      },
-      "stockConfirmado": false,
-      "fuente": "index.html"
-    },
-    {
-      "id": "royal-padel-remera-mallorca-black-and-flowers-moka",
-      "nombre": "Remera Mallorca Black and Flowers Moka",
+      "id": "royal-padel-remera-mallorca-blanca-rosa-mujer",
+      "nombre": "Remera Mallorca Blanca y Rosa",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2451,8 +2305,18 @@
       "precioConsultar": false,
       "precioTransferencia": 29750,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr064-1-24aba9ad5a3bff8d1e17643296277662-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/x-grip1-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/x-grip1-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/x-grip1-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
@@ -2467,8 +2331,8 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-remera-mallorca-black-and-flowers-pink",
-      "nombre": "Remera Mallorca Black and Flowers Pink",
+      "id": "royal-padel-remera-mallorca-blanca-moka-mujer",
+      "nombre": "Remera Mallorca Blanca y Moka",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2477,8 +2341,18 @@
       "precioConsultar": false,
       "precioTransferencia": 29750,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr060-1-a7a4d65c0d1e18710b17643293709180-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
@@ -2493,8 +2367,8 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-remera-mallorca-lineas",
-      "nombre": "Remera Mallorca Lineas",
+      "id": "royal-padel-remera-mallorca-blanca-multicolor-mujer",
+      "nombre": "Remera Mallorca Blanca Multicolor",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2503,8 +2377,18 @@
       "precioConsultar": false,
       "precioTransferencia": 29750,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2026-03-30-at-1-14-41-pm-2ff6ba15ee3f64b6f317748873578310-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
@@ -2519,8 +2403,116 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-biker-black-mallorca",
-      "nombre": "Biker Black Mallorca",
+      "id": "royal-padel-remera-mallorca-azul-lineal-mujer",
+      "nombre": "Remera Mallorca Azul Lineal",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 35000,
+      "precioConsultar": false,
+      "precioTransferencia": 29750,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-2.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-remera-mallorca-blanca-lineal-mujer",
+      "nombre": "Remera Mallorca Blanca Lineal Mujer",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 35000,
+      "precioConsultar": false,
+      "precioTransferencia": 29750,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-2.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-remera-mallorca-negra-lineal-mujer",
+      "nombre": "Remera Mallorca Negra Lineal",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 35000,
+      "precioConsultar": false,
+      "precioTransferencia": 29750,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-2.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-biker-mallorca-negra",
+      "nombre": "Biker Mallorca Negra",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2529,8 +2521,19 @@
       "precioConsultar": false,
       "precioTransferencia": 33575,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc069-1-5c75698ff1053ccb6f17643385464103-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
@@ -2545,8 +2548,8 @@
       "fuente": "index.html"
     },
     {
-      "id": "royal-padel-remera-mallorca-blue-and-flowers",
-      "nombre": "Remera Mallorca Blue and Flowers",
+      "id": "royal-padel-remera-mallorca-azul-mujer",
+      "nombre": "Remera Mallorca Azul",
       "marca": "Royal Padel",
       "tipoProducto": "Ropa Mujer",
       "seccion": "Indumentaria Femenina",
@@ -2555,8 +2558,125 @@
       "precioConsultar": false,
       "precioTransferencia": 29750,
       "cuotasTexto": "6 cuotas s/i · Envío gratis",
-      "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr062-1-b836926d0d8cc789a417643296669916-480-0.webp",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp",
       "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-2.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-pollera-mallorca-blanca",
+      "nombre": "Pollera Mallorca Blanca",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 63000,
+      "precioConsultar": false,
+      "precioTransferencia": 53550,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-2.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-remera-mallorca-blanca-multicolor-lineal-mujer",
+      "nombre": "Remera Mallorca Blanca Multicolor Lineal",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 35000,
+      "precioConsultar": false,
+      "precioTransferencia": 29750,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp"
+      ],
+      "especificaciones": {
+        "nivel": null,
+        "estiloJuego": null,
+        "forma": null,
+        "balance": null,
+        "peso": null,
+        "dureza": null,
+        "material": null,
+        "genero": null
+      },
+      "stockConfirmado": false,
+      "fuente": "index.html"
+    },
+    {
+      "id": "royal-padel-pollera-mallorca-azul",
+      "nombre": "Pollera Mallorca Azul",
+      "marca": "Royal Padel",
+      "tipoProducto": "Ropa Mujer",
+      "seccion": "Indumentaria Femenina",
+      "filtro": "Indumentaria",
+      "precio": 63000,
+      "precioConsultar": false,
+      "precioTransferencia": 53550,
+      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-1.webp",
+      "tieneImagen": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "imagenes": [
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-1.webp",
+        "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-2.webp"
+      ],
       "especificaciones": {
         "nivel": null,
         "estiloJuego": null,
