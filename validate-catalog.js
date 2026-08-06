@@ -49,6 +49,7 @@ function parseCards(html) {
   const cardChunks = parts.slice(1);
   return cardChunks.map((chunk) => ({
     img: extractField(chunk, /<img src="([^"]*)"/),
+    productId: extractField(chunk, /data-product-id="([^"]*)"/),
     cat: extractField(chunk, /class="card-cat">([^<]*)</),
     name: extractField(chunk, /class="card-name">([^<]*)</),
     price: extractField(chunk, /class="card-price">([^<]*)</),
@@ -119,6 +120,24 @@ function validate() {
     if (c.img && p.imagen && decodeURIComponent(c.img) !== decodeURIComponent(p.imagen)) {
       issues.push('Ruta de imagen distinta en "' + p.nombre + '": HTML="' + c.img + '" JSON="' + p.imagen + '"');
     }
+  }
+
+  const cardIds = cards.map((c) => c.productId);
+  const missingIds = cardIds.filter((id) => !id).length;
+  if (missingIds > 0) issues.push('Tarjetas sin data-product-id: ' + missingIds);
+  const cardIdCounts = {};
+  cardIds.forEach((id) => { if (id) cardIdCounts[id] = (cardIdCounts[id] || 0) + 1; });
+  const dupCardIds = Object.entries(cardIdCounts).filter(([, c]) => c > 1);
+  if (dupCardIds.length) issues.push('data-product-id duplicados en index.html: ' + JSON.stringify(dupCardIds));
+  const catalogIdSet = new Set(ids);
+  cardIds.forEach((id, i) => {
+    if (!id) return;
+    if (!catalogIdSet.has(id)) issues.push('data-product-id "' + id + '" (tarjeta ' + i + ') no existe en products.json');
+    const expected = productos[i] ? productos[i].id : undefined;
+    if (expected && id !== expected) issues.push('data-product-id distinto en la posicion ' + i + ': HTML="' + id + '" JSON="' + expected + '"');
+  });
+  if (missingIds === 0 && dupCardIds.length === 0) {
+    console.log('✓ Las 92 tarjetas tienen data-product-id unico y coincide con products.json');
   }
 
   if (issues.length === 0) {

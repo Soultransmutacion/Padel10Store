@@ -291,7 +291,21 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .modal-info{padding:1.25rem}
 .modal-name{font-size:24px}
 .modal-price-main{font-size:30px}
-}</style>
+}.gallery-nav[hidden]{display:none}
+.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.gallery-nav:hover{background:rgba(201,162,39,.85)}
+.gallery-prev{left:10px}
+.gallery-next{right:10px}
+.gallery-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2}
+.gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .15s}
+.gallery-dot.active{background:#C9A227}
+.modal-talle-row{margin:10px 0}
+.modal-talle-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.talle-btn{min-width:42px;padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.05);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;transition:all .15s}
+.talle-btn:hover{border-color:#C9A227}
+.talle-btn.selected{background:#C9A227;color:#111;border-color:#C9A227}
+.modal-talle-msg{color:#e05555;font-size:12px;margin-top:6px;min-height:14px}
+</style>
 </head>
 <body>
 
@@ -393,7 +407,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas de Control</span><span class="sec-sub">⚪ Redondo · Punto dulce amplio · Todos los niveles</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-aniversario-36">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO_36.webp" alt="Aniversario 36" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -408,7 +422,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-aniversario-36-light">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp" alt="Aniversario 36 Light" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -438,7 +452,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-eva-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_EVA_26.webp" alt="Cross Eva '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -453,7 +467,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-woman-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_WOMAN_26.webp" alt="Cross Woman '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -468,7 +482,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-europe-fiber-26">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_FIBER_26.webp" alt="Europe Fiber '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -483,7 +497,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-europe-lite">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_LITE.webp" alt="Europe Lite" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -498,7 +512,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-evolution">
       <div class="card-img">
         <img src="Palas%20royal%202/EVOLUTION.webp" alt="Evolution" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -513,7 +527,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-gris">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_-_GRIS.webp" alt="M27 Gris" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -528,7 +542,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-carbono">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_CARBONO.webp" alt="M27 Carbono" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">TOP</span>
@@ -543,7 +557,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-light">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_LIGHT.webp" alt="M27 Light" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -558,7 +572,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-p38">
       <div class="card-img">
         <img src="Palas%20royal%203/P38.webp" alt="P38" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -573,7 +587,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-torino-woman">
       <div class="card-img">
         <img src="palas%20royal/TORINO_WOMAN.webp" alt="Torino Woman" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -588,7 +602,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-toro-black">
       <div class="card-img">
         <img src="palas%20royal/TORO_BLACK.webp" alt="Toro Black" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -603,7 +617,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="control">
+<div class="card" data-cat="control" data-product-id="royal-padel-toro-white">
       <div class="card-img">
         <img src="palas%20royal/TORO_WHITE.webp" alt="Toro White" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -624,7 +638,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas de Ataque</span><span class="sec-sub">🔴 Máxima potencia · Carbono · Nivel avanzado</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-aniv36-pink-2026">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIV36_PINK_2026.webp" alt="Aniv36 Pink 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -639,7 +653,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-aniversario-36-poly-espanola">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO36_POLY_ESPAOLA.webp" alt="Aniversario 36 Poly Española" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -654,7 +668,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-europe-carbono">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_CARBONO.webp" alt="Europe Carbono" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">TOP</span>
@@ -669,7 +683,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-europe-lite-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp" alt="Europe Lite Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -684,7 +698,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-gran-torino-fiber-bronce">
       <div class="card-img">
         <img src="Palas%20royal%202/GRAN_TORINO_FIBER_-_Bronce_-.webp" alt="Gran Torino Fiber - Bronce" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -699,7 +713,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-japan-r-26">
       <div class="card-img">
         <img src="Palas%20royal%203/JAPAN_R_26.webp" alt="Japan R '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -714,7 +728,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-japan-rpro-bordeaux-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JAPAN_RPRO_BORDEAUS_-_EUROPEA_2026.webp" alt="Japan RPro Bordeaux Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -729,7 +743,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-r30-black">
       <div class="card-img">
         <img src="Palas%20royal%203/R30_BLACK.webp" alt="R30 Black" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -744,7 +758,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-r30-white-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp" alt="R30 White Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -759,7 +773,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-trial-2026">
       <div class="card-img">
         <img src="palas%20royal/TRIAL_2026.webp" alt="Trial 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -774,7 +788,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-extreme-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_EXTREME_-_EUROPEA_2026.webp" alt="Whip Extreme Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -789,7 +803,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-light-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_LIGHT_-_EUROPEA_2026.webp" alt="Whip Light Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -804,7 +818,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-poly-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_POLY_-_EUROPEA_2026.webp" alt="Whip Poly Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -819,7 +833,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-pro-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_PRO_2026.webp" alt="Whip Pro 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -834,7 +848,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ataque">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-pro-2026-woman">
       <div class="card-img">
         <img src="palas%20royal/WHIP_PRO_2026_-_woman.webp" alt="Whip Pro 2026 Woman" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -856,7 +870,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas Polivalentes</span><span class="sec-sub">🟡 Equilibrio potencia-control · Fibra + Carbono</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-dama">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_dama.webp" alt="Calavera MXC Dama" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -871,7 +885,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-hombre">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_hombre.webp" alt="Calavera MXC Hombre" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -886,7 +900,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-white">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_WHITE.webp" alt="Calavera MXC White" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -901,7 +915,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-cross-pro">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_PRO.webp" alt="Cross Pro" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -916,7 +930,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-cross-pro-lite">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_PRO_LITE.webp" alt="Cross Pro Lite" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -931,7 +945,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-kit-m27-lite-bolso">
       <div class="card-img">
         <img src="Palas%20royal%203/Kit_M27_lite_Bolso_paletero.webp" alt="Kit M27 Lite + Bolso" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">KIT</span>
@@ -946,7 +960,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-kit-whip-pro-woman-bolso">
       <div class="card-img">
         <img src="Palas%20royal%203/Kit_Whip_pro_woman_Bolso_paletero.webp" alt="Kit Whip Pro Woman + Bolso" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">KIT</span>
@@ -961,7 +975,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="polivalente">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-tigra-26">
       <div class="card-img">
         <img src="palas%20royal/TIGRA_26.webp" alt="Tigra '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -982,7 +996,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas Niños y Recreativas</span><span class="sec-sub">🟢 Kids · Junior · Beach · Frontón</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-beach">
       <div class="card-img">
         <img src="Palas%20royal%202/BEACH.webp" alt="Beach" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -997,7 +1011,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-fronton-fibra">
       <div class="card-img">
         <img src="Palas%20royal%202/FRONTON_FIBRA.webp" alt="Frontón Fibra" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1012,7 +1026,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-junior-multicolor-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp" alt="Junior Multicolor 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1027,7 +1041,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-junior-pink-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JUNIOR_PINK_2026.webp" alt="Junior Pink 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1042,7 +1056,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS.webp" alt="Kids" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1057,7 +1071,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids-multicolor-aqua">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS_multicolor_aqua.webp" alt="Kids Multicolor Aqua" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1072,7 +1086,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids-rosa">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS_ROSA.webp" alt="Kids Rosa" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1087,7 +1101,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="ninos">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-pickleball-ventana">
       <div class="card-img">
         <img src="Palas%20royal%203/PICKLEBALL_VENTANA.webp" alt="Pickleball Ventana" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1107,7 +1121,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Accesorios</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-cubregrip">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-10-09-at-09-22-18-2-4bf033f42e1be69f8717600125953812-480-0.webp" alt="CUBREGRIP" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1122,7 +1136,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-royalpadel-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7445-cdf1b847c7caf4a0ef17699334945155-480-0.webp" alt="Medias Royalpadel Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1137,7 +1151,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-protectores-importados">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/protectores-1-1-60e9419c38769aee3b17582989389055-480-0.webp" alt="Protectores Importados" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1152,7 +1166,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-white">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/db00d4e3-f8df-4b0a-b3ef-6a26b07226b9-086b88d85ec9cb825b17724664052398-480-0.webp" alt="Medias White" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1167,7 +1181,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-chanclas">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/chanclas-1-9f6dd3db1502b1fa7317582995797214-480-0.webp" alt="Chanclas" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1182,7 +1196,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-munequeras-royalpadel-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7446-63fbd93bbca7a58e8c17699336242554-480-0.webp" alt="Muñequeras Royalpadel Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1197,7 +1211,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-bolso-paletero-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/306db175-241b-400e-850a-487213c40078-4f20bcca930900727017671770974014-480-0.webp" alt="Bolso Paletero Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1212,7 +1226,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-gorra-white">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-12-02-at-2-47-17-pm-731a2642ebeb5323be17647018722712-480-0.webp" alt="Gorra White" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1227,7 +1241,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-media-cana-a-e-red">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1-9da2db606748afd00917587115590044-480-0.webp" alt="Medias Media Caña A/E Red" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1242,7 +1256,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-mangas-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/69bf948c-483f-4934-a3e0-77cc4fbcf161-6089e7f6d4f530870317724662219654-480-0.webp" alt="Mangas Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1257,7 +1271,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-azul-wpt">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1ba19accbdc208ec2317587115004784-480-0.webp" alt="Medias Azul WPT" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1272,7 +1286,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-x-grip">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/r-grip-1-f7ea7f2b05a159e9d117582953580172-480-0.webp" alt="X GRIP" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1293,7 +1307,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Indumentaria Masculina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-azul">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/99e5e8e4-82b4-4839-9673-d6d9d8376984-b94fcd9c64cf6e604e17699329576623-480-0.webp" alt="Short Mallorca Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1308,7 +1322,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-lineal">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/e42bb162-a069-4c4b-b1b3-9f17e095bc51-08ba4c1c7505eda89317655388502393-480-0.webp" alt="Remera Mallorca Azul Marino Lineal" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1323,7 +1337,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-uva">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/a9b89d92-a687-4faa-8408-9e56949e12bb-0dfde500d31b8a9b0117699332254083-480-0.webp" alt="Short Mallorca Uva" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1338,7 +1352,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-basica">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/2e07ad32-47ec-435c-b9ae-4dd03c6f0b26-14ac5cb7ee893ff36817655390053582-480-0.webp" alt="Remera Mallorca Blanca Basica" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1353,7 +1367,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-verde">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2026-01-30-at-11-17-35-am-635229a2f35c26475c17707307379912-480-0.webp" alt="Short Mallorca Verde" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1368,7 +1382,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-moka">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/ec409cc6-9ac5-45db-ae94-db1492b994b3-b1a8b9fece9f96e08017699330981844-480-0.webp" alt="Short Mallorca Moka" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1383,7 +1397,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-basica">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/bdcd312e-8b8e-43a5-9b43-5e337e1705ef-35208faaec615d6e4b17655385865596-480-0.webp" alt="Remera Mallorca Azul Marino Basica" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1398,7 +1412,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-lineal">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/928ae1c7-947b-4203-8f1f-1e148f41daa1-f5983c73fd253ff65617655392698213-480-0.webp" alt="Remera Mallorca Blanca Lineal" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1413,7 +1427,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-padel">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/70a40a5d-6efd-4071-831a-aeda1e67bf61-389db1ddab7ff1a3d417655391965883-480-0.webp" alt="Remera Mallorca Blanca Padel" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1428,7 +1442,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-padel">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/89527c81-04cf-4fc5-90df-fad817649a4d-a042c56a395f81dd0117655387049534-480-0.webp" alt="Remera Mallorca Azul Marino Padel" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1443,7 +1457,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-campera-roma-pro-negra-hombre">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/campera-8df6c45a4279af64c417587110842249-480-0.webp" alt="Campera Roma Pro Negra Hombre" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1464,7 +1478,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Indumentaria Femenina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-negra">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-1.webp" alt="Pollera deportiva Mallorca con short – Negra" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1476,10 +1490,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-rosa-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/x-grip1-1.webp" alt="Remera deportiva Mallorca – Blanca y rosa" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1491,10 +1505,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-moka-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp" alt="Remera deportiva Mallorca – Blanca y moka" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1506,10 +1520,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-multicolor-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp" alt="Remera deportiva Mallorca – Blanca multicolor" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1521,10 +1535,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-lineal-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp" alt="Remera deportiva Mallorca Líneas – Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1536,10 +1550,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-lineal-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp" alt="Remera deportiva Mallorca Líneas – Blanca" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1551,10 +1565,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-negra-lineal-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-1.webp" alt="Remera deportiva Mallorca Líneas – Negra" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1566,10 +1580,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-biker-mallorca-negra">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-1.webp" alt="Calza Biker Mallorca – Negra" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1581,10 +1595,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$39.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.575</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp" alt="Remera deportiva Mallorca – Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1596,10 +1610,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-blanca">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-1.webp" alt="Pollera deportiva Mallorca con short – Blanca" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1611,10 +1625,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-multicolor-lineal-mujer">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp" alt="Remera deportiva Mallorca Líneas – Blanca multicolor" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1626,10 +1640,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-azul">
 <div class="card-img">
 <img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-1.webp" alt="Pollera deportiva Mallorca con short – Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1641,10 +1655,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="bullpadel-flow-legend">
       <div class="card-img">
         <img src="bullpadel/paleta_flow_legend_gris.jpg" alt="Flow Legend" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1658,7 +1672,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="bullpadel-ionic-pwr">
       <div class="card-img">
         <img src="bullpadel/paleta_ionic_pwr_azul.jpg" alt="Ionic PWR" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1672,7 +1686,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-mochila-delfina-blanca-azul">
       <div class="card-img">
         <img src="bullpadel/mochila_delfina_blanca_frente.jpg" alt="Mochila Delfina" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1686,7 +1700,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-mochila-delfina-lateral">
       <div class="card-img">
         <img src="bullpadel/mochila_delfina_frente.jpg" alt="Mochila Delfina Lateral" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1700,7 +1714,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-bolso-wonder-marron">
       <div class="card-img">
         <img src="bullpadel/bolso_wonder_marron_frente.jpg" alt="Bolso Wonder Marron" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1721,7 +1735,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     <div><span class="sec-title">Paletas Siux</span><span class="sec-sub">&#9889; The Next Level &middot; Carbono &middot; Alto rendimiento</span></div>
   </div>
   <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-fenix-pro-5">
       <div class="card-img">
         <img src="siux/paleta_fenix_pro5_naranja.jpg" alt="Fenix Pro 5" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1735,7 +1749,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-trilogy-go-5">
       <div class="card-img">
         <img src="siux/paleta_trilogy_go5_verde.jpg" alt="Trilogy GO 5" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1749,7 +1763,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-diablo-pro-4">
       <div class="card-img">
         <img src="siux/paleta_diablo_pro4_roja.jpg" alt="Diablo Pro 4" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1763,7 +1777,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-electra-go-4">
       <div class="card-img">
         <img src="siux/paleta_electra_go4_amarilla.jpg" alt="Electra GO 4" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1777,7 +1791,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="siux-mochila-blanca-azul-lateral">
       <div class="card-img">
         <img src="siux/mochila_blanca_azul_lateral.jpg" alt="Mochila Blanca Azul" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1798,7 +1812,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     <div><span class="sec-title">Paletas Adidas</span><span class="sec-sub">&#128420; Tecnolog&iacute;a de &eacute;lite &middot; Carbon &middot; Competici&oacute;n</span></div>
   </div>
   <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="adidas-metalbone-carbon-ctrl">
       <div class="card-img">
         <img src="adidas/paleta_metalbone_carbon_ctrl.jpg" alt="Metalbone Carbon CTRL" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1852,6 +1866,15 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 let cartCount=0;
 function addToCart(btn){cartCount++;const badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}btn.textContent='Agregado';btn.classList.add('added');setTimeout(()=>{btn.textContent='Consultar';btn.classList.remove('added');},2000);}
 
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest?e.target.closest('#modalBuyNowBtn'):null;
+  if(!t)return;
+  if(window.__talleGuardActive&&!window.__selectedTalle){
+    e.preventDefault();e.stopPropagation();
+    var msg=document.getElementById('modalTalleMsg');
+    if(msg)msg.textContent='Seleccioná un talle';
+  }
+},true);
 document.addEventListener('DOMContentLoaded',function(){
 
 document.querySelectorAll('.cat').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const f=btn.dataset.cat;document.querySelectorAll('.card').forEach(c=>{const bc=c.querySelector('.card-cat')?c.querySelector('.card-cat').textContent.trim().toLowerCase():'';const ibf=f==='bull-padel'||f==='adidas'||f==='siux';const bm=(f==='bull-padel'&&bc.includes('bullpadel'))||(f==='adidas'&&bc.includes('adidas'))||(f==='siux'&&bc.includes('siux'));c.style.display=(f==='all'||(!ibf&&c.dataset.cat===f)||bm)?'':'none';});document.querySelectorAll('.sec-head').forEach(function(sh){var next=sh.nextElementSibling;if(!next)return;if(next.classList.contains('grid')){var vis=Array.from(next.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=vis?'':'none';next.style.display=vis?'':'none';}});Array.from(document.querySelectorAll('.sec-head')).filter(function(sh){return sh.nextElementSibling&&sh.nextElementSibling.classList.contains('sec-head');}).forEach(function(sh){var hasVis=Array.from(sh.parentElement.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=hasVis?'':'none';});});});
@@ -1874,6 +1897,21 @@ var stockBadgeEl=document.getElementById('modalStockBadge');
 var shipBadgeEl=document.getElementById('modalShipBadge');
 var buyNowBtn=document.getElementById('modalBuyNowBtn');
 var qtyRowEl=document.getElementById('modalQtyRow');
+var galleryPrevBtn=document.getElementById('galleryPrev');
+var galleryNextBtn=document.getElementById('galleryNext');
+var galleryDotsEl=document.getElementById('galleryDots');
+var talleRowEl=document.getElementById('modalTalleRow');
+var talleButtonsEl=document.getElementById('modalTalleButtons');
+var talleMsgEl=document.getElementById('modalTalleMsg');
+var galleryImages=[],galleryIndex=0,currentProduct=null;
+var PURCHASABLE_PRODUCT_IDS=['royal-padel-cross-black-26'];
+window.CATALOG=window.CATALOG||{};
+fetch('products.json').then(function(r){return r.json();}).then(function(data){var list=(data&&data.productos)||[];list.forEach(function(p){if(p&&p.id)window.CATALOG[p.id]=p;});}).catch(function(){});
+function renderGalleryImage(){if(!galleryImages.length)return;imgEl.src=galleryImages[galleryIndex];imgEl.alt=nameEl.textContent;if(galleryDotsEl){Array.prototype.forEach.call(galleryDotsEl.children,function(dot,idx){dot.classList.toggle('active',idx===galleryIndex);});}}
+function setupGallery(product){var imagenes=(product&&Array.isArray(product.imagenes)&&product.imagenes.length)?product.imagenes.slice():((product&&product.imagen)?[product.imagen]:null);if(!imagenes||!imagenes.length){galleryImages=[];galleryIndex=0;if(galleryPrevBtn)galleryPrevBtn.hidden=true;if(galleryNextBtn)galleryNextBtn.hidden=true;if(galleryDotsEl)galleryDotsEl.innerHTML='';return;}galleryImages=imagenes;galleryIndex=0;renderGalleryImage();var multi=galleryImages.length>1;if(galleryPrevBtn)galleryPrevBtn.hidden=!multi;if(galleryNextBtn)galleryNextBtn.hidden=!multi;if(galleryDotsEl){galleryDotsEl.innerHTML='';if(multi){galleryImages.forEach(function(_,idx){var dot=document.createElement('span');dot.className='gallery-dot'+(idx===0?' active':'');dot.addEventListener('click',function(){galleryIndex=idx;renderGalleryImage();});galleryDotsEl.appendChild(dot);});}}}
+if(galleryPrevBtn)galleryPrevBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;renderGalleryImage();});
+if(galleryNextBtn)galleryNextBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex+1)%galleryImages.length;renderGalleryImage();});
+function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(talleMsgEl)talleMsgEl.textContent='';Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
 var currentPrice=0,qty=1,isConsultar=false;
 
 function parsePrice(s){return s?parseInt(s.replace(/[^0-9]/g,''))||0:0;}
@@ -1894,6 +1932,11 @@ catEl.textContent=cc?cc.textContent.trim():'';
 priceEl.textContent=cp?cp.textContent.trim():'';
 transferEl.textContent=ct?ct.textContent.trim():'';
 cuotasEl.textContent=cq?cq.textContent.trim():'';
+var productId=card.dataset?card.dataset.productId:'';
+var product=(productId&&window.CATALOG)?window.CATALOG[productId]:null;
+currentProduct=product;
+setupGallery(product);
+setupTalles(product);
 var priceTextRaw=cp?cp.textContent.trim():'';
 isConsultar=/consultar/i.test(priceTextRaw);
 currentPrice=isConsultar?0:parsePrice(priceTextRaw);
@@ -1910,7 +1953,7 @@ if(isConsultar){
 }
 var pM=encodeURIComponent(waMsg);
 if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
-var buyNowProductId=card.dataset?card.dataset.productId:'';
+var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
 if(buyNowBtn){
 if(buyNowProductId){
 buyNowBtn.hidden=false;
@@ -1942,7 +1985,7 @@ if(cn){cn.style.cursor='pointer';cn.addEventListener('click',function(e){e.stopP
 
 if(qtyPlusEl)qtyPlusEl.addEventListener('click',function(){qty=Math.min(qty+1,20);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
 if(qtyMinusEl)qtyMinusEl.addEventListener('click',function(){qty=Math.max(qty-1,1);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
-if(buyBtn)buyBtn.addEventListener('click',function(){cartCount++;var badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
+if(buyBtn)buyBtn.addEventListener('click',function(){if(window.__talleGuardActive&&!window.__selectedTalle){if(talleMsgEl)talleMsgEl.textContent='Seleccioná un talle';return;}cartCount++;var badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
 if(closeBtn)closeBtn.addEventListener('click',closeModal);
 if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
@@ -1957,6 +2000,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-img-panel">
 <div class="modal-img-glow"></div>
 <img id="modalImg" src="" alt="">
+<button class="gallery-nav gallery-prev" id="galleryPrev" type="button" aria-label="Imagen anterior" hidden>&#8249;</button>
+<button class="gallery-nav gallery-next" id="galleryNext" type="button" aria-label="Imagen siguiente" hidden>&#8250;</button>
+<div class="gallery-dots" id="galleryDots"></div>
 </div>
 <div class="modal-info">
 <div class="modal-badge-row">
@@ -1969,6 +2015,11 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-price-main" id="modalPrice"></div>
 <div class="modal-price-transfer" id="modalTransfer"></div>
 <div class="modal-cuotas" id="modalCuotas"></div>
+</div>
+<div class="modal-talle-row" id="modalTalleRow" hidden>
+<span class="modal-qty-label">Talle</span>
+<div class="modal-talle-buttons" id="modalTalleButtons"></div>
+<div class="modal-talle-msg" id="modalTalleMsg"></div>
 </div>
 <hr class="modal-divider">
 <div class="modal-qty-row" id="modalQtyRow">
