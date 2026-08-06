@@ -50,6 +50,7 @@ function parseCards(html) {
   return cardChunks.map((chunk) => ({
     img: extractField(chunk, /<img src="([^"]*)"/),
     productId: extractField(chunk, /data-product-id="([^"]*)"/),
+    btnText: extractField(chunk, /class="add-btn"[^>]*>([^<]*)</),
     cat: extractField(chunk, /class="card-cat">([^<]*)</),
     name: extractField(chunk, /class="card-name">([^<]*)</),
     price: extractField(chunk, /class="card-price">([^<]*)</),
@@ -138,6 +139,28 @@ function validate() {
   });
   if (missingIds === 0 && dupCardIds.length === 0) {
     console.log('✓ Las 92 tarjetas tienen data-product-id unico y coincide con products.json');
+  }
+
+  const talleProductIds = productos.filter((p) => Array.isArray(p.talles) && p.talles.length > 0).map((p) => p.id);
+  cards.forEach((c, i) => {
+    const expectedId = productos[i] ? productos[i].id : undefined;
+    const isTalleCard = expectedId && talleProductIds.indexOf(expectedId) > -1;
+    if (isTalleCard && c.btnText !== 'ELEGIR TALLE') {
+      issues.push('Tarjeta con talles "' + expectedId + '" deberia tener el boton ELEGIR TALLE, tiene: "' + c.btnText + '"');
+    }
+    if (!isTalleCard && c.btnText === 'ELEGIR TALLE') {
+      issues.push('Tarjeta "' + expectedId + '" tiene el boton ELEGIR TALLE sin declarar talles en products.json');
+    }
+  });
+  const crossBlackCard = cards.find((c) => c.productId === 'royal-padel-cross-black-26');
+  if (!crossBlackCard || crossBlackCard.btnText !== 'Consultar') {
+    issues.push('Cross Black 26 deberia conservar el boton Consultar en su tarjeta (comportamiento previo sin cambios)');
+  }
+  if (talleProductIds.length !== 12) {
+    issues.push('Se esperaban 12 productos con talles en products.json, se encontraron ' + talleProductIds.length);
+  }
+  if (missingIds === 0 && dupCardIds.length === 0 && issues.length === 0) {
+    console.log('✓ Los 12 productos con talles muestran ELEGIR TALLE y Cross Black 26 conserva Consultar');
   }
 
   if (issues.length === 0) {
