@@ -7,9 +7,11 @@ box-sizing: border-box;
 
 .pa-launcher {
 position: fixed;
-right: 20px;
+left: 20px;
 bottom: 20px;
-z-index: 9998;
+z-index: 250;
+touch-action: none;
+user-select: none;
 display: flex;
 align-items: center;
 gap: 8px;
@@ -33,15 +35,20 @@ filter: brightness(1.08);
 transform: translateY(-2px);
 }
 
+.pa-launcher.pa-dragging {
+transition: none;
+cursor: grabbing;
+}
+
 .pa-launcher-icon {
 font-size: 18px;
 }
 
 .pa-panel {
 position: fixed;
-right: 20px;
+left: 20px;
 bottom: 90px;
-z-index: 9999;
+z-index: 251;
 width: min(360px, calc(100vw - 32px));
 height: min(560px, calc(100vh - 140px));
 background: #1a1a1a;
@@ -420,7 +427,7 @@ width: auto;
 height: min(70vh, 560px);
 }
 .pa-launcher {
-right: 12px;
+left: 12px;
 bottom: 12px;
 }
 }

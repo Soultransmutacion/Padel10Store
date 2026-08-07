@@ -76,6 +76,150 @@ var sendBtn = document.getElementById('paSend');
 
 fallbackWhatsappEl.href = buildWhatsappUrl('Hola! Quiero recibir asesoramiento para elegir una pala de padel.');
 
+var POSITION_STORAGE_KEY = 'padelAdvisorPosition';
+var DEFAULT_SIDE = 'left';
+var DEFAULT_BOTTOM = 20;
+var DRAG_THRESHOLD = 6;
+var currentPosition = { side: DEFAULT_SIDE, bottom: DEFAULT_BOTTOM };
+var dragState = null;
+var didDrag = false;
+
+function getInset() {
+return window.innerWidth <= 480 ? 12 : 20;
+}
+
+function loadPosition() {
+try {
+var raw = window.localStorage.getItem(POSITION_STORAGE_KEY);
+if (!raw) return { side: DEFAULT_SIDE, bottom: DEFAULT_BOTTOM };
+var parsed = JSON.parse(raw);
+if (!parsed || (parsed.side !== 'left' && parsed.side !== 'right') || typeof parsed.bottom !== 'number' || !isFinite(parsed.bottom)) {
+return { side: DEFAULT_SIDE, bottom: DEFAULT_BOTTOM };
+}
+return { side: parsed.side, bottom: parsed.bottom };
+} catch (err) {
+return { side: DEFAULT_SIDE, bottom: DEFAULT_BOTTOM };
+}
+}
+
+function savePosition(pos) {
+try {
+window.localStorage.setItem(POSITION_STORAGE_KEY, JSON.stringify(pos));
+} catch (err) {
+/* localStorage no disponible: se ignora, se mantiene la posicion en memoria */
+}
+}
+
+function clampBottom(bottom) {
+var height = launcher.offsetHeight || 48;
+var max = Math.max(12, window.innerHeight - height - 12);
+if (bottom < 12) return 12;
+if (bottom > max) return max;
+return bottom;
+}
+
+function positionPanel() {
+var inset = getInset();
+var launcherHeight = launcher.offsetHeight || 48;
+panel.style.top = 'auto';
+panel.style.bottom = (currentPosition.bottom + launcherHeight + 10) + 'px';
+if (window.innerWidth <= 480) {
+panel.style.left = '8px';
+panel.style.right = '8px';
+} else if (currentPosition.side === 'right') {
+panel.style.right = inset + 'px';
+panel.style.left = 'auto';
+} else {
+panel.style.left = inset + 'px';
+panel.style.right = 'auto';
+}
+}
+
+function applyPosition(pos) {
+var inset = getInset();
+currentPosition = { side: pos.side === 'right' ? 'right' : 'left', bottom: clampBottom(pos.bottom) };
+launcher.style.top = 'auto';
+launcher.style.bottom = currentPosition.bottom + 'px';
+if (currentPosition.side === 'right') {
+launcher.style.right = inset + 'px';
+launcher.style.left = 'auto';
+} else {
+launcher.style.left = inset + 'px';
+launcher.style.right = 'auto';
+}
+positionPanel();
+}
+
+function persistCurrentPosition() {
+savePosition({ side: currentPosition.side, bottom: currentPosition.bottom });
+}
+
+function minimizePanel() {
+if (panel.hidden) return;
+panel.hidden = true;
+launcher.setAttribute('aria-expanded', 'false');
+}
+
+function onLauncherPointerDown(e) {
+if (e.button !== undefined && e.button !== 0) return;
+var rect = launcher.getBoundingClientRect();
+dragState = { startX: e.clientX, startY: e.clientY, originLeft: rect.left, originTop: rect.top, pointerId: e.pointerId };
+didDrag = false;
+try { launcher.setPointerCapture(e.pointerId); } catch (err) {}
+}
+
+function onLauncherPointerMove(e) {
+if (!dragState || dragState.pointerId !== e.pointerId) return;
+var dx = e.clientX - dragState.startX;
+var dy = e.clientY - dragState.startY;
+if (!didDrag && Math.sqrt(dx * dx + dy * dy) < DRAG_THRESHOLD) return;
+didDrag = true;
+launcher.classList.add('pa-dragging');
+var width = launcher.offsetWidth;
+var height = launcher.offsetHeight;
+var left = dragState.originLeft + dx;
+var top = dragState.originTop + dy;
+left = Math.min(Math.max(left, 4), window.innerWidth - width - 4);
+top = Math.min(Math.max(top, 4), window.innerHeight - height - 4);
+launcher.style.left = left + 'px';
+launcher.style.top = top + 'px';
+launcher.style.right = 'auto';
+launcher.style.bottom = 'auto';
+}
+
+function onLauncherPointerUp(e) {
+if (!dragState || dragState.pointerId !== e.pointerId) return;
+try { launcher.releasePointerCapture(e.pointerId); } catch (err) {}
+if (didDrag) {
+var rect = launcher.getBoundingClientRect();
+var centerX = rect.left + rect.width / 2;
+var side = centerX < window.innerWidth / 2 ? 'left' : 'right';
+var bottom = window.innerHeight - rect.bottom;
+launcher.classList.remove('pa-dragging');
+applyPosition({ side: side, bottom: bottom });
+persistCurrentPosition();
+}
+dragState = null;
+}
+
+launcher.addEventListener('pointerdown', onLauncherPointerDown);
+launcher.addEventListener('pointermove', onLauncherPointerMove);
+launcher.addEventListener('pointerup', onLauncherPointerUp);
+launcher.addEventListener('pointercancel', onLauncherPointerUp);
+
+window.addEventListener('resize', function () {
+applyPosition(currentPosition);
+});
+
+applyPosition(loadPosition());
+
+var bodyOverflowObserver = new MutationObserver(function () {
+if (document.body.style.overflow === 'hidden' && !panel.hidden) {
+minimizePanel();
+}
+});
+bodyOverflowObserver.observe(document.body, { attributes: true, attributeFilter: ['style'] });
+
 function scrollToBottom() {
 messagesEl.scrollTop = messagesEl.scrollHeight;
 }
@@ -244,6 +388,7 @@ showFallback('No pudimos conectar con el asesor.');
 }
 
 function openPanel() {
+positionPanel();
 panel.hidden = false;
 launcher.setAttribute('aria-expanded', 'true');
 if (!panelOpened) {
@@ -267,7 +412,14 @@ closePanel();
 }
 }
 
-launcher.addEventListener('click', togglePanel);
+launcher.addEventListener('click', function (e) {
+if (didDrag) {
+didDrag = false;
+e.preventDefault();
+return;
+}
+togglePanel();
+});
 closeBtn.addEventListener('click', closePanel);
 
 document.addEventListener('keydown', function (e) {
