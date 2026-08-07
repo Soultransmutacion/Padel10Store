@@ -36,6 +36,21 @@ return String(value || '')
 .replace(/[\u0300-\u036f]/g, '');
 }
 
+function resolveCardImageUrl(rawPath) {
+if (typeof rawPath !== 'string') return null;
+var trimmed = rawPath.trim();
+if (!trimmed) return null;
+if (/^(javascript|data|vbscript|file):/i.test(trimmed)) return null;
+try {
+var resolved = new URL(trimmed, document.baseURI).href;
+var parsed = new URL(resolved);
+if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return null;
+return resolved;
+} catch (err) {
+return null;
+}
+}
+
 function buildWhatsappUrl(message) {
 return 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(message);
 }
@@ -251,8 +266,9 @@ shownProductIds[card.id] = true;
 var wrap = document.createElement('div');
 wrap.className = 'pa-card';
 
-var imgHtml = card.imagen
-? '<img src="' + escapeHtml(card.imagen) + '" alt="' + escapeHtml(card.nombre) + '" loading="lazy" />'
+var safeImgUrl = resolveCardImageUrl(card.imagen);
+var imgHtml = safeImgUrl
+? '<img class="pa-card-photo" src="' + escapeHtml(safeImgUrl) + '" alt="' + escapeHtml(card.nombre) + '" loading="lazy" />'
 : '';
 
 var priceHtml = '';
@@ -294,6 +310,15 @@ featuresHtml +
 buyNowHtml +
 '</div>' +
 '</div>';
+
+var imgEl = wrap.querySelector('.pa-card-photo');
+if (imgEl) {
+imgEl.addEventListener('error', function () {
+imgEl.remove();
+var imgBox = wrap.querySelector('.pa-card-img');
+if (imgBox) imgBox.classList.add('pa-card-img-empty');
+});
+}
 
 var verBtn = wrap.querySelector('[data-action="ver"]');
 verBtn.addEventListener('click', function () {

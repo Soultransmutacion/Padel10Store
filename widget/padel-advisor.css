@@ -222,6 +222,18 @@ height: 100%;
 object-fit: contain;
 }
 
+/* Fallback visual cuando una imagen local o externa no puede cargarse:
+un bloque neutro con un icono simple, sin texto alt gigante superpuesto. */
+.pa-card-img-empty {
+background: rgba(255, 255, 255, 0.06);
+}
+
+.pa-card-img-empty::after {
+content: '\1F3BE';
+font-size: 22px;
+opacity: 0.5;
+}
+
 .pa-card-body {
 flex: 1;
 min-width: 0;
