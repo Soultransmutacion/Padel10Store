@@ -304,7 +304,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .talle-btn{min-width:42px;padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.05);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;transition:all .15s}
 .talle-btn:hover{border-color:#C9A227}
 .talle-btn.selected{background:#C9A227;color:#111;border-color:#C9A227}
-.modal-talle-msg{color:#e05555;font-size:12px;margin-top:6px;min-height:14px}
+.modal-talle-msg{color:#ff6b6b;font-size:13px;font-weight:700;margin-top:6px;min-height:16px}.modal-talle-msg:focus{outline:2px solid #ff6b6b;outline-offset:3px;border-radius:3px}.modal-talle-row.talle-error .modal-talle-buttons{border:1px solid #ff6b6b;border-radius:8px;padding:6px;background:rgba(255,107,107,.08)}
 </style>
 </head>
 <body>
@@ -1872,7 +1872,7 @@ document.addEventListener('click',function(e){
   if(window.__talleGuardActive&&!window.__selectedTalle){
     e.preventDefault();e.stopPropagation();
     var msg=document.getElementById('modalTalleMsg');
-    if(msg)msg.textContent='Seleccioná un talle';
+    if(msg)msg.textContent='Seleccioná un talle para continuar.';var row=document.getElementById('modalTalleRow');if(row)row.classList.add('talle-error');if(msg)msg.focus();
   }
 },true);
 document.addEventListener('DOMContentLoaded',function(){
@@ -1911,7 +1911,7 @@ function renderGalleryImage(){if(!galleryImages.length)return;imgEl.src=galleryI
 function setupGallery(product){var imagenes=(product&&Array.isArray(product.imagenes)&&product.imagenes.length)?product.imagenes.slice():((product&&product.imagen)?[product.imagen]:null);if(!imagenes||!imagenes.length){galleryImages=[];galleryIndex=0;if(galleryPrevBtn)galleryPrevBtn.hidden=true;if(galleryNextBtn)galleryNextBtn.hidden=true;if(galleryDotsEl)galleryDotsEl.innerHTML='';return;}galleryImages=imagenes;galleryIndex=0;renderGalleryImage();var multi=galleryImages.length>1;if(galleryPrevBtn)galleryPrevBtn.hidden=!multi;if(galleryNextBtn)galleryNextBtn.hidden=!multi;if(galleryDotsEl){galleryDotsEl.innerHTML='';if(multi){galleryImages.forEach(function(_,idx){var dot=document.createElement('span');dot.className='gallery-dot'+(idx===0?' active':'');dot.addEventListener('click',function(){galleryIndex=idx;renderGalleryImage();});galleryDotsEl.appendChild(dot);});}}}
 if(galleryPrevBtn)galleryPrevBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;renderGalleryImage();});
 if(galleryNextBtn)galleryNextBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex+1)%galleryImages.length;renderGalleryImage();});
-function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(buyNowBtn)buyNowBtn.dataset.talle=t;if(talleMsgEl)talleMsgEl.textContent='';Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
+function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;talleRowEl.classList.remove('talle-error');if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(buyNowBtn)buyNowBtn.dataset.talle=t;if(talleMsgEl)talleMsgEl.textContent='';if(talleRowEl)talleRowEl.classList.remove('talle-error');Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
 var cartLines=[];
 var cartDrawerOverlay=document.getElementById('cartDrawerOverlay');
 var cartDrawerEl=document.getElementById('cartDrawer');
@@ -2009,7 +2009,7 @@ if(cn){cn.style.cursor='pointer';cn.addEventListener('click',function(e){e.stopP
 
 if(qtyPlusEl)qtyPlusEl.addEventListener('click',function(){qty=Math.min(qty+1,20);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
 if(qtyMinusEl)qtyMinusEl.addEventListener('click',function(){qty=Math.max(qty-1,1);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
-if(buyBtn)buyBtn.addEventListener('click',function(){if(window.__talleGuardActive&&!window.__selectedTalle){if(talleMsgEl)talleMsgEl.textContent='Seleccioná un talle';return;}if(currentProduct&&Array.isArray(currentProduct.talles)&&currentProduct.talles.length){addLineToCart(currentProduct,window.__selectedTalle,qty);}else{cartCount++;}updateCartBadge();buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
+if(buyBtn)buyBtn.addEventListener('click',function(){if(window.__talleGuardActive&&!window.__selectedTalle){if(talleMsgEl)talleMsgEl.textContent='Seleccioná un talle para continuar.';if(talleRowEl)talleRowEl.classList.add('talle-error');if(talleMsgEl)talleMsgEl.focus();return;}if(currentProduct&&Array.isArray(currentProduct.talles)&&currentProduct.talles.length){addLineToCart(currentProduct,window.__selectedTalle,qty);}else{cartCount++;}updateCartBadge();buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
 if(closeBtn)closeBtn.addEventListener('click',closeModal);
 if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
@@ -2043,7 +2043,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-talle-row" id="modalTalleRow" hidden>
 <span class="modal-qty-label">Talle</span>
 <div class="modal-talle-buttons" id="modalTalleButtons"></div>
-<div class="modal-talle-msg" id="modalTalleMsg"></div>
+<div class="modal-talle-msg" id="modalTalleMsg" aria-live="polite" tabindex="-1"></div>
 </div>
 <hr class="modal-divider">
 <div class="modal-qty-row" id="modalQtyRow">
