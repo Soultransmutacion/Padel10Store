@@ -163,6 +163,77 @@ function validate() {
     console.log('✓ Los 12 productos con talles muestran ELEGIR TALLE y Cross Black 26 conserva Consultar');
   }
 
+
+  // --- Etapa 2A (correcciones): aviso de talle obligatorio + asesor movible ---
+  const A = '\u00e1';
+  const advisorCssPath = path.join(ROOT, 'widget', 'padel-advisor.css');
+  const advisorJsPath = path.join(ROOT, 'widget', 'padel-advisor.js');
+  const advisorCss = fs.readFileSync(advisorCssPath, 'utf8');
+  const advisorJs = fs.readFileSync(advisorJsPath, 'utf8');
+
+  if (!html.includes('id="modalTalleMsg" aria-live="polite"')) {
+    issues.push('El mensaje de talle obligatorio (#modalTalleMsg) debe tener aria-live="polite".');
+  }
+  if (!html.includes("talleMsgEl)talleMsgEl.textContent='Seleccion" + A + " un talle para continuar.';if(talleRowEl)talleRowEl.classList.add('talle-error');if(talleMsgEl)talleMsgEl.focus();return;")) {
+    issues.push('El boton Agregar al carrito no bloquea con aviso visible + foco cuando falta el talle.');
+  }
+  if (!html.includes("if(msg)msg.textContent='Seleccion" + A + " un talle para continuar.';var row=document.getElementById('modalTalleRow');if(row)row.classList.add('talle-error');if(msg)msg.focus();")) {
+    issues.push('El boton Comprar ahora no bloquea con aviso visible + foco cuando falta el talle.');
+  }
+  if (!html.includes("if(talleMsgEl)talleMsgEl.textContent='';if(talleRowEl)talleRowEl.classList.remove('talle-error');")) {
+    issues.push('El estado de error del talle no se limpia al seleccionar un talle valido.');
+  }
+
+  if (!/\.pa-launcher \{[^}]*left: 20px;/.test(advisorCss) || /\.pa-launcher \{[^}]*right: 20px;/.test(advisorCss)) {
+    issues.push('El boton del asesor (.pa-launcher) debe tener posicion inicial a la izquierda, no a la derecha.');
+  }
+  const launcherZ = advisorCss.match(/\.pa-launcher \{[^}]*z-index:\s*(\d+)/);
+  const cartDrawerZ = html.match(/\.drw\{[^}]*z-index:(\d+)/);
+  if (!launcherZ || !cartDrawerZ || Number(launcherZ[1]) >= Number(cartDrawerZ[1])) {
+    issues.push('El z-index del asesor debe ser menor al del carrito para no tapar sus controles.');
+  }
+  if (!advisorJs.includes("DEFAULT_SIDE = 'left'")) {
+    issues.push('La posicion por defecto del asesor debe ser left.');
+  }
+  if (!advisorJs.includes('POSITION_STORAGE_KEY') || !advisorJs.includes('localStorage.getItem(POSITION_STORAGE_KEY)')) {
+    issues.push('El asesor debe leer su posicion guardada desde localStorage.');
+  }
+  if (!advisorJs.includes("return { side: DEFAULT_SIDE, bottom: DEFAULT_BOTTOM };") || !advisorJs.includes('JSON.parse(raw)')) {
+    issues.push('Datos de posicion invalidos o corruptos deben volver a la posicion por defecto.');
+  }
+  if (!advisorJs.includes('onLauncherPointerDown') || !advisorJs.includes('onLauncherPointerMove') || !advisorJs.includes('onLauncherPointerUp')) {
+    issues.push('Falta la logica de arrastre (pointerdown/pointermove/pointerup) del boton del asesor.');
+  }
+  if (!advisorJs.includes('if (didDrag) {\ndidDrag = false;\ne.preventDefault();\nreturn;\n}\ntogglePanel();')) {
+    issues.push('El clic del asesor debe abrir el panel solo si no hubo arrastre.');
+  }
+  if (!advisorJs.includes('DRAG_THRESHOLD')) {
+    issues.push('Falta un umbral para diferenciar clic de arrastre en el asesor.');
+  }
+  if (!advisorJs.includes('window.innerWidth - width - 4') || !advisorJs.includes('window.innerHeight - height - 4')) {
+    issues.push('El arrastre del asesor debe mantenerlo dentro de los limites del viewport.');
+  }
+  if (!advisorJs.includes('function clampBottom')) {
+    issues.push('Falta el clamp de posicion vertical para que el asesor no quede cortado.');
+  }
+  if (!advisorJs.includes("window.addEventListener('resize'")) {
+    issues.push('El asesor debe recalcular su posicion al cambiar el tamano de la ventana.');
+  }
+  if (!advisorJs.includes('function minimizePanel') || !advisorJs.includes("document.body.style.overflow === 'hidden'")) {
+    issues.push('El asesor debe minimizarse automaticamente al abrir el carrito o el modal de producto.');
+  }
+
+  ['function openCartDrawer', 'function closeCartDrawer', 'function renderCartDrawer', 'function addLineToCart'].forEach((token) => {
+    if (!html.includes(token)) issues.push('Funcion de carrito faltante o modificada: ' + token);
+  });
+  ['API_URL', 'GREETING', 'function sendMessage', 'PadelMPBuy'].forEach((token) => {
+    if (!advisorJs.includes(token)) issues.push('El asistente perdio una pieza clave de su funcionamiento: ' + token);
+  });
+
+  if (issues.length === 0) {
+    console.log('✓ Aviso de talle obligatorio visible (aria-live, foco, estado de error) OK');
+    console.log('✓ Asesor: posicion izquierda por defecto, arrastre, persistencia y minimizado automatico OK');
+  }
   if (issues.length === 0) {
     console.log('✓ Sincronizacion OK: products.json y index.html coinciden en los ' + productos.length + ' productos.');
     process.exit(0);
