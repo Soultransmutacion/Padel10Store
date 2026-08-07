@@ -588,13 +588,26 @@ test('collectCards adjunta la tarjeta completa cuando buscar_catalogo encuentra 
   assert.strictEqual(card.precioFormateado, '$63.000');
 });
 
-test('collectCards no adjunta tarjeta cuando buscar_catalogo devuelve varios resultados (evita ambiguedad)', function () {
+test('collectCards adjunta todas las tarjetas candidatas cuando buscar_catalogo devuelve varios resultados (la desambiguacion ocurre despues, en filterCardsByMention)', function () {
   const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
   assert.strictEqual(out.ok, true);
   assert.ok(out.resultados.length > 1);
   const cardsById = new Map();
   advisor.collectCards('buscar_catalogo', out, cardsById);
-  assert.strictEqual(cardsById.size, 0);
+  assert.strictEqual(cardsById.size, out.resultados.length);
+  assert.ok(cardsById.get('royal-padel-pollera-mallorca-negra'));
+});
+
+test('filterCardsByMention desambigua por cobertura total de tokens cuando la respuesta parafrasea el nombre', function () {
+  const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
+  assert.ok(out.resultados.length > 1);
+  const cardsById = new Map();
+  advisor.collectCards('buscar_catalogo', out, cardsById);
+  const candidatos = Array.from(cardsById.values());
+  const reply = 'Tenemos la Pollera deportiva Mallorca con short en color Negra de Royal Padel, con el talle M disponible.';
+  const filtrados = advisor.filterCardsByMention(candidatos, reply);
+  assert.strictEqual(filtrados.length, 1);
+  assert.strictEqual(filtrados[0].id, 'royal-padel-pollera-mallorca-negra');
 });
 
 test('collectCards funciona igual para filtrar_palas con un unico resultado exacto', function () {
@@ -623,12 +636,12 @@ function buildFakeClientPolleraNegra() {
         if (call === 1) {
           return Promise.resolve({
             stop_reason: 'tool_use',
-            content: [{ type: 'tool_use', id: 'toolu_1', name: 'buscar_catalogo', input: { texto: 'pollera negra de mujer' } }],
+            content: [{ type: 'tool_use', id: 'toolu_1', name: 'buscar_catalogo', input: { texto: 'pollera negra mujer' } }],
           });
         }
         return Promise.resolve({
           stop_reason: 'end_turn',
-          content: [{ type: 'text', text: 'Perfecto, tenemos la Pollera deportiva Mallorca con short - Negra de Royal Padel. El talle M esta disponible como opcion en este producto: abri la tarjeta y seleccionalo para agregarlo al carrito o comprarlo directamente. El precio es de $63.000, o $53.550 si pagas por transferencia.' }],
+          content: [{ type: 'text', text: 'Perfecto, tenemos la Pollera deportiva Mallorca con short en color Negra de Royal Padel. El talle M esta disponible como opcion en este producto: abri la tarjeta y seleccionalo para agregarlo al carrito o comprarlo directamente. El precio es de $63.000, o $53.550 si pagas por transferencia.' }],
         });
       },
     },
