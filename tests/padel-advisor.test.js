@@ -568,12 +568,99 @@ assert.ok(systemPrompt.SYSTEM_PROMPT.indexOf('TALLES') !== -1);
 assert.ok(systemPrompt.SYSTEM_PROMPT.toLowerCase().indexOf('nunca digas que un talle') !== -1);
 });
 
-const passed = results.filter(function (r) { return r.pass; });
-const failed = results.filter(function (r) { return !r.pass; });
+// --- Correccion: tarjeta ausente cuando buscar_catalogo encuentra un unico
+// producto exacto y el modelo responde sin volver a llamar a ver_producto ---
 
-console.log('Pruebas del Asesor de Palas: ' + passed.length + '/' + results.length + ' OK');
-failed.forEach(function (f) {
-console.log(' FALLO: ' + f.name + ' -> ' + f.error);
+test('collectCards adjunta la tarjeta completa cuando buscar_catalogo encuentra un unico resultado exacto (pollera negra de mujer)', function () {
+  const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra de mujer' });
+  assert.strictEqual(out.ok, true);
+  assert.strictEqual(out.resultados.length, 1);
+  assert.strictEqual(out.resultados[0].id, 'royal-padel-pollera-mallorca-negra');
+
+  const cardsById = new Map();
+  advisor.collectCards('buscar_catalogo', out, cardsById);
+  assert.strictEqual(cardsById.size, 1);
+  const card = cardsById.get('royal-padel-pollera-mallorca-negra');
+  assert.ok(card, 'la tarjeta completa debe adjuntarse sin depender de ver_producto');
+  assert.strictEqual(card.nombre, polleraNegra.nombre);
+  assert.ok(card.imagen);
+  assert.deepStrictEqual(card.talles, ['S', 'M', 'L', 'XL']);
+  assert.strictEqual(card.precioFormateado, '$63.000');
 });
 
-process.exit(failed.length > 0 ? 1 : 0);
+test('collectCards no adjunta tarjeta cuando buscar_catalogo devuelve varios resultados (evita ambiguedad)', function () {
+  const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
+  assert.strictEqual(out.ok, true);
+  assert.ok(out.resultados.length > 1);
+  const cardsById = new Map();
+  advisor.collectCards('buscar_catalogo', out, cardsById);
+  assert.strictEqual(cardsById.size, 0);
+});
+
+test('collectCards funciona igual para filtrar_palas con un unico resultado exacto', function () {
+  const crossBlack = all.find(function (p) { return p.id === 'royal-padel-cross-black-26'; });
+  const out = { ok: true, resultados: [catalog.toSummary(crossBlack)], total: 1 };
+  const cardsById = new Map();
+  advisor.collectCards('filtrar_palas', out, cardsById);
+  assert.strictEqual(cardsById.size, 1);
+  assert.ok(cardsById.get(crossBlack.id));
+});
+
+function testAsync(name, fn) {
+  return fn().then(function () {
+    results.push({ name: name, pass: true });
+  }).catch(function (e) {
+    results.push({ name: name, pass: false, error: e.message });
+  });
+}
+
+function buildFakeClientPolleraNegra() {
+  let call = 0;
+  return {
+    messages: {
+      create: function () {
+        call += 1;
+        if (call === 1) {
+          return Promise.resolve({
+            stop_reason: 'tool_use',
+            content: [{ type: 'tool_use', id: 'toolu_1', name: 'buscar_catalogo', input: { texto: 'pollera negra de mujer' } }],
+          });
+        }
+        return Promise.resolve({
+          stop_reason: 'end_turn',
+          content: [{ type: 'text', text: 'Perfecto, tenemos la Pollera deportiva Mallorca con short - Negra de Royal Padel. El talle M esta disponible como opcion en este producto: abri la tarjeta y seleccionalo para agregarlo al carrito o comprarlo directamente. El precio es de $63.000, o $53.550 si pagas por transferencia.' }],
+        });
+      },
+    },
+  };
+}
+
+function runAsyncTests() {
+  return testAsync(
+    'runAdvisor: la consulta real Busco una pollera negra de mujer, talle M. devuelve exactamente una tarjeta con el ID correcto',
+    function () {
+      return advisor
+        .runAdvisor({ message: 'Busco una pollera negra de mujer, talle M.' }, buildFakeClientPolleraNegra())
+        .then(function (result) {
+          assert.strictEqual(result.cards.length, 1);
+          assert.strictEqual(result.cards[0].id, 'royal-padel-pollera-mallorca-negra');
+          assert.strictEqual(result.cards[0].precioFormateado, '$63.000');
+          assert.strictEqual(result.cards[0].precioTransferenciaFormateado, '$53.550');
+          assert.deepStrictEqual(result.cards[0].talles, ['S', 'M', 'L', 'XL']);
+          assert.ok(result.cards[0].imagen);
+          assert.ok(/talle m/i.test(result.reply));
+          const json = JSON.stringify(result.cards[0]).toLowerCase();
+          assert.ok(json.indexOf('url_original') === -1);
+        });
+    }
+  );
+}
+runAsyncTests().then(function () {
+  const passed2 = results.filter(function (r) { return r.pass; });
+  const failed2 = results.filter(function (r) { return !r.pass; });
+  console.log('Pruebas del Asesor de Palas: ' + passed2.length + '/' + results.length + ' OK');
+  failed2.forEach(function (f) {
+    console.log(' FALLO: ' + f.name + ' -> ' + f.error);
+  });
+  process.exit(failed2.length > 0 ? 1 : 0);
+});
