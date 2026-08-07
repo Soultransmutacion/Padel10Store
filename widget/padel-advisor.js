@@ -297,6 +297,9 @@ if (card.id === MP_PURCHASABLE_PRODUCT_ID) {
 buyNowHtml = '<button type="button" class="pa-card-btn pa-card-btn-buy" data-mp-buy-button data-product-id="' + escapeHtml(card.id) + '">Comprar ahora</button>';
 }
 
+var tieneTalles = Array.isArray(card.talles) && card.talles.length > 0;
+var accionTexto = tieneTalles ? 'Elegir talle' : 'Ver producto';
+
 wrap.innerHTML =
 '<div class="pa-card-img">' + imgHtml + '</div>' +
 '<div class="pa-card-body">' +
@@ -305,7 +308,7 @@ wrap.innerHTML =
 priceHtml +
 featuresHtml +
 '<div class="pa-card-actions">' +
-'<button type="button" class="pa-card-btn pa-card-btn-primary" data-action="ver">Ver producto</button>' +
+'<button type="button" class="pa-card-btn pa-card-btn-primary" data-action="ver">' + escapeHtml(accionTexto) + '</button>' +
 '<a class="pa-card-btn pa-card-btn-secondary" href="' + escapeHtml(waLink) + '" target="_blank" rel="noopener">Consultar por WhatsApp</a>' +
 buyNowHtml +
 '</div>' +
@@ -320,14 +323,20 @@ if (imgBox) imgBox.classList.add('pa-card-img-empty');
 });
 }
 
-var verBtn = wrap.querySelector('[data-action="ver"]');
-verBtn.addEventListener('click', function () {
+function openProductModal() {
 var storeCard = findStoreCard(card.nombre);
 if (storeCard && typeof window.openModal === 'function') {
 window.openModal(storeCard);
 } else {
 window.open(waLink, '_blank');
 }
+}
+
+wrap.classList.add('pa-card-clickable');
+wrap.addEventListener('click', function (e) {
+if (e.target.closest('[data-mp-buy-button]')) return;
+if (e.target.closest('.pa-card-btn-secondary')) return;
+openProductModal();
 });
 
 messagesEl.appendChild(wrap);

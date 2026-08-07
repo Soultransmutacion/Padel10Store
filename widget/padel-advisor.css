@@ -234,6 +234,10 @@ font-size: 22px;
 opacity: 0.5;
 }
 
+.pa-card-clickable {
+cursor: pointer;
+}
+
 .pa-card-body {
 flex: 1;
 min-width: 0;
