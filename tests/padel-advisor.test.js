@@ -502,6 +502,71 @@ const modeloJson = JSON.stringify(forModel).toLowerCase();
 assert.ok(modeloJson.indexOf('wa.me') === -1 && modeloJson.indexOf('?text=') === -1 && modeloJson.indexOf('341') === -1);
 });
 
+// --- Correcciones: imagen local del asesor y talles reales (ver bug report) ---
+
+const polleraNegra = all.find(function (p) { return p.id === 'royal-padel-pollera-mallorca-negra'; });
+
+test('resolveImageUrl nunca antepone un dominio fijo a una ruta local', function () {
+assert.ok(polleraNegra, 'debe existir el producto de prueba en products.json');
+const resolved = catalog.resolveImageUrl(polleraNegra);
+assert.strictEqual(resolved, polleraNegra.imagen);
+assert.ok(resolved.indexOf('http') !== 0, 'no debe convertirse en una URL absoluta en el servidor');
+assert.ok(resolved.indexOf('github.io') === -1 && resolved.indexOf('vercel.app') === -1, 'no debe contener un dominio fijo');
+});
+
+test('resolveImageUrl conserva sin cambios una URL externa ya absoluta (compatibilidad con productos legado)', function () {
+const resolved = catalog.resolveImageUrl({ tieneImagen: true, imagen: 'https://ejemplo-legado.com/foto.jpg' });
+assert.strictEqual(resolved, 'https://ejemplo-legado.com/foto.jpg');
+});
+
+test('resolveImageUrl devuelve null si el producto no tiene imagen', function () {
+assert.strictEqual(catalog.resolveImageUrl({ tieneImagen: false, imagen: null }), null);
+});
+
+test('getValidatedTalles filtra valores invalidos y devuelve null si no queda ninguno valido', function () {
+assert.deepStrictEqual(catalog.getValidatedTalles({ talles: ['S', '', 42, 'M', '   '] }), ['S', 'M']);
+assert.strictEqual(catalog.getValidatedTalles({ talles: [] }), null);
+assert.strictEqual(catalog.getValidatedTalles({ talles: ['', '   '] }), null);
+assert.strictEqual(catalog.getValidatedTalles({}), null);
+assert.strictEqual(catalog.getValidatedTalles({ talles: 'M' }), null);
+});
+
+test('toCard, toSummary y toComparisonEntry exponen talles reales del producto', function () {
+const card = catalog.toCard(polleraNegra);
+assert.deepStrictEqual(card.talles, ['S', 'M', 'L', 'XL']);
+const summary = catalog.toSummary(polleraNegra);
+assert.deepStrictEqual(summary.talles, ['S', 'M', 'L', 'XL']);
+const comparado = catalog.compareProducts([polleraNegra.id, 'royal-padel-cross-black-26']);
+const entry = comparado.productos.find(function (p) { return p.id === polleraNegra.id; });
+assert.deepStrictEqual(entry.talles, ['S', 'M', 'L', 'XL']);
+});
+
+test('un producto sin campo talles expone talles: null (sin cambiar su comportamiento previo)', function () {
+const crossBlack = all.find(function (p) { return p.id === 'royal-padel-cross-black-26'; });
+assert.ok(crossBlack, 'debe existir Cross Black 26');
+const card = catalog.toCard(crossBlack);
+assert.strictEqual(card.talles, null);
+});
+
+test('ver_producto expone talles al modelo sin filtrar datos de contacto (telefono, whatsapp, link)', function () {
+const out = tools.executeTool('ver_producto', { id: polleraNegra.id });
+assert.strictEqual(out.ok, true);
+assert.deepStrictEqual(out.productoParaModelo.talles, ['S', 'M', 'L', 'XL']);
+const keys = Object.keys(out.productoParaModelo);
+assert.ok(keys.indexOf('whatsapp') === -1);
+assert.ok(keys.indexOf('numero') === -1);
+assert.ok(keys.indexOf('link') === -1);
+assert.ok(keys.indexOf('mensaje') === -1);
+assert.ok(keys.indexOf('url_original') === -1);
+const modeloJson = JSON.stringify(out.productoParaModelo);
+assert.ok(modeloJson.indexOf('wa.me') === -1 && modeloJson.indexOf('341') === -1);
+});
+
+test('el system prompt instruye no decir que un talle real no esta confirmado', function () {
+const systemPrompt = require('../lib/padel-advisor-system-prompt');
+assert.ok(systemPrompt.SYSTEM_PROMPT.indexOf('TALLES') !== -1);
+assert.ok(systemPrompt.SYSTEM_PROMPT.toLowerCase().indexOf('nunca digas que un talle') !== -1);
+});
 
 const passed = results.filter(function (r) { return r.pass; });
 const failed = results.filter(function (r) { return !r.pass; });

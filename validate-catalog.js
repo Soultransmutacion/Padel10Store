@@ -234,6 +234,53 @@ function validate() {
     console.log('✓ Aviso de talle obligatorio visible (aria-live, foco, estado de error) OK');
     console.log('✓ Asesor: posicion izquierda por defecto, arrastre, persistencia y minimizado automatico OK');
   }
+  // --- Correcciones: imagen local del asesor y talles reales expuestos al modelo ---
+  const catalogJsPath = path.join(ROOT, 'lib', 'padel-catalog.js');
+  const catalogJs = fs.readFileSync(catalogJsPath, 'utf8');
+  const toolsJsPath = path.join(ROOT, 'lib', 'padel-advisor-tools.js');
+  const toolsJs = fs.readFileSync(toolsJsPath, 'utf8');
+  const systemPromptPath = path.join(ROOT, 'lib', 'padel-advisor-system-prompt.js');
+  const systemPromptJs = fs.readFileSync(systemPromptPath, 'utf8');
+
+  if (catalogJs.includes('github.io') || catalogJs.includes('vercel.app') || catalogJs.includes('SITE_BASE_URL')) {
+    issues.push('lib/padel-catalog.js no debe anteponer un dominio fijo (Vercel o GitHub Pages) a las rutas de imagen.');
+  }
+  if (!catalogJs.includes('function getValidatedTalles')) {
+    issues.push('Falta lib/padel-catalog.js: getValidatedTalles para validar el arreglo de talles del producto.');
+  }
+  if (!catalogJs.includes('talles: getValidatedTalles(product)')) {
+    issues.push('El catalogo debe exponer talles validados en toSummary/toCard/toComparisonEntry.');
+  }
+  if (!toolsJs.includes('talles: card.talles')) {
+    issues.push('lib/padel-advisor-tools.js debe exponer talles al modelo en buildProductoParaModelo.');
+  }
+  if (!systemPromptJs.includes("'TALLES'") || systemPromptJs.toLowerCase().indexOf('nunca digas que un talle') === -1) {
+    issues.push('El system prompt debe instruir no decir que un talle presente en talles no esta confirmado.');
+  }
+  if (!advisorJs.includes('function resolveCardImageUrl') || !advisorJs.includes('document.baseURI')) {
+    issues.push('widget/padel-advisor.js debe resolver la imagen de la tarjeta contra document.baseURI, sin dominio fijo.');
+  }
+  if (!advisorJs.includes('javascript|data|vbscript|file')) {
+    issues.push('El resolver de imagen del asesor debe rechazar explicitamente esquemas peligrosos (javascript:, data:, etc).');
+  }
+  if (!advisorJs.includes("var accionTexto = tieneTalles ? 'Elegir talle' : 'Ver producto';")) {
+    issues.push('El boton de la tarjeta del asesor debe decir Elegir talle cuando el producto tiene talles.');
+  }
+  if (!advisorJs.includes("wrap.classList.add('pa-card-clickable')") || !advisorJs.includes("wrap.addEventListener('click'")) {
+    issues.push('Toda la tarjeta del asesor (no solo el boton) debe abrir el modal del producto al hacer click.');
+  }
+  if (!advisorJs.includes("imgEl.addEventListener('error'")) {
+    issues.push('Falta el fallback visual cuando una imagen de la tarjeta del asesor no puede cargarse.');
+  }
+  if (!advisorCss.includes('.pa-card-img-empty') || !advisorCss.includes('.pa-card-clickable')) {
+    issues.push('Falta el estilo CSS para el fallback de imagen o el cursor de tarjeta clickeable del asesor.');
+  }
+  if (issues.length === 0) {
+    console.log('✓ Imagen local del asesor: sin dominio fijo, resuelta con document.baseURI y con fallback visual OK');
+    console.log('✓ Talles reales expuestos al asesor (catalogo, herramientas y system prompt) OK');
+    console.log('✓ Tarjeta del asesor: boton Elegir talle y tarjeta completa clickeable OK');
+  }
+
   if (issues.length === 0) {
     console.log('✓ Sincronizacion OK: products.json y index.html coinciden en los ' + productos.length + ' productos.');
     process.exit(0);
