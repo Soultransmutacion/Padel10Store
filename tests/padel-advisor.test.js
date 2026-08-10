@@ -588,26 +588,81 @@ test('collectCards adjunta la tarjeta completa cuando buscar_catalogo encuentra 
   assert.strictEqual(card.precioFormateado, '$63.000');
 });
 
-test('collectCards adjunta todas las tarjetas candidatas cuando buscar_catalogo devuelve varios resultados (la desambiguacion ocurre despues, en filterCardsByMention)', function () {
-  const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
-  assert.strictEqual(out.ok, true);
-  assert.ok(out.resultados.length > 1);
-  const cardsById = new Map();
-  advisor.collectCards('buscar_catalogo', out, cardsById);
-  assert.strictEqual(cardsById.size, out.resultados.length);
-  assert.ok(cardsById.get('royal-padel-pollera-mallorca-negra'));
+test('collectCards no adjunta ninguna tarjeta cuando buscar_catalogo devuelve varios resultados sin una seleccion explicita por ID', function () {
+ const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
+ assert.strictEqual(out.ok, true);
+ assert.ok(out.resultados.length > 1, 'la busqueda debe ser ambigua para este caso de prueba');
+
+ const cardsById = new Map();
+ const ctx = advisor.createCardContext();
+ advisor.collectCards('buscar_catalogo', out, cardsById, ctx);
+
+ assert.strictEqual(cardsById.size, 0, 'ninguna tarjeta debe adjuntarse solo por aparecer en una busqueda con varios candidatos');
+ assert.ok(ctx.searchResultIds.has('royal-padel-pollera-mallorca-negra'), 'el ID si debe quedar registrado como resultado permitido');
 });
 
-test('filterCardsByMention desambigua por cobertura total de tokens cuando la respuesta parafrasea el nombre', function () {
-  const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
-  assert.ok(out.resultados.length > 1);
-  const cardsById = new Map();
-  advisor.collectCards('buscar_catalogo', out, cardsById);
-  const candidatos = Array.from(cardsById.values());
-  const reply = 'Tenemos la Pollera deportiva Mallorca con short en color Negra de Royal Padel, con el talle M disponible.';
-  const filtrados = advisor.filterCardsByMention(candidatos, reply);
-  assert.strictEqual(filtrados.length, 1);
-  assert.strictEqual(filtrados[0].id, 'royal-padel-pollera-mallorca-negra');
+test('collectCards adjunta unicamente el ID seleccionado explicitamente via ver_producto tras una busqueda con varios candidatos, sin arrastrar los demas', function () {
+ const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
+ assert.ok(out.resultados.length > 1);
+ const otroCandidato = out.resultados.find(function (r) { return r.id !== 'royal-padel-pollera-mallorca-negra'; });
+ assert.ok(otroCandidato, 'debe existir al menos otro candidato ademas de la pollera negra');
+
+ const cardsById = new Map();
+ const ctx = advisor.createCardContext();
+ advisor.collectCards('buscar_catalogo', out, cardsById, ctx);
+ assert.strictEqual(cardsById.size, 0);
+
+ const verOut = tools.executeTool('ver_producto', { id: 'royal-padel-pollera-mallorca-negra' });
+ advisor.collectCards('ver_producto', verOut, cardsById, ctx);
+
+ assert.strictEqual(cardsById.size, 1, 'solo debe adjuntarse la tarjeta explicitamente seleccionada por ID');
+ assert.ok(cardsById.get('royal-padel-pollera-mallorca-negra'));
+ assert.strictEqual(cardsById.has(otroCandidato.id), false, 'no debe arrastrarse ningun otro candidato de la misma busqueda');
+});
+
+test('collectCards rechaza un ID de ver_producto que no pertenece a los resultados permitidos de una busqueda ambigua, aunque exista en el catalogo', function () {
+ const out = tools.executeTool('buscar_catalogo', { texto: 'pollera negra mujer' });
+ assert.ok(out.resultados.length > 1);
+
+ const cardsById = new Map();
+ const ctx = advisor.createCardContext();
+ advisor.collectCards('buscar_catalogo', out, cardsById, ctx);
+
+ const crossBlack = all.find(function (p) { return p.id === 'royal-padel-cross-black-26'; });
+ assert.ok(crossBlack, 'el producto ajeno usado en esta prueba debe existir realmente en el catalogo');
+ const verOutAjeno = tools.executeTool('ver_producto', { id: crossBlack.id });
+ assert.strictEqual(verOutAjeno.ok, true);
+ advisor.collectCards('ver_producto', verOutAjeno, cardsById, ctx);
+
+ assert.strictEqual(cardsById.size, 0, 'un ID valido en el catalogo pero ajeno a la busqueda ambigua de este turno no debe adjuntarse');
+});
+
+test('collectCards rechaza un ID de ver_producto inexistente en el catalogo', function () {
+ const cardsById = new Map();
+ const ctx = advisor.createCardContext();
+ const verOut = tools.executeTool('ver_producto', { id: 'id-inventado-999' });
+ assert.strictEqual(verOut.ok, false);
+ advisor.collectCards('ver_producto', verOut, cardsById, ctx);
+ assert.strictEqual(cardsById.size, 0);
+});
+
+test('collectCards con ver_producto directo (sin busqueda previa en este turno) adjunta la tarjeta normalmente', function () {
+ const cardsById = new Map();
+ const ctx = advisor.createCardContext();
+ const crossBlack = all.find(function (p) { return p.id === 'royal-padel-cross-black-26'; });
+ const verOut = tools.executeTool('ver_producto', { id: crossBlack.id });
+ advisor.collectCards('ver_producto', verOut, cardsById, ctx);
+ assert.strictEqual(cardsById.size, 1);
+ assert.ok(cardsById.get(crossBlack.id));
+});
+
+test('filterCardsByMention (utilidad defensiva opcional, ya no decide el flujo principal) desambigua por cobertura total de tokens cuando la respuesta parafrasea el nombre', function () {
+ const cardA = { id: 'royal-padel-pollera-mallorca-negra', nombre: 'Pollera deportiva Mallorca con short - Negra' };
+ const cardB = { id: 'otra-pollera-negra-de-mujer', nombre: 'Pollera basica de mujer - Negra' };
+ const reply = 'Tenemos la Pollera deportiva Mallorca con short en color Negra de Royal Padel, con el talle M disponible.';
+ const filtrados = advisor.filterCardsByMention([cardA, cardB], reply);
+ assert.strictEqual(filtrados.length, 1);
+ assert.strictEqual(filtrados[0].id, 'royal-padel-pollera-mallorca-negra');
 });
 
 test('collectCards funciona igual para filtrar_palas con un unico resultado exacto', function () {
@@ -639,6 +694,12 @@ function buildFakeClientPolleraNegra() {
             content: [{ type: 'tool_use', id: 'toolu_1', name: 'buscar_catalogo', input: { texto: 'pollera negra mujer' } }],
           });
         }
+        if (call === 2) {
+          return Promise.resolve({
+            stop_reason: 'tool_use',
+            content: [{ type: 'tool_use', id: 'toolu_2', name: 'ver_producto', input: { id: 'royal-padel-pollera-mallorca-negra' } }],
+          });
+        }
         return Promise.resolve({
           stop_reason: 'end_turn',
           content: [{ type: 'text', text: 'Perfecto, tenemos la Pollera deportiva Mallorca con short en color Negra de Royal Padel. El talle M esta disponible como opcion en este producto: abri la tarjeta y seleccionalo para agregarlo al carrito o comprarlo directamente. El precio es de $63.000, o $53.550 si pagas por transferencia.' }],
@@ -646,6 +707,38 @@ function buildFakeClientPolleraNegra() {
       },
     },
   };
+}
+
+// Mismo flujo estructurado (busqueda ambigua + seleccion explicita por ID),
+// pero el texto final es una parafrasis corta que NO repite el nombre
+// comercial completo del producto. Antes de la correccion, esto hubiera
+// hecho que filterCardsByMention rechazara la tarjeta (bug real); ahora la
+// tarjeta se decide por el ID seleccionado, no por las palabras del texto.
+function buildFakeClientPolleraNegraParafrasis() {
+ let call = 0;
+ return {
+ messages: {
+ create: function () {
+ call += 1;
+ if (call === 1) {
+ return Promise.resolve({
+ stop_reason: 'tool_use',
+ content: [{ type: 'tool_use', id: 'toolu_1', name: 'buscar_catalogo', input: { texto: 'pollera negra mujer' } }],
+ });
+ }
+ if (call === 2) {
+ return Promise.resolve({
+ stop_reason: 'tool_use',
+ content: [{ type: 'tool_use', id: 'toolu_2', name: 'ver_producto', input: { id: 'royal-padel-pollera-mallorca-negra' } }],
+ });
+ }
+ return Promise.resolve({
+ stop_reason: 'end_turn',
+ content: [{ type: 'text', text: 'La pollera negra que buscabas ya esta lista: elegi el talle M desde la tarjeta para sumarla al carrito.' }],
+ });
+ },
+ },
+ };
 }
 
 function runAsyncTests() {
@@ -666,7 +759,20 @@ function runAsyncTests() {
           assert.ok(json.indexOf('url_original') === -1);
         });
     }
-  );
+  ).then(function () {
+    return testAsync(
+      'runAdvisor: aunque la respuesta final sea una parafrasis corta sin el nombre comercial completo, la tarjeta sigue siendo exactamente una y con el ID correcto (bug real corregido)',
+      function () {
+        return advisor
+          .runAdvisor({ message: 'Busco una pollera negra de mujer, talle M.' }, buildFakeClientPolleraNegraParafrasis())
+          .then(function (result) {
+            assert.strictEqual(result.cards.length, 1, 'la parafrasis no debe hacer que la tarjeta desaparezca');
+            assert.strictEqual(result.cards[0].id, 'royal-padel-pollera-mallorca-negra');
+            assert.deepStrictEqual(result.cards[0].talles, ['S', 'M', 'L', 'XL']);
+          });
+      }
+    );
+  });
 }
 runAsyncTests().then(function () {
   const passed2 = results.filter(function (r) { return r.pass; });
