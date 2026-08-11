@@ -674,6 +674,41 @@ test('collectCards funciona igual para filtrar_palas con un unico resultado exac
   assert.ok(cardsById.get(crossBlack.id));
 });
 
+test('deterministicSearch: consulta exacta especifica resuelve un unico producto real sin depender de ninguna tool call', function () {
+  const resultados = catalog.deterministicSearch('Busco una pollera negra de mujer, talle M.');
+  assert.strictEqual(resultados.length, 1);
+  assert.strictEqual(resultados[0].id, 'royal-padel-pollera-mallorca-negra');
+});
+
+test('deterministicSearch: consulta ambigua sin color especifico devuelve varios candidatos y no elige ninguno', function () {
+  const resultados = catalog.deterministicSearch('Busco una pollera de mujer');
+  assert.ok(resultados.length > 1, 'debe haber mas de un candidato para esta consulta ambigua');
+  assert.ok(resultados.some(function (r) { return r.id === 'royal-padel-pollera-mallorca-negra'; }));
+});
+
+test('deterministicSearch: consulta generica o saludo no arrastra ningun producto', function () {
+  assert.deepStrictEqual(catalog.deterministicSearch('hola'), []);
+  assert.deepStrictEqual(catalog.deterministicSearch('busco una pala'), []);
+});
+
+test('collectCards + deterministicSearch: rechaza un ID ajeno a los resultados registrados por la busqueda determinista del servidor', function () {
+  const ctx = advisor.createCardContext();
+  const cardsById = new Map();
+  catalog.deterministicSearch('Busco una pollera negra de mujer, talle M.').forEach(function (r) { ctx.searchResultIds.add(r.id); });
+  const ajeno = tools.executeTool('ver_producto', { id: 'royal-padel-cross-black-26' });
+  advisor.collectCards('ver_producto', ajeno, cardsById, ctx);
+  assert.strictEqual(cardsById.size, 0, 'un producto valido pero ajeno a la busqueda determinista de este turno no debe adjuntarse');
+});
+
+test('collectCards + deterministicSearch: rechaza un ID inexistente en el catalogo aunque haya resultados registrados', function () {
+  const ctx = advisor.createCardContext();
+  const cardsById = new Map();
+  catalog.deterministicSearch('Busco una pollera negra de mujer, talle M.').forEach(function (r) { ctx.searchResultIds.add(r.id); });
+  const inventado = tools.executeTool('ver_producto', { id: 'id-que-no-existe-456' });
+  advisor.collectCards('ver_producto', inventado, cardsById, ctx);
+  assert.strictEqual(cardsById.size, 0);
+});
+
 function testAsync(name, fn) {
   return fn().then(function () {
     results.push({ name: name, pass: true });
@@ -774,7 +809,102 @@ function runAsyncTests() {
     );
   });
 }
-runAsyncTests().then(function () {
+function buildFakeClientNoToolCall() {
+  return {
+    messages: {
+      create: function () {
+        return Promise.resolve({
+          stop_reason: 'end_turn',
+          content: [{ type: 'text', text: 'Tenemos la pollera negra Mallorca en talle M, ideal para lo que buscas.' }],
+        });
+      },
+    },
+  };
+}
+
+function buildFakeClientAmbiguaSinEleccion() {
+  return {
+    messages: {
+      create: function () {
+        return Promise.resolve({
+          stop_reason: 'end_turn',
+          content: [{ type: 'text', text: 'Que color preferis: negra, blanca o azul?' }],
+        });
+      },
+    },
+  };
+}
+
+function buildFakeClientSaludo() {
+  return {
+    messages: {
+      create: function () {
+        return Promise.resolve({
+          stop_reason: 'end_turn',
+          content: [{ type: 'text', text: 'Hola! En que te puedo ayudar hoy?' }],
+        });
+      },
+    },
+  };
+}
+
+function runMoreAsyncTests() {
+  return testAsync(
+    'runAdvisor: consulta exacta SIN ninguna tool call igual adjunta la tarjeta correcta (busqueda determinista de servidor)',
+    function () {
+      return advisor
+        .runAdvisor({ message: 'Busco una pollera negra de mujer, talle M.' }, buildFakeClientNoToolCall())
+        .then(function (result) {
+          assert.strictEqual(result.cards.length, 1);
+          assert.strictEqual(result.cards[0].id, 'royal-padel-pollera-mallorca-negra');
+          assert.strictEqual(result.cards[0].precioFormateado, '$63.000');
+          assert.deepStrictEqual(result.cards[0].talles, ['S', 'M', 'L', 'XL']);
+          assert.ok(result.reply.toLowerCase().indexOf('wa.me') === -1);
+          assert.ok(result.reply.toLowerCase().indexOf('http') === -1);
+          const cardJson = JSON.stringify(result.cards[0]).toLowerCase();
+          assert.ok(cardJson.indexOf('url_original') === -1);
+          assert.ok(cardJson.indexOf('prompt') === -1);
+          assert.ok(cardJson.indexOf('api_key') === -1 && cardJson.indexOf('apikey') === -1);
+        });
+    }
+  ).then(function () {
+    return testAsync(
+      'runAdvisor: consulta exacta CON tool call devuelve la misma tarjeta sin duplicarla',
+      function () {
+        return advisor
+          .runAdvisor({ message: 'Busco una pollera negra de mujer, talle M.' }, buildFakeClientPolleraNegra())
+          .then(function (result) {
+            assert.strictEqual(result.cards.length, 1, 'no debe haber tarjetas duplicadas entre la busqueda determinista y la tool call');
+            assert.strictEqual(result.cards[0].id, 'royal-padel-pollera-mallorca-negra');
+          });
+      }
+    );
+  }).then(function () {
+    return testAsync(
+      'runAdvisor: consulta ambigua (varios candidatos) sin tool call no adjunta ninguna tarjeta arbitraria',
+      function () {
+        return advisor
+          .runAdvisor({ message: 'Busco una pollera de mujer' }, buildFakeClientAmbiguaSinEleccion())
+          .then(function (result) {
+            assert.strictEqual(result.cards.length, 0, 'una consulta ambigua no debe elegir ninguna tarjeta arbitrariamente');
+          });
+      }
+    );
+  }).then(function () {
+    return testAsync(
+      'runAdvisor: consulta generica/saludo no adjunta ningun producto al azar',
+      function () {
+        return advisor
+          .runAdvisor({ message: 'hola' }, buildFakeClientSaludo())
+          .then(function (result) {
+            assert.strictEqual(result.cards.length, 0);
+          });
+      }
+    );
+  });
+}
+
+runAsyncTests().then(runMoreAsyncTests).then(function () {
   const passed2 = results.filter(function (r) { return r.pass; });
   const failed2 = results.filter(function (r) { return !r.pass; });
   console.log('Pruebas del Asesor de Palas: ' + passed2.length + '/' + results.length + ' OK');
