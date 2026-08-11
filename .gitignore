@@ -1,2 +1,7 @@
 node_modules/
 package-lock.json
+
+# Variables de entorno / credenciales
+.env
+.env.*
+!.env.example
