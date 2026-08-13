@@ -223,8 +223,23 @@ function validate() {
     issues.push('El asesor debe minimizarse automaticamente al abrir el carrito o el modal de producto.');
   }
 
-  ['function openCartDrawer', 'function closeCartDrawer', 'function renderCartDrawer', 'function addLineToCart'].forEach((token) => {
-    if (!html.includes(token)) issues.push('Funcion de carrito faltante o modificada: ' + token);
+  // Fase 1 (4/5): el carrito real y unico (contador, drawer, agregar/quitar/
+  // cambiar cantidad, persistencia) vive en lib/padel-cart.js + widget/padel-cart.js
+  // (window.PadelCart). index.html ya no debe tener su propia implementacion
+  // duplicada del carrito: debe cargar ambos scripts y usar window.PadelCart.
+  if (!html.includes('src="lib/padel-cart.js"') || !html.includes('src="widget/padel-cart.js"')) {
+    issues.push('index.html debe cargar lib/padel-cart.js y widget/padel-cart.js para usar el carrito unico window.PadelCart.');
+  }
+  if (!html.includes('window.PadelCart.addItem(')) {
+    issues.push('El boton Agregar al carrito de index.html debe llamar a window.PadelCart.addItem.');
+  }
+  ['var cartLines=', 'function addLineToCart', 'function findCartLine', 'function changeLineQty', 'function removeCartLine', 'function renderCartDrawer', 'function openCartDrawer', 'function closeCartDrawer', 'function updateCartBadge'].forEach((token) => {
+    if (html.includes(token)) issues.push('index.html no debe tener una implementacion de carrito duplicada (encontrado: ' + token + '). El carrito unico vive en widget/padel-cart.js.');
+  });
+  const cartWidgetJsPath = path.join(ROOT, 'widget', 'padel-cart.js');
+  const cartWidgetJs = fs.readFileSync(cartWidgetJsPath, 'utf8');
+  ['function addItem', 'function removeItem', 'function changeQuantity', 'function setQuantity', 'function openDrawer', 'function closeDrawer', 'function renderDrawer'].forEach((token) => {
+    if (!cartWidgetJs.includes(token)) issues.push('widget/padel-cart.js perdio una funcion clave del carrito: ' + token);
   });
   ['API_URL', 'GREETING', 'function sendMessage', 'PadelMPBuy'].forEach((token) => {
     if (!advisorJs.includes(token)) issues.push('El asistente perdio una pieza clave de su funcionamiento: ' + token);
