@@ -15,7 +15,6 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "jsdom": "^30.0.1"
+    "jsdom": "27.4.0"
   }
 }
-
