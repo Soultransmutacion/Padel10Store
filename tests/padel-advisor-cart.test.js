@@ -354,6 +354,32 @@ function buildFakeClientAgregarPorPosicion() {
   };
 }
 
+function buildFakeClientAgregarPorEse() {
+  // "Ese" y "esa" se mapean al mismo valor cerrado referenciaCriterio: 'esa'
+  // (ver lib/padel-advisor-system-prompt.js, seccion CARRITO): esta prueba
+  // simula lo que hace el modelo real cuando el cliente dice "ese" en vez de
+  // "esa", para confirmar que el runAdvisor completo sigue resolviendo la
+  // referencia de forma deterministica.
+  let call = 0;
+  return {
+    messages: {
+      create: function () {
+        call += 1;
+        if (call === 1) {
+          return Promise.resolve({
+            stop_reason: 'tool_use',
+            content: [{ type: 'tool_use', id: 'toolu_1', name: 'agregar_al_carrito', input: { referenciaCriterio: 'esa' } }],
+          });
+        }
+        return Promise.resolve({
+          stop_reason: 'end_turn',
+          content: [{ type: 'text', text: 'Listo, agregue el Cross Black 26 a tu carrito.' }],
+        });
+      },
+    },
+  };
+}
+
 function buildFakeClientVerCarrito() {
   let call = 0;
   return {
@@ -391,6 +417,20 @@ function runAsyncTests() {
         });
     }
   )
+    .then(function () {
+      return testAsync(
+        'runAdvisor: "agregame ese" (referencia con "ese") resuelve al mismo unico producto ofrecido que "esa"',
+        function () {
+          return advisor
+            .runAdvisor({ message: 'Agregame ese.', ofrecidos: [PALA_ID] }, buildFakeClientAgregarPorEse())
+            .then(function (result) {
+              assert.strictEqual(result.acciones.length, 1);
+              assert.strictEqual(result.acciones[0].tipo, 'agregar_al_carrito');
+              assert.strictEqual(result.acciones[0].productId, PALA_ID);
+            });
+        }
+      );
+    })
     .then(function () {
       return testAsync('runAdvisor: ver_carrito usa el carrito real enviado por el cliente, no inventa un total', function () {
         return advisor

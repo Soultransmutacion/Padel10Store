@@ -1901,8 +1901,11 @@ var talleButtonsEl=document.getElementById('modalTalleButtons');
 var talleMsgEl=document.getElementById('modalTalleMsg');
 var galleryImages=[],galleryIndex=0,currentProduct=null;
 var PURCHASABLE_PRODUCT_IDS=['royal-padel-cross-black-26'];
+// window.CATALOG lo carga lib/padel-cart.js (defer, mas abajo en este
+// documento) con el mismo fetch('products.json') que ya usaba este script:
+// una sola carga del catalogo compartida por el modal y por window.PadelCart,
+// en vez de dos fetches identicos en paralelo.
 window.CATALOG=window.CATALOG||{};
-fetch('products.json').then(function(r){return r.json();}).then(function(data){var list=(data&&data.productos)||[];list.forEach(function(p){if(p&&p.id)window.CATALOG[p.id]=p;});}).catch(function(){});
 function renderGalleryImage(){if(!galleryImages.length)return;imgEl.src=galleryImages[galleryIndex];imgEl.alt=nameEl.textContent;if(galleryDotsEl){Array.prototype.forEach.call(galleryDotsEl.children,function(dot,idx){dot.classList.toggle('active',idx===galleryIndex);});}}
 function setupGallery(product){var imagenes=(product&&Array.isArray(product.imagenes)&&product.imagenes.length)?product.imagenes.slice():((product&&product.imagen)?[product.imagen]:null);if(!imagenes||!imagenes.length){galleryImages=[];galleryIndex=0;if(galleryPrevBtn)galleryPrevBtn.hidden=true;if(galleryNextBtn)galleryNextBtn.hidden=true;if(galleryDotsEl)galleryDotsEl.innerHTML='';return;}galleryImages=imagenes;galleryIndex=0;renderGalleryImage();var multi=galleryImages.length>1;if(galleryPrevBtn)galleryPrevBtn.hidden=!multi;if(galleryNextBtn)galleryNextBtn.hidden=!multi;if(galleryDotsEl){galleryDotsEl.innerHTML='';if(multi){galleryImages.forEach(function(_,idx){var dot=document.createElement('span');dot.className='gallery-dot'+(idx===0?' active':'');dot.addEventListener('click',function(){galleryIndex=idx;renderGalleryImage();});galleryDotsEl.appendChild(dot);});}}}
 if(galleryPrevBtn)galleryPrevBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;renderGalleryImage();});
