@@ -5,3 +5,7 @@ package-lock.json
 .env
 .env.*
 !.env.example
+
+# Capturas generadas por scripts/verify-comparator-browser.js (verificacion
+# manual local, no es parte del repo).
+.verify-screenshots/

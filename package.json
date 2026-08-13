@@ -1,17 +1,21 @@
 {
-"name": "padel10store-asesor-ia",
-"version": "1.0.0",
-"private": true,
-"description": "Asesor de Palas con IA de Padel10Store (Etapa 2) - funcion serverless en Vercel con Anthropic via AI Gateway",
-"main": "api/padel-assistant.js",
-"scripts": {
-"test": "node tests/padel-cart.test.js && node tests/padel-cart-integration.test.js && node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/padel-comparator.test.js && node tests/padel-comparison-card.test.js && node tests/mercadopago-preference.test.js",
-"validate-catalog": "node validate-catalog.js"
-},
-"dependencies": {
-"@anthropic-ai/sdk": "^0.32.1"
-},
-"engines": {
-"node": ">=18"
+  "name": "padel10store-asesor-ia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Asesor de Palas con IA de Padel10Store (Etapa 2) - funcion serverless en Vercel con Anthropic via AI Gateway",
+  "main": "api/padel-assistant.js",
+  "scripts": {
+    "test": "node tests/padel-cart.test.js && node tests/padel-cart-integration.test.js && node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/padel-comparator.test.js && node tests/padel-comparison-card.test.js && node tests/padel-comparison-render.test.js && node tests/mercadopago-preference.test.js",
+    "validate-catalog": "node validate-catalog.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "jsdom": "^30.0.1"
+  }
 }
-}
+

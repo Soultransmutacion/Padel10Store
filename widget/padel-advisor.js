@@ -378,6 +378,135 @@ window.PadelMPBuy.init(wrap);
 scrollToBottom();
 }
 
+// --- Fase 2 - Etapa 3: comparador visual PRO ---
+//
+// Renderiza "comparison" (lib/padel-catalog.js#buildComparisonCard, Etapa 2)
+// como una tarjeta de comparacion real: nunca inventa productos, precios,
+// imagenes ni atributos, solo pinta lo que el servidor ya armo y valido
+// contra el catalogo. No toca renderCard ni su logica (es un componente
+// nuevo e independiente): reutiliza las mismas integraciones ya probadas
+// que usa renderCard para "Ver producto" (findStoreCard + window.openModal)
+// y la unica fuente de verdad del carrito (window.PadelCart) para "Agregar
+// al carrito", sin reimplementar ninguna de las dos.
+
+// Abre la ficha real del producto en la tienda (el mismo modal que ya usa
+// renderCard), o cae al link de WhatsApp si la tarjeta no se encuentra en el
+// DOM de la tienda. findStoreCard ya es una funcion compartida: no se
+// duplica su logica de busqueda.
+function openStoreProductModal(nombre, waLink) {
+var storeCard = findStoreCard(nombre);
+if (storeCard && typeof window.openModal === 'function') {
+window.openModal(storeCard);
+} else {
+window.open(waLink, '_blank');
+}
+}
+
+// Boton "Agregar al carrito" del comparador: llama SIEMPRE a
+// window.PadelCart.addItem, la unica fuente de verdad del carrito (igual
+// que applyAccionCarrito mas arriba). Nunca decide por si mismo si un talle
+// es necesario ni inventa uno: si PadelCart devuelve talle_requerido (el
+// mismo error que ya usa el flujo de la ficha de producto, ver
+// lib/padel-cart.js#buildLine), no agrega nada y abre esa misma ficha para
+// que el cliente elija un talle real, en vez de duplicar la logica de
+// seleccion de talle que ya existe en index.html.
+function handleComparisonAgregar(button, productId, nombre, waLink) {
+if (!window.PadelCart || typeof window.PadelCart.addItem !== 'function') return;
+var res = window.PadelCart.addItem(productId, null, 1);
+if (res && res.ok) {
+var originalText = button.textContent;
+button.textContent = 'Agregado!';
+button.classList.add('pa-cmp-added');
+button.disabled = true;
+setTimeout(function () {
+button.textContent = originalText;
+button.classList.remove('pa-cmp-added');
+button.disabled = false;
+}, 2500);
+return;
+}
+if (res && res.error === 'talle_requerido') {
+openStoreProductModal(nombre, waLink);
+}
+}
+
+function renderComparison(comparison) {
+if (!comparison || !Array.isArray(comparison.productos) || comparison.productos.length < 2) return;
+
+var productos = comparison.productos;
+var filas = Array.isArray(comparison.filas) ? comparison.filas : [];
+var count = productos.length;
+
+var wrap = document.createElement('div');
+wrap.className = 'pa-cmp';
+
+var headerHtml = productos.map(function (p) {
+var safeImgUrl = resolveCardImageUrl(p.imagen);
+var imgHtml = safeImgUrl
+? '<img class="pa-cmp-photo" src="' + escapeHtml(safeImgUrl) + '" alt="' + escapeHtml(p.nombre) + '" loading="lazy" />'
+: '';
+var priceHtml = (p.precioConsultar || p.precio == null)
+? '<div class="pa-cmp-price">Precio a consultar</div>'
+: '<div class="pa-cmp-price">' + escapeHtml(p.precioFormateado) + '</div>';
+var waLink = buildWhatsappUrl('Hola! Quiero consultar por ' + p.nombre + '.');
+return (
+'<div class="pa-cmp-product" data-product-id="' + escapeHtml(p.id) + '">' +
+'<div class="pa-cmp-img">' + imgHtml + '</div>' +
+'<div class="pa-cmp-brand">' + escapeHtml(p.marca) + '</div>' +
+'<div class="pa-cmp-name">' + escapeHtml(p.nombre) + '</div>' +
+priceHtml +
+'<div class="pa-cmp-actions">' +
+'<button type="button" class="pa-card-btn pa-card-btn-primary" data-cmp-action="ver" data-product-id="' + escapeHtml(p.id) + '" data-nombre="' + escapeHtml(p.nombre) + '" data-wa="' + escapeHtml(waLink) + '">Ver producto</button>' +
+'<button type="button" class="pa-card-btn pa-card-btn-secondary pa-cmp-add-btn" data-cmp-action="agregar" data-product-id="' + escapeHtml(p.id) + '" data-nombre="' + escapeHtml(p.nombre) + '" data-wa="' + escapeHtml(waLink) + '">Agregar al carrito</button>' +
+'</div>' +
+'</div>'
+);
+}).join('');
+
+var rowsHtml = filas.map(function (fila) {
+var valores = Array.isArray(fila.valores) ? fila.valores : [];
+var valuesHtml = valores.map(function (v) {
+var esConfirmado = v !== 'No confirmado';
+return '<div class="pa-cmp-value' + (esConfirmado ? '' : ' pa-cmp-value-unconfirmed') + '">' + escapeHtml(v) + '</div>';
+}).join('');
+return (
+'<div class="pa-cmp-row">' +
+'<div class="pa-cmp-row-label">' + escapeHtml(fila.label) + '</div>' +
+'<div class="pa-cmp-row-values" style="grid-template-columns: repeat(' + count + ', 1fr);">' + valuesHtml + '</div>' +
+'</div>'
+);
+}).join('');
+
+wrap.innerHTML =
+'<div class="pa-cmp-header" style="grid-template-columns: repeat(' + count + ', 1fr);">' + headerHtml + '</div>' +
+'<div class="pa-cmp-rows">' + rowsHtml + '</div>';
+
+var imgEls = wrap.querySelectorAll('.pa-cmp-photo');
+Array.prototype.forEach.call(imgEls, function (imgEl) {
+imgEl.addEventListener('error', function () {
+imgEl.remove();
+var imgBox = imgEl.closest('.pa-cmp-img');
+if (imgBox) imgBox.classList.add('pa-cmp-img-empty');
+});
+});
+
+wrap.addEventListener('click', function (e) {
+var btn = e.target.closest ? e.target.closest('button[data-cmp-action]') : null;
+if (!btn) return;
+var productId = btn.dataset.productId;
+var nombre = btn.dataset.nombre;
+var waLink = btn.dataset.wa;
+if (btn.dataset.cmpAction === 'ver') {
+openStoreProductModal(nombre, waLink);
+} else if (btn.dataset.cmpAction === 'agregar') {
+handleComparisonAgregar(btn, productId, nombre, waLink);
+}
+});
+
+messagesEl.appendChild(wrap);
+scrollToBottom();
+}
+
 function setSending(isSending) {
 sending = isSending;
 sendBtn.disabled = isSending;
@@ -445,6 +574,7 @@ addBubble('assistant', reply);
 pushHistory('assistant', reply);
 var cards = (result.body && result.body.cards) || [];
 cards.forEach(renderCard);
+if (result.body && result.body.comparison) renderComparison(result.body.comparison);
 if (result.body && Array.isArray(result.body.ofrecidos)) lastOfrecidos = result.body.ofrecidos;
 var acciones = (result.body && result.body.acciones) || [];
 acciones.forEach(applyAccionCarrito);
