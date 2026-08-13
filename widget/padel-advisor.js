@@ -28,6 +28,14 @@ var sending = false;
 // la lista.
 var lastOfrecidos = [];
 
+// Perfil de compra TEMPORAL de esta conversacion (Fase 2 - Etapa 4): igual
+// que lastOfrecidos, el cliente solo lo TRANSPORTA de un mensaje al
+// siguiente tal cual lo devolvio el servidor la ultima vez; nunca lo arma,
+// lo interpreta ni lo valida el mismo. No es memoria permanente: vive solo
+// en esta variable de JS, asi que desaparece si se recarga la pagina o se
+// cierra la pestaña (nunca se guarda en localStorage).
+var lastPerfilCompra = {};
+
 function getCarritoActual() {
   if (window.PadelCart && typeof window.PadelCart.getRawLines === 'function') {
     return window.PadelCart.getRawLines();
@@ -553,7 +561,7 @@ setSending(true);
 fetch(API_URL, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ message: trimmed, history: historyForRequest, ofrecidos: lastOfrecidos, carritoActual: getCarritoActual() }),
+body: JSON.stringify({ message: trimmed, history: historyForRequest, ofrecidos: lastOfrecidos, carritoActual: getCarritoActual(), perfilCompra: lastPerfilCompra }),
 })
 .then(function (response) {
 return response
@@ -576,6 +584,7 @@ var cards = (result.body && result.body.cards) || [];
 cards.forEach(renderCard);
 if (result.body && result.body.comparison) renderComparison(result.body.comparison);
 if (result.body && Array.isArray(result.body.ofrecidos)) lastOfrecidos = result.body.ofrecidos;
+if (result.body && result.body.perfilCompra && typeof result.body.perfilCompra === 'object') lastPerfilCompra = result.body.perfilCompra;
 var acciones = (result.body && result.body.acciones) || [];
 acciones.forEach(applyAccionCarrito);
 })

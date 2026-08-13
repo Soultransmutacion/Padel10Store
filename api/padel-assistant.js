@@ -69,10 +69,10 @@ module.exports = async function handler(req, res) {
 
     try {
           const result = await withTimeout(
-                  runAdvisor({ message: body.message, history: body.history, ofrecidos: body.ofrecidos, carritoActual: body.carritoActual }),
+                  runAdvisor({ message: body.message, history: body.history, ofrecidos: body.ofrecidos, carritoActual: body.carritoActual, perfilCompra: body.perfilCompra }),
                   REQUEST_TIMEOUT_MS
                 );
-          res.status(200).json({ reply: result.reply, cards: result.cards, ofrecidos: result.ofrecidos, acciones: result.acciones, comparison: result.comparison });
+          res.status(200).json({ reply: result.reply, cards: result.cards, ofrecidos: result.ofrecidos, acciones: result.acciones, comparison: result.comparison, perfilCompra: result.perfilCompra });
     } catch (error) {
           const classified = classifyError(error);
           const message = ERROR_MESSAGES[classified.code] || ERROR_MESSAGES.UNKNOWN;
