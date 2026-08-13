@@ -5,7 +5,7 @@
 "description": "Asesor de Palas con IA de Padel10Store (Etapa 2) - funcion serverless en Vercel con Anthropic via AI Gateway",
 "main": "api/padel-assistant.js",
 "scripts": {
-"test": "node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/mercadopago-preference.test.js",
+"test": "node tests/padel-cart.test.js && node tests/padel-cart-integration.test.js && node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/mercadopago-preference.test.js",
 "validate-catalog": "node validate-catalog.js"
 },
 "dependencies": {
