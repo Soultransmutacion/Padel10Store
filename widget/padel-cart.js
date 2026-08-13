@@ -24,6 +24,7 @@
       addItem: function () { return { ok: false, error: 'no_disponible' }; },
       removeItem: function () { return { ok: false, error: 'no_disponible' }; },
       changeQuantity: function () { return { ok: false, error: 'no_disponible' }; },
+      setQuantity: function () { return { ok: false, error: 'no_disponible' }; },
       getSummary: function () { return { lineas: [], descartadas: [], total: 0, totalFormateado: '$0', cantidadTotal: 0 }; },
       getRawLines: function () { return []; },
       clear: function () {},
@@ -141,6 +142,22 @@
     return { ok: true };
   }
 
+  // Cambia la cantidad de una linea existente a un valor ABSOLUTO ya
+  // validado (a diferencia de changeQuantity, que aplica un delta relativo
+  // desde los botones +/- del drawer). Usado por el asesor de IA: el
+  // servidor ya valida el rango real (ver lib/padel-cart.js#validateQuantity)
+  // antes de pedirle al cliente que ejecute la accion, pero se vuelve a
+  // validar aca tambien, nunca se confia ciegamente en el numero recibido.
+  function setQuantity(productId, talle, cantidad) {
+    var cantidadResult = Core.validateQuantity(cantidad);
+    if (!cantidadResult.ok) return cantidadResult;
+    var idx = findIndex(productId, talle || null);
+    if (idx === -1) return { ok: false, error: 'no_encontrado_en_carrito' };
+    lines[idx].cantidad = cantidadResult.cantidad;
+    notify();
+    return { ok: true };
+  }
+
   function clear() {
     lines = [];
     notify();
@@ -216,6 +233,7 @@
     addItem: addItem,
     removeItem: removeItem,
     changeQuantity: changeQuantity,
+    setQuantity: setQuantity,
     getSummary: getSnapshotSummary,
     getRawLines: getRawLines,
     clear: clear,

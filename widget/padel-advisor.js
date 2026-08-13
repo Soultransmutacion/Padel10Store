@@ -20,6 +20,38 @@ var shownProductIds = {};
 var panelOpened = false;
 var sending = false;
 
+// Ultima lista ORDENADA de productos mostrados (IDs) que el servidor
+// devolvio en la respuesta anterior: se reenvia tal cual en el siguiente
+// mensaje para que el servidor pueda resolver "la segunda"/"esa" contra lo
+// que el cliente realmente vio (ver lib/padel-advisor.js#createOfferedContext).
+// El cliente nunca decide el significado de la referencia, solo transporta
+// la lista.
+var lastOfrecidos = [];
+
+function getCarritoActual() {
+  if (window.PadelCart && typeof window.PadelCart.getRawLines === 'function') {
+    return window.PadelCart.getRawLines();
+  }
+  return [];
+}
+
+// Ejecuta una accion de carrito ya validada por el servidor (ver
+// lib/padel-advisor-tools.js: agregar_al_carrito/quitar_del_carrito/
+// modificar_cantidad_carrito) contra la UNICA fuente de verdad del carrito.
+// Este widget nunca decide por si mismo si una accion es valida: solo la
+// ejecuta contra window.PadelCart, que vuelve a validar todo contra el
+// catalogo real antes de aplicarla.
+function applyAccionCarrito(accion) {
+  if (!accion || !accion.tipo || !window.PadelCart) return;
+  if (accion.tipo === 'agregar_al_carrito') {
+    window.PadelCart.addItem(accion.productId, accion.talle, accion.cantidad);
+  } else if (accion.tipo === 'quitar_del_carrito') {
+    window.PadelCart.removeItem(accion.productId, accion.talle);
+  } else if (accion.tipo === 'modificar_cantidad_carrito' && typeof window.PadelCart.setQuantity === 'function') {
+    window.PadelCart.setQuantity(accion.productId, accion.talle, accion.cantidad);
+  }
+}
+
 function escapeHtml(value) {
 return String(value == null ? '' : value)
 .replace(/&/g, '&amp;')
@@ -392,7 +424,7 @@ setSending(true);
 fetch(API_URL, {
 method: 'POST',
 headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ message: trimmed, history: historyForRequest }),
+body: JSON.stringify({ message: trimmed, history: historyForRequest, ofrecidos: lastOfrecidos, carritoActual: getCarritoActual() }),
 })
 .then(function (response) {
 return response
@@ -413,6 +445,9 @@ addBubble('assistant', reply);
 pushHistory('assistant', reply);
 var cards = (result.body && result.body.cards) || [];
 cards.forEach(renderCard);
+if (result.body && Array.isArray(result.body.ofrecidos)) lastOfrecidos = result.body.ofrecidos;
+var acciones = (result.body && result.body.acciones) || [];
+acciones.forEach(applyAccionCarrito);
 })
 .catch(function () {
 setSending(false);
