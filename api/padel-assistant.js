@@ -72,7 +72,7 @@ module.exports = async function handler(req, res) {
                   runAdvisor({ message: body.message, history: body.history, ofrecidos: body.ofrecidos, carritoActual: body.carritoActual }),
                   REQUEST_TIMEOUT_MS
                 );
-          res.status(200).json({ reply: result.reply, cards: result.cards, ofrecidos: result.ofrecidos, acciones: result.acciones });
+          res.status(200).json({ reply: result.reply, cards: result.cards, ofrecidos: result.ofrecidos, acciones: result.acciones, comparison: result.comparison });
     } catch (error) {
           const classified = classifyError(error);
           const message = ERROR_MESSAGES[classified.code] || ERROR_MESSAGES.UNKNOWN;
