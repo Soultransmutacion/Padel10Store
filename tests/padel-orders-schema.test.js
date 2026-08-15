@@ -295,13 +295,21 @@ test('ningun archivo de widget/ ni index.html referencia la capa de datos de ped
   });
 });
 
-test('todavia no existe ningun endpoint publico de pedidos ni webhook (fuera de alcance de esta etapa)', () => {
+// Nota (Fase 3, Etapa 2): esta prueba originalmente tambien exigia que NO
+// existiera ningun endpoint de pedidos ("api/pedidos.js"), porque la Etapa
+// 1 todavia no lo exponia a proposito. La Etapa 2 (formulario de comprador
+// y datos de envio, aprobada explicitamente por el usuario) agrega ese
+// endpoint como parte de su alcance -ver docs/etapa3-etapa2-formulario-envio.md
+// y tests/api-pedidos.test.js-, asi que esa parte de la prueba quedo
+// obsoleta y se actualizo. El webhook de Mercado Pago SIGUE fuera de
+// alcance (no se toca Mercado Pago en la Etapa 2), asi que esa parte se
+// mantiene igual.
+test('el webhook de Mercado Pago todavia no existe (fuera de alcance de esta etapa)', () => {
   const archivosApi = fs.existsSync(path.join(ROOT, 'api'))
     ? fs.readdirSync(path.join(ROOT, 'api'))
     : [];
   archivosApi.forEach((f) => {
-    assert.ok(!/pedido/i.test(f), `no deberia existir todavia un endpoint de pedidos: api/${f}`);
-    assert.ok(!/webhook/i.test(f), `el webhook no se implementa en esta etapa: api/${f}`);
+    assert.ok(!/webhook/i.test(f), `el webhook no se implementa todavia: api/${f}`);
   });
 });
 

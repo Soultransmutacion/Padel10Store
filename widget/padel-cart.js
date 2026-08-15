@@ -32,6 +32,7 @@
       whenReady: function (fn) { if (typeof fn === 'function') fn(); },
       open: function () {},
       close: function () {},
+      renderDrawer: function () {},
     };
     return;
   }
@@ -334,6 +335,15 @@
 
     window.PadelCart.open = openDrawer;
     window.PadelCart.close = closeDrawer;
+    // Fase 3, Etapa 2: widget/padel-checkout.js reutiliza este mismo
+    // render (nunca reimplementa el HTML de una linea de carrito) para
+    // volver a mostrar la vista de carrito despues de pasar por el
+    // formulario/revision/confirmacion. No cambia nada del comportamiento
+    // existente: es la misma funcion que ya se llama en cada cambio del
+    // carrito y al abrir el drawer.
+    window.PadelCart.renderDrawer = function () {
+      renderDrawer(getSnapshotSummary());
+    };
 
     if (cartDrawerCloseBtn) cartDrawerCloseBtn.addEventListener('click', closeDrawer);
     if (cartDrawerOverlay) {

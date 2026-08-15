@@ -2056,7 +2056,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="drw-ov" id="cartDrawerOverlay">
 <div class="drw" id="cartDrawer" role="dialog" aria-modal="true">
 <div class="drw-h">
-<span class="drw-title">Carrito</span>
+<span class="drw-title" id="cartDrawerTitle">Carrito</span>
 <button class="drw-close" id="cartDrawerClose" aria-label="Cerrar">&#x2715;</button>
 </div>
 <div class="drw-body" id="cartDrawerBody">
@@ -2065,12 +2065,17 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="empty-txt">Tu carrito esta vacio</div>
 </div>
 </div>
-<div class="drw-f">
+<div class="drw-f" id="cartDrawerFooterCart">
 <div class="total-row">
 <span class="total-lbl">Total</span>
 <span class="total-v" id="cartDrawerTotal">$0</span>
 </div>
-<button class="chk-btn" id="cartDrawerCheckoutBtn">Consultar por WhatsApp</button>
+<button class="chk-btn" id="cartDrawerContinueBtn">Continuar con mis datos</button>
+<button class="chk-btn" id="cartDrawerCheckoutBtn" style="margin-top:8px;background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Consultar por WhatsApp</button>
+</div>
+<div class="drw-f" id="cartDrawerFooterCheckout" hidden>
+<button class="chk-btn" id="cartDrawerBackBtn" style="background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Volver</button>
+<button class="chk-btn" id="cartDrawerNextBtn" style="margin-top:8px">Continuar</button>
 </div>
 </div>
 </div>
@@ -2079,7 +2084,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
   <link rel="stylesheet" href="widget/padel-comparison.css">
   <div id="padel-advisor-root"></div>
   <script src="lib/padel-cart.js" defer></script>
+  <script src="lib/padel-checkout-fields.js" defer></script>
   <script src="widget/padel-cart.js" defer></script>
+  <script src="widget/padel-checkout.js" defer></script>
   <script src="widget/mercadopago-buy.js" defer></script>
 <script src="widget/padel-advisor.js" defer></script>
 </body>

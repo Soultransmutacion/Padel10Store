@@ -5,7 +5,7 @@
   "description": "Asesor de Palas con IA de Padel10Store (Etapa 2) - funcion serverless en Vercel con Anthropic via AI Gateway",
   "main": "api/padel-assistant.js",
   "scripts": {
-    "test": "node tests/padel-cart.test.js && node tests/padel-cart-integration.test.js && node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/padel-comparator.test.js && node tests/padel-comparison-card.test.js && node tests/padel-comparison-render.test.js && node tests/padel-profile.test.js && node tests/padel-recommender.test.js && node tests/padel-chooser.test.js && node tests/mercadopago-preference.test.js && node tests/padel-orders-store.test.js && node tests/padel-orders-schema.test.js",
+    "test": "node tests/padel-cart.test.js && node tests/padel-cart-integration.test.js && node tests/padel-advisor.test.js && node tests/padel-advisor-cart.test.js && node tests/padel-comparator.test.js && node tests/padel-comparison-card.test.js && node tests/padel-comparison-render.test.js && node tests/padel-profile.test.js && node tests/padel-recommender.test.js && node tests/padel-chooser.test.js && node tests/mercadopago-preference.test.js && node tests/padel-orders-store.test.js && node tests/padel-orders-schema.test.js && node tests/padel-checkout-fields.test.js && node tests/api-pedidos.test.js && node tests/padel-checkout-widget.test.js && node tests/padel-checkout-static.test.js",
     "test:integration": "node tests/padel-orders-store.integration.test.js",
     "validate-catalog": "node validate-catalog.js"
   },
