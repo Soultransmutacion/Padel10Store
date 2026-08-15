@@ -11,7 +11,7 @@
 body{font-family:'Barlow',sans-serif;background:#111;color:#f0f0f0}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:62px;background:#111;border-bottom:2px solid #C9A227;position:sticky;top:0;z-index:200}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-escudo{width:38px;height:38px;object-fit:contain;flex-shrink:0}hh
+.logo-escudo{width:38px;height:38px;object-fit:contain;flex-shrink:0}
 .nav-links{display:flex;gap:24px}
 .nav-links a{font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;font-weight:500;transition:color 0.15s}
 .nav-links a:hover{color:#C9A227}
@@ -305,6 +305,9 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .talle-btn:hover{border-color:#C9A227}
 .talle-btn.selected{background:#C9A227;color:#111;border-color:#C9A227}
 .modal-talle-msg{color:#ff6b6b;font-size:13px;font-weight:700;margin-top:6px;min-height:16px}.modal-talle-msg:focus{outline:2px solid #ff6b6b;outline-offset:3px;border-radius:3px}.modal-talle-row.talle-error .modal-talle-buttons{border:1px solid #ff6b6b;border-radius:8px;padding:6px;background:rgba(255,107,107,.08)}
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:250;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.45);transition:filter .15s,transform .15s;text-decoration:none}
+.wa-float:hover{filter:brightness(1.08);transform:translateY(-2px)}
+@media (max-width:480px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}}
 </style>
 </head>
 <body>
@@ -1826,7 +1829,6 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
       </div>
     </div>
   </div>
-</div>
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
@@ -2083,6 +2085,9 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
   <link rel="stylesheet" href="widget/padel-advisor.css">
   <link rel="stylesheet" href="widget/padel-comparison.css">
   <div id="padel-advisor-root"></div>
+  <a id="waFloatBtn" class="wa-float" href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp">
+    <svg viewBox="0 0 32 32" width="28" height="28" fill="#fff" aria-hidden="true"><path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.348.657 4.542 1.797 6.41L4 29l7.77-1.756A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.988 16.845c-.297.836-1.47 1.53-2.41 1.73-.64.136-1.475.245-4.29-.92-3.6-1.49-5.92-5.13-6.1-5.37-.177-.24-1.456-1.938-1.456-3.696 0-1.758.923-2.622 1.25-2.98.328-.358.716-.448.955-.448.24 0 .478.002.687.013.22.012.516-.084.807.616.297.716 1.01 2.474 1.098 2.653.088.18.147.39.03.63-.12.24-.178.39-.356.6-.178.21-.375.47-.535.63-.178.18-.364.375-.157.735.208.36.923 1.522 1.98 2.464 1.36 1.212 2.508 1.588 2.868 1.766.36.178.57.15.78-.09.208-.24.892-1.04 1.13-1.398.238-.36.475-.3.802-.18.328.12 2.08.98 2.437 1.158.357.18.594.27.683.42.09.15.09.87-.207 1.706z"/></svg>
+  </a>
   <script src="lib/padel-cart.js" defer></script>
   <script src="lib/padel-checkout-fields.js" defer></script>
   <script src="widget/padel-cart.js" defer></script>
