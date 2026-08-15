@@ -1,0 +1,29 @@
+# Configuracion del Supabase CLI para Padel10Store.
+#
+# Este archivo NO contiene secretos (Supabase documenta que config.toml es
+# seguro de versionar). Las credenciales reales (URL del proyecto, secret
+# key / service_role key) nunca van aca: se configuran como variables de
+# entorno del lado servidor en Vercel (ver .env.example) y, para uso local
+# del CLI, mediante `supabase login` + `supabase link`.
+#
+# "project_id" es solo una etiqueta local que usa el CLI para nombrar los
+# contenedores Docker del stack local (`supabase start`). No es el project
+# ref real de Supabase: ese se guarda al correr `supabase link
+# --project-ref <ref>` en un archivo separado que el CLI ya ignora en Git
+# (ver supabase/.gitignore), nunca en este config.toml.
+project_id = "padel10store"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323

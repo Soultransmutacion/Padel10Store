@@ -45,3 +45,32 @@ jobs:
           done < <(git ls-files -z -- '*.js' ':(glob)!node_modules/**' ':(glob)!**/node_modules/**')
           echo "Total de archivos .js versionados verificados: $COUNT"
           exit $STATUS
+
+  test-integration-db:
+    name: Tests de integracion con Supabase (opcional, requiere Preview/Test)
+    runs-on: ubuntu-latest
+    # Este job se salta automaticamente si no existe el secret
+    # SUPABASE_TEST_URL: CI nunca depende obligatoriamente de una base
+    # real. Ver .env.example y tests/padel-orders-store.integration.test.js
+    # para el mecanismo propuesto (proyecto Supabase de Preview/Test
+    # dedicado, nunca el productivo).
+    if: ${{ secrets.SUPABASE_TEST_URL != '' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias (npm install, sin package-lock.json)
+        run: npm install
+
+      - name: Ejecutar npm run test:integration
+        env:
+          SUPABASE_TEST_URL: ${{ secrets.SUPABASE_TEST_URL }}
+          SUPABASE_TEST_SECRET_KEY: ${{ secrets.SUPABASE_TEST_SECRET_KEY }}
+        run: npm run test:integration
