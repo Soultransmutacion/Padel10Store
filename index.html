@@ -308,6 +308,29 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .wa-float{position:fixed;right:20px;bottom:20px;z-index:250;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.45);transition:filter .15s,transform .15s;text-decoration:none}
 .wa-float:hover{filter:brightness(1.08);transform:translateY(-2px)}
 @media (max-width:480px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}}
+.nav-toggle{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;width:36px;height:36px;background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:6px;cursor:pointer;padding:0;flex-shrink:0}
+.nav-toggle span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:transform .15s,opacity .15s}
+nav.nav-open .nav-toggle span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+nav.nav-open .nav-toggle span:nth-child(2){opacity:0}
+nav.nav-open .nav-toggle span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media (max-width:860px){
+nav{flex-wrap:wrap;row-gap:10px;height:auto;padding:12px 16px;justify-content:flex-start}
+.logo{order:1}
+.nav-toggle{display:flex;order:2;margin-left:auto}
+.nav-right{display:contents}
+.cart-btn{order:3}
+.nav-search{order:4;display:none;width:100%;flex:1 1 100%;margin:0}
+.nav-search input{width:100%;flex:1;min-width:0}
+.nav-links{order:5;display:none;width:100%;flex:1 1 100%;flex-direction:column;gap:0}
+.nav-links a{padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+nav.nav-open .nav-search{display:flex}
+nav.nav-open .nav-links{display:flex}
+}
+@media (max-width:640px){
+.footer-top{grid-template-columns:1fr;gap:1.5rem}
+.footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
+footer{padding:2rem 1.25rem}
+}
 </style>
 </head>
 <body>
@@ -320,7 +343,8 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
       <span class="l2">10STORE</span>
     </div>
   </div>
-  <div class="nav-links">
+  <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
     <a href="#">Paletas</a><a href="#">Ropa</a><a href="#">Calzado</a><a href="#">Accesorios</a><a href="#">Ofertas</a><a href="#">Bull Padel</a>
   </div>
   <div class="nav-right">
@@ -2094,5 +2118,32 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
   <script src="widget/padel-checkout.js" defer></script>
   <script src="widget/mercadopago-buy.js" defer></script>
 <script src="widget/padel-advisor.js" defer></script>
+<script>
+(function(){
+  var navEl = document.querySelector('nav');
+  var toggle = document.getElementById('navToggle');
+  if(!navEl || !toggle) return;
+  function closeMenu(){
+    navEl.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded','false');
+  }
+  function openMenu(){
+    navEl.classList.add('nav-open');
+    toggle.setAttribute('aria-expanded','true');
+  }
+  toggle.addEventListener('click', function(){
+    if(navEl.classList.contains('nav-open')){ closeMenu(); } else { openMenu(); }
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 860) closeMenu();
+  });
+})();
+</script>
 </body>
 </html>
