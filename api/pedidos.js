@@ -38,11 +38,15 @@
 
 const {
   crearPedido: crearPedidoReal,
+  obtenerItemsPorPedido: obtenerItemsPorPedidoReal,
   PedidoStoreError,
 } = require('../lib/padel-orders-store');
 const { getProductById } = require('../lib/padel-catalog');
 const PadelCartCore = require('../lib/padel-cart');
 const checkoutFields = require('../lib/padel-checkout-fields');
+const {
+  crearOReutilizarPreferenciaParaPedido,
+} = require('../lib/pedido-preferencia');
 
 const GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamente en unos minutos.';
 const MAX_BODY_LENGTH = 8000;
@@ -155,6 +159,9 @@ function mapPedidoStoreErrorToStatus(error) {
 function createPedidosHandler(deps) {
   const crearPedido = (deps && deps.crearPedido) || crearPedidoReal;
   const getProduct = (deps && deps.getProductById) || getProductById;
+  const obtenerItemsPorPedido = (deps && deps.obtenerItemsPorPedido) || obtenerItemsPorPedidoReal;
+  const crearPreferenciaParaPedido =
+    (deps && deps.crearPreferenciaParaPedido) || crearOReutilizarPreferenciaParaPedido;
 
   return async function handler(req, res) {
     try {
@@ -247,10 +254,35 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, mapPedidoStoreErrorToStatus(err));
       }
 
-      // 8) Respuesta minima: nunca el id interno (UUID), nunca el
-      // access_token (esta etapa todavia no tiene pagina de seguimiento que
-      // lo necesite).
-      return res.status(201).json({ numero: pedido.numero });
+    // 8) El pedido YA EXISTE en este punto. Intentamos crear (o reutilizar)
+    // la preferencia de Mercado Pago en el mismo request. Un fallo aca
+    // NUNCA borra ni modifica el pedido: queda pendiente_pago. El pedido
+    // ya quedo registrado; informar esto al comprador es responsabilidad
+    // del frontend (redirectUrl en null = "registrado, pago no iniciado").
+    // El mecanismo de reintento de pago es DISEÑO PENDIENTE: no se
+    // improvisa reutilizando access_token (ver docs/CONTINUAR-FASE3.md).
+    let redirectUrl = null;
+    try {
+      const items = await obtenerItemsPorPedido(pedido.id);
+      const resultado = await crearPreferenciaParaPedido({ pedido, items });
+      if (resultado && resultado.ok) {
+        redirectUrl = resultado.checkoutUrl;
+      }
+    } catch (err) {
+      // Un error aca no debe impedir devolver el numero del pedido: ya
+      // esta creado y se puede reintentar la preferencia despues.
+      redirectUrl = null;
+    }
+
+    // 9) Respuesta minima: nunca el id interno (UUID) del pedido, nunca
+    // el access_token de seguimiento (reservado para la futura consulta
+    // segura del estado del pedido, no para reintentos de Mercado Pago),
+    // nunca secrets ni datos de Mercado Pago. Solo lo estrictamente
+    // necesario para que el frontend continue el flujo.
+    return res.status(201).json({
+      numero: pedido.numero,
+      redirectUrl,
+    });
     } catch (err) {
       return sendGenericError(res, 500);
     }

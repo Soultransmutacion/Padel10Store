@@ -102,17 +102,60 @@ function createFakeCrearPedido(options) {
     return {
       id: 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
       numero: opts.numero || 'P10-000123',
-      access_token: 'token-de-prueba-no-deberia-aparecer-en-la-respuesta',
+      access_token: 'token-de-prueba-para-reintento-de-preferencia',
     };
   }
   fakeCrearPedido.llamadas = llamadas;
   return fakeCrearPedido;
 }
 
-function crearHandlerDePrueba(crearPedidoOverrides) {
+// crearPreferenciaParaPedido de prueba: por defecto simula un exito
+// (como si Mercado Pago hubiera devuelto una preferencia sandbox valida),
+// para que los tests existentes que no les importa la preferencia sigan
+// viendo una respuesta realista. options.ok = false simula el caso en el
+// que el pedido se crea pero la preferencia falla (ver seccion FALLOS del
+// diseno: el pedido nunca se borra ni se marca como pagado).
+function createFakeCrearPreferenciaParaPedido(options) {
+  const opts = options || {};
+  const llamadas = [];
+  async function fakeCrearPreferenciaParaPedido(input) {
+    llamadas.push(input);
+    if (opts.throwError) throw opts.throwError;
+    if (opts.ok === false) {
+      return { ok: false, motivo: opts.motivo || 'mercado_pago' };
+    }
+    return { ok: true, checkoutUrl: opts.checkoutUrl || 'https://sandbox.mercadopago.com.ar/checkout/test-pref' };
+  }
+  fakeCrearPreferenciaParaPedido.llamadas = llamadas;
+  return fakeCrearPreferenciaParaPedido;
+}
+
+function createFakeObtenerItemsPorPedido(options) {
+  const opts = options || {};
+  const llamadas = [];
+  async function fakeObtenerItemsPorPedido(pedidoId) {
+    llamadas.push(pedidoId);
+    if (opts.throwError) throw opts.throwError;
+    return opts.items || [
+      { product_id: 'x', nombre: 'Producto de prueba', talle: null, cantidad: 1, precio_unitario: 100 },
+    ];
+  }
+  fakeObtenerItemsPorPedido.llamadas = llamadas;
+  return fakeObtenerItemsPorPedido;
+}
+
+function crearHandlerDePrueba(crearPedidoOverrides, extra) {
   const fakeCrearPedido = createFakeCrearPedido(crearPedidoOverrides);
-  const handler = createPedidosHandler({ crearPedido: fakeCrearPedido, getProductById });
-  return { handler, fakeCrearPedido };
+  const ex = extra || {};
+  const fakeCrearPreferenciaParaPedido = createFakeCrearPreferenciaParaPedido(ex.preferencia);
+  const fakeObtenerItemsPorPedido = createFakeObtenerItemsPorPedido(ex.items);
+  const handler = createPedidosHandler({
+    crearPedido: fakeCrearPedido,
+    getProductById,
+    crearPreferenciaParaPedido: fakeCrearPreferenciaParaPedido,
+    obtenerItemsPorPedido: fakeObtenerItemsPorPedido,
+  });
+  return { handler, fakeCrearPedido, fakeCrearPreferenciaParaPedido, fakeObtenerItemsPorPedido };
 }
 
 async function ejecutar(handler, reqOverrides) {
@@ -415,7 +458,10 @@ testAsync('pedido valido con multiples productos: 201 y numero de pedido', async
   });
   const res = await ejecutar(handler, { body });
   assert.strictEqual(res.statusCode, 201);
-  assert.deepStrictEqual(res.body, { numero: 'P10-000777' });
+  assert.deepStrictEqual(res.body, {
+    numero: 'P10-000777',
+    redirectUrl: 'https://sandbox.mercadopago.com.ar/checkout/test-pref',
+  });
   assert.strictEqual(fakeCrearPedido.llamadas.length, 1);
 });
 
@@ -450,14 +496,73 @@ testAsync('la respuesta de exito no contiene el id (uuid) interno del pedido', a
   const res = await ejecutar(handler, { body: bodyValido() });
   assert.strictEqual(res.statusCode, 201);
   assert.strictEqual('id' in res.body, false);
-  assert.deepStrictEqual(Object.keys(res.body), ['numero']);
+  assert.deepStrictEqual(Object.keys(res.body).sort(), ['numero', 'redirectUrl']);
 });
 
-testAsync('la respuesta de exito no contiene el access_token', async () => {
+testAsync('la respuesta de exito NUNCA incluye access_token ni accessToken (reservado para una futura consulta segura del estado del pedido, no viaja en la respuesta publica)', async () => {
   const { handler } = crearHandlerDePrueba();
   const res = await ejecutar(handler, { body: bodyValido() });
   assert.strictEqual('accessToken' in res.body, false);
   assert.strictEqual('access_token' in res.body, false);
+});
+
+// --- integracion con la creacion de la preferencia de Mercado Pago -------
+
+testAsync('el pedido creado y sus items reales se le pasan a crearPreferenciaParaPedido', async () => {
+  const items = [
+    { product_id: PRODUCT_SIN_TALLE, nombre: 'Producto X', talle: null, cantidad: 2, precio_unitario: 50 },
+  ];
+  const { handler, fakeCrearPreferenciaParaPedido, fakeObtenerItemsPorPedido } = crearHandlerDePrueba(
+    { numero: 'P10-000900' },
+    { items: { items } }
+  );
+  await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(fakeObtenerItemsPorPedido.llamadas[0], 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee');
+  assert.strictEqual(fakeCrearPreferenciaParaPedido.llamadas.length, 1);
+  assert.strictEqual(fakeCrearPreferenciaParaPedido.llamadas[0].pedido.numero, 'P10-000900');
+  assert.deepStrictEqual(fakeCrearPreferenciaParaPedido.llamadas[0].items, items);
+});
+
+testAsync('cuando la preferencia se crea bien, la respuesta incluye el checkoutUrl real', async () => {
+  const { handler } = crearHandlerDePrueba(undefined, {
+    preferencia: { ok: true, checkoutUrl: 'https://sandbox.mercadopago.com.ar/checkout/abc123' },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.redirectUrl, 'https://sandbox.mercadopago.com.ar/checkout/abc123');
+});
+
+testAsync('si Mercado Pago falla, el pedido igual se confirma (201) con checkoutUrl null y sin duplicarse', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba(undefined, {
+    preferencia: { ok: false, motivo: 'mercado_pago' },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(typeof res.body.numero, 'string');
+  assert.strictEqual(res.body.redirectUrl, null);
+  // El pedido se creo una unica vez: crearPreferenciaParaPedido fallando
+  // no debe haber disparado un segundo intento de crearPedido.
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 1);
+});
+
+testAsync('si crearPreferenciaParaPedido tira una excepcion, la respuesta igual confirma el pedido', async () => {
+  const { handler } = crearHandlerDePrueba(undefined, {
+    preferencia: { throwError: new Error('mp_timeout') },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(typeof res.body.numero, 'string');
+  assert.strictEqual(res.body.redirectUrl, null);
+});
+
+testAsync('si obtenerItemsPorPedido tira una excepcion, la respuesta igual confirma el pedido', async () => {
+  const { handler } = crearHandlerDePrueba(undefined, {
+    items: { throwError: new Error('db_down') },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(typeof res.body.numero, 'string');
+  assert.strictEqual(res.body.redirectUrl, null);
 });
 
 // --- mapeo de errores de PedidoStoreError a HTTP genericos -----------------

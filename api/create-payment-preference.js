@@ -32,20 +32,12 @@ const {
     buildPreferencePayload,
 } = require('../lib/mercadopago-preference');
 
+const { crearPreferenciaEnMercadoPago } = require('../lib/mercadopago-client');
+
 const MAX_BODY_LENGTH = 2000;
-const REQUEST_TIMEOUT_MS = 15000;
-const MERCADOPAGO_PREFERENCES_URL = 'https://api.mercadopago.com/checkout/preferences';
 
 function sendGenericError(res, status) {
     res.status(status).json({ error: GENERIC_ERROR_MESSAGE });
-}
-
-function withTimeout(promise, ms) {
-    let timeoutId;
-    const timeout = new Promise((_resolve, reject) => {
-          timeoutId = setTimeout(() => reject(new Error('mp_timeout')), ms);
-    });
-    return Promise.race([promise, timeout]).finally(() => clearTimeout(timeoutId));
 }
 
 function getBodyAsString(rawBody) {
@@ -126,36 +118,13 @@ module.exports = async function handler(req, res) {
             talle: productResult.talle,
       });
 
-      let mpResponse;
-          try {
-                  mpResponse = await withTimeout(
-                            fetch(MERCADOPAGO_PREFERENCES_URL, {
-                                        method: 'POST',
-                                        headers: {
-                                                      'Content-Type': 'application/json',
-                                                      Authorization: `Bearer ${accessToken}`,
-                                        },
-                                        body: JSON.stringify(preferencePayload),
-                            }),
-                            REQUEST_TIMEOUT_MS
-                          );
-          } catch (err) {
-                  // No se registran detalles tecnicos ni la respuesta de Mercado Pago.
-            return sendGenericError(res, 502);
-          }
-
-      if (!mpResponse.ok) {
-              return sendGenericError(res, 502);
+      const mpResult = await crearPreferenciaEnMercadoPago({ payload: preferencePayload, accessToken });
+      // No se registran detalles tecnicos ni la respuesta de Mercado Pago.
+      if (!mpResult.ok) {
+        return sendGenericError(res, 502);
       }
 
-      let mpData;
-          try {
-                  mpData = await mpResponse.json();
-          } catch (err) {
-                  return sendGenericError(res, 502);
-          }
-
-      const sandboxInitPoint = mpData && mpData.sandbox_init_point;
+      const sandboxInitPoint = mpResult.sandboxInitPoint;
 
       // 9) Nunca se redirige a un dominio, protocolo o punto de inicio que
       // no sea el sandbox oficial de Mercado Pago.
