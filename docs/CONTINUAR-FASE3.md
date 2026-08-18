@@ -279,8 +279,19 @@ haber sido modificado ni debilitado.
 
 ## 11. Estado del commit/push de este checkpoint
 
-Ver el mensaje de cierre de la sesión que generó esta actualización para el hash de
-commit exacto, el estado de CI y el resultado final. Si por algún motivo esta sección
-no fue actualizada después de un commit, asumir que el checkpoint anterior a la
-sección 6 sigue reflejando el estado real del working tree (todo listo, tests verdes,
-pendiente de commit/push).
+- **Commit:** `ff8014e` — "feat(mercadopago): vincular Checkout Pro a pedidos reales
+  (Etapa 3)" — 10 archivos cambiados (1185 inserciones, 50 eliminaciones).
+- **Rama:** `asesor-ia-padel10store`, pusheado a `origin/asesor-ia-padel10store`
+  (`6d79e08..ff8014e`). `main` no fue tocado.
+- **Tests locales antes del commit:** `npm test` → 496 PASS / 0 FAIL (exit code 0);
+  `node validate-catalog.js` → OK; `node --check` en todos los archivos tocados → OK.
+- **CI remoto (GitHub Actions, workflow "CI Mercado Pago (Preview -
+  asesor-ia-padel10store)", run `32168538300`):** **VERDE** — job "npm test + node
+  --check" completado en 25s. Única anotación: aviso de deprecación de Node 20 en las
+  actions `checkout@v4`/`setup-node@v4` (no relacionado con este cambio, preexistente).
+- **ESTADO SEGURO PARA CERRAR: SÍ.** Working tree limpio después del commit (sin
+  cambios pendientes de agregar), rama al día con el remoto, CI verde.
+
+Este checkpoint queda cerrado aquí por instrucción explícita del usuario: no se
+implementa el webhook, no se habilita producción, no se realizan pagos reales, y no
+se avanza a una etapa posterior sin nueva autorización explícita.
