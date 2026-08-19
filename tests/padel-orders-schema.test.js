@@ -301,16 +301,42 @@ test('ningun archivo de widget/ ni index.html referencia la capa de datos de ped
 // y datos de envio, aprobada explicitamente por el usuario) agrega ese
 // endpoint como parte de su alcance -ver docs/etapa3-etapa2-formulario-envio.md
 // y tests/api-pedidos.test.js-, asi que esa parte de la prueba quedo
-// obsoleta y se actualizo. El webhook de Mercado Pago SIGUE fuera de
-// alcance (no se toca Mercado Pago en la Etapa 2), asi que esa parte se
-// mantiene igual.
-test('el webhook de Mercado Pago todavia no existe (fuera de alcance de esta etapa)', () => {
-  const archivosApi = fs.existsSync(path.join(ROOT, 'api'))
-    ? fs.readdirSync(path.join(ROOT, 'api'))
-    : [];
-  archivosApi.forEach((f) => {
-    assert.ok(!/webhook/i.test(f), `el webhook no se implementa todavia: api/${f}`);
-  });
+// obsoleta y se actualizo. El webhook de Mercado Pago SIGUIO fuera de
+// alcance hasta la Etapa 4 (aprobada explicitamente por el usuario), que
+// lo agrega: ver api/mercadopago-webhook.js, lib/mercadopago-webhook.js y
+// lib/pedido-pago-mapeo.js. Las dos pruebas de abajo reemplazan a la
+// anterior ("el webhook todavia no existe") por su contraparte para esta
+// etapa.
+test('el webhook de Mercado Pago existe (Etapa 4) y valida firma via MERCADOPAGO_WEBHOOK_SECRET', () => {
+  const webhookPath = path.join(ROOT, 'api', 'mercadopago-webhook.js');
+  assert.ok(fs.existsSync(webhookPath), 'se espera api/mercadopago-webhook.js (Etapa 4)');
+
+  const contenido = leerArchivo('api/mercadopago-webhook.js');
+  assert.ok(
+    /require\(['"]\.\.\/lib\/mercadopago-webhook['"]\)/.test(contenido),
+    'el endpoint debe validar la firma usando lib/mercadopago-webhook.js, no reimplementarla'
+  );
+  assert.ok(
+    !/console\.(log|error|warn)/.test(contenido),
+    'el endpoint del webhook nunca debe loguear (riesgo de exponer secrets/payloads)'
+  );
+
+  const envExample = leerArchivo('.env.example');
+  assert.ok(
+    /^MERCADOPAGO_WEBHOOK_SECRET=\s*$/m.test(envExample),
+    '.env.example debe documentar MERCADOPAGO_WEBHOOK_SECRET sin ningun valor'
+  );
+});
+
+test('la URL del webhook todavia NO se configura en el dashboard de Mercado Pago (fuera de alcance de esta etapa)', () => {
+  // Esta etapa implementa y testea el endpoint contra mocks unicamente.
+  // Configurar la URL real en el dashboard de Mercado Pago (paso manual,
+  // fuera del repo) requiere autorizacion explicita nueva: ver
+  // docs/CONTINUAR-FASE3.md. No hay forma de verificar esto desde el
+  // codigo (es una accion en un panel externo), asi que este test solo
+  // documenta la restriccion para que quede trazada junto al resto de
+  // las pruebas estaticas de esta etapa.
+  assert.ok(true);
 });
 
 test('no hay carpeta admin/ ni referencias a Supabase Auth todavia', () => {
