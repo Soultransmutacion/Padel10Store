@@ -72,20 +72,33 @@ function notificacionValida(overrides) {
 }
 
 function buildReq(notif) {
+  // omitirDataId / omitirXRequestId simulan una notificacion LEGITIMA de
+  // Mercado Pago que, segun la regla oficial, llega sin data.id y/o sin
+  // x-request-id: en ese caso el manifest firmado por Mercado Pago omite
+  // ese segmento por completo, y por eso la firma tambien se calcula aca
+  // (dataIdParaFirma / xRequestIdParaFirma) sobre el manifest reducido, no
+  // sobre el valor completo de notif.dataId / notif.xRequestId.
+  const dataIdParaFirma = notif.omitirDataId ? undefined : notif.dataId;
+  const xRequestIdParaFirma = notif.omitirXRequestId ? undefined : notif.xRequestId;
+
   const headers = notif.sinHeaders
     ? {}
     : headersValidos({
-        dataId: notif.dataId,
-        xRequestId: notif.xRequestId,
+        dataId: dataIdParaFirma,
+        xRequestId: xRequestIdParaFirma,
         ts: notif.ts,
         secret: notif.secretParaFirmar,
       });
+  const query = notif.sinQuery
+    ? {}
+    : Object.assign(
+        notif.omitirDataId ? { type: notif.tipo } : { 'data.id': notif.dataId, type: notif.tipo },
+        notif.queryExtra || {}
+      );
   return {
     method: notif.method === undefined ? 'POST' : notif.method,
     headers,
-    query: notif.sinQuery
-      ? {}
-      : Object.assign({ 'data.id': notif.dataId, type: notif.tipo }, notif.queryExtra || {}),
+    query,
     body: notif.sinBody
       ? undefined
       : Object.assign({ id: notif.notificacionId, type: notif.tipo, data: { id: notif.dataId } }, notif.bodyExtra || {}),
@@ -256,10 +269,75 @@ testAsync('falta data.id en la query: 401 (no se puede validar la firma)', async
   assert.strictEqual(res.statusCode, 401);
 });
 
-testAsync('sin MERCADOPAGO_WEBHOOK_SECRET configurado: 401 (fail closed, nunca abre por defecto)', async () => {
-  const { handler } = crearHandlerDePrueba({ secret: '' });
+testAsync('sin MERCADOPAGO_WEBHOOK_SECRET configurado: 401 (fail closed, nunca abre por defecto), tampoco toca la base ni Mercado Pago', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({ secret: '' });
   const res = await ejecutar(handler, notificacionValida());
   assert.strictEqual(res.statusCode, 401);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+  assert.strictEqual(llamadas.obtenerPedidoPorId.length, 0);
+  assert.strictEqual(llamadas.estaEventoWebhookProcesado.length, 0);
+});
+
+testAsync('firma invalida (en cualquiera de sus variantes): nunca consulta Mercado Pago ni toca la base de datos', async () => {
+  const escenarios = [
+    () => notificacionValida({ secretParaFirmar: 'secreto-equivocado' }), // firma no coincide
+    () => notificacionValida({ sinHeaders: true }), // x-signature/x-request-id ausentes por completo
+    () => notificacionValida({ sinQuery: true }), // data.id ausente EN LA QUERY, pero firmado como si estuviera presente: el manifest no coincide
+  ];
+  for (const construir of escenarios) {
+    const { handler, llamadas } = crearHandlerDePrueba();
+    // eslint-disable-next-line no-await-in-loop
+    const res = await ejecutar(handler, construir());
+    assert.strictEqual(res.statusCode, 401);
+    assert.strictEqual(llamadas.obtenerPedidoPorId.length, 0);
+    assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+    assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+    assert.strictEqual(llamadas.actualizarEstadoPago.length, 0);
+    assert.strictEqual(llamadas.actualizarEstadoPedido.length, 0);
+    assert.strictEqual(llamadas.registrarEvento.length, 0);
+    assert.strictEqual(llamadas.estaEventoWebhookProcesado.length, 0);
+    assert.strictEqual(llamadas.marcarEventoWebhookProcesado.length, 0);
+  }
+});
+
+// === Regla oficial de Mercado Pago: data.id / x-request-id ausentes se ===
+// === omiten del manifest, no invalidan la firma por si solos ==============
+//
+// Distincion clave (pedida explicitamente): la validacion CRIPTOGRAFICA de
+// la firma sigue la regla oficial de omitir del manifest lo que no este
+// presente; que el PROCESAMIENTO DE NEGOCIO pueda continuar sin un data.id
+// utilizable para consultar /v1/payments/{id} es una decision aparte, que
+// nunca debe hacer que la firma en si se considere invalida.
+
+testAsync('falta x-request-id (firmado por Mercado Pago sobre el manifest reducido): firma valida, se procesa normalmente', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const notif = notificacionValida({ omitirXRequestId: true });
+  const res = await ejecutar(handler, notif);
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago[0].paymentId, notif.dataId);
+});
+
+testAsync('falta data.id (firmado por Mercado Pago sobre el manifest reducido): la firma es valida (nunca 401); el procesamiento se detiene de forma segura sin tocar el pedido', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({
+    // Simula lo que devuelve la consulta REAL a Mercado Pago cuando no hay
+    // payment id utilizable (ver
+    // lib/mercadopago-webhook.js#consultarPagoEnMercadoPago, motivo
+    // "payment_id_invalido"): esto aisla deliberadamente "la firma es
+    // valida" de "el pago se pudo consultar", que son dos cosas distintas.
+    resultadoConsultarPago: { ok: false, motivo: 'payment_id_invalido' },
+  });
+  const notif = notificacionValida({ omitirDataId: true });
+  const res = await ejecutar(handler, notif);
+  // NUNCA 401: la firma es criptograficamente valida sobre el manifest que
+  // Mercado Pago realmente firmo (sin el segmento "id:").
+  assert.notStrictEqual(res.statusCode, 401);
+  assert.strictEqual(res.statusCode, 502); // se detiene de forma segura (reintentable), nunca aprueba
+  assert.strictEqual(llamadas.obtenerPedidoPorId.length, 0);
+  assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+  assert.strictEqual(llamadas.actualizarEstadoPago.length, 0);
+  assert.strictEqual(llamadas.actualizarEstadoPedido.length, 0);
+  assert.strictEqual(llamadas.marcarEventoWebhookProcesado.length, 0);
 });
 
 // === No se confia en el body / topico =====================================

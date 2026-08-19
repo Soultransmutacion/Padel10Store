@@ -97,6 +97,41 @@ test('construirManifiesto: normaliza data.id a minusculas', () => {
   );
 });
 
+// Regla oficial de Mercado Pago: "If any of the values (data.id,
+// x-request-id) are not present in the received notification, you must
+// remove them from the manifest before computing the HMAC". Se omite el
+// segmento COMPLETO ("id:...;" o "request-id:...;"), nunca se incluye con
+// un valor vacio.
+
+test('construirManifiesto: omite "request-id:" por completo si x-request-id no esta presente', () => {
+  assert.strictEqual(
+    construirManifiesto({ dataId: '123456789', xRequestId: undefined, ts: '1700000000' }),
+    'id:123456789;ts:1700000000;'
+  );
+  assert.strictEqual(
+    construirManifiesto({ dataId: '123456789', xRequestId: '', ts: '1700000000' }),
+    'id:123456789;ts:1700000000;'
+  );
+});
+
+test('construirManifiesto: omite "id:" por completo si data.id no esta presente', () => {
+  assert.strictEqual(
+    construirManifiesto({ dataId: undefined, xRequestId: 'req-1', ts: '1700000000' }),
+    'request-id:req-1;ts:1700000000;'
+  );
+  assert.strictEqual(
+    construirManifiesto({ dataId: null, xRequestId: 'req-1', ts: '1700000000' }),
+    'request-id:req-1;ts:1700000000;'
+  );
+});
+
+test('construirManifiesto: omite ambos segmentos si data.id y x-request-id no estan presentes (solo ts)', () => {
+  assert.strictEqual(
+    construirManifiesto({ dataId: undefined, xRequestId: undefined, ts: '1700000000' }),
+    'ts:1700000000;'
+  );
+});
+
 // --- compararHexEnTiempoConstante ----------------------------------------
 
 test('compararHexEnTiempoConstante: true para strings hex identicos', () => {
@@ -180,22 +215,67 @@ test('validarFirmaWebhook: false ante header x-signature ausente/malformado', ()
   );
 });
 
-test('validarFirmaWebhook: false ante x-request-id ausente', () => {
-  const { header } = firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1700000000' });
+test('validarFirmaWebhook: false si falta "ts" dentro de x-signature (solo v1)', () => {
+  const dataId = '123456789';
+  const xRequestId = 'req-abc';
+  const manifestCompleto = construirManifiesto({ dataId, xRequestId, ts: '1700000000' });
+  const v1 = crypto.createHmac('sha256', SECRET).update(manifestCompleto).digest('hex');
   assert.strictEqual(
-    validarFirmaWebhook({ xSignatureHeader: header, xRequestId: undefined, dataId: '1', secret: SECRET }),
+    validarFirmaWebhook({ xSignatureHeader: `v1=${v1}`, xRequestId, dataId, secret: SECRET }),
     false
   );
 });
 
-test('validarFirmaWebhook: false ante data.id ausente', () => {
-  const { header } = firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1700000000' });
+test('validarFirmaWebhook: false si falta "v1" dentro de x-signature (solo ts)', () => {
   assert.strictEqual(
-    validarFirmaWebhook({ xSignatureHeader: header, xRequestId: 'req', dataId: undefined, secret: SECRET }),
+    validarFirmaWebhook({ xSignatureHeader: 'ts=1700000000', xRequestId: 'req', dataId: '1', secret: SECRET }),
     false
   );
+});
+
+// Regla oficial de Mercado Pago: data.id y x-request-id ausentes se omiten
+// del manifest (nunca causan por si solos que la firma se considere
+// invalida). Distinto de "ts"/"v1", que son intrinsecos al header
+// x-signature y siempre son obligatorios.
+
+test('validarFirmaWebhook: true si falta x-request-id pero la firma es valida sobre el manifest reducido', () => {
+  const dataId = '123456789';
+  const ts = '1700000000';
+  // Firmado (por Mercado Pago) SIN x-request-id: el manifest real que
+  // Mercado Pago firmo omite el segmento "request-id:...;".
+  const { header } = firmarNotificacion({ dataId, xRequestId: undefined, ts });
   assert.strictEqual(
-    validarFirmaWebhook({ xSignatureHeader: header, xRequestId: 'req', dataId: '', secret: SECRET }),
+    validarFirmaWebhook({ xSignatureHeader: header, xRequestId: undefined, dataId, secret: SECRET }),
+    true
+  );
+});
+
+test('validarFirmaWebhook: true si falta data.id pero la firma es valida sobre el manifest reducido (solo validacion criptografica)', () => {
+  const xRequestId = 'req-abc';
+  const ts = '1700000000';
+  // Firmado (por Mercado Pago) SIN data.id: el manifest real que Mercado
+  // Pago firmo omite el segmento "id:...;". Esto SOLO prueba el origen
+  // criptografico de la notificacion; si el procesamiento de negocio puede
+  // continuar sin un data.id utilizable es decision de
+  // api/mercadopago-webhook.js, no de esta funcion (ver tests de ese
+  // archivo: "falta data.id pero firma valida").
+  const { header } = firmarNotificacion({ dataId: undefined, xRequestId, ts });
+  assert.strictEqual(
+    validarFirmaWebhook({ xSignatureHeader: header, xRequestId, dataId: undefined, secret: SECRET }),
+    true
+  );
+});
+
+test('validarFirmaWebhook: false si un manifest reducido (sin x-request-id) se valida como si fuera completo, o viceversa', () => {
+  const dataId = '123456789';
+  const ts = '1700000000';
+  // Firmado SIN x-request-id (manifest reducido)...
+  const { header } = firmarNotificacion({ dataId, xRequestId: undefined, ts });
+  // ...pero se intenta validar como si x-request-id SI hubiera estado
+  // presente: el manifest usado para validar ya no coincide con el que se
+  // firmo, el HMAC no puede coincidir.
+  assert.strictEqual(
+    validarFirmaWebhook({ xSignatureHeader: header, xRequestId: 'req-que-no-se-firmo', dataId, secret: SECRET }),
     false
   );
 });
