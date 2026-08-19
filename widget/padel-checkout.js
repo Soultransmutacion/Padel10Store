@@ -30,7 +30,21 @@
   }
 
   var ENDPOINT = '/api/pedidos';
+  var RETRY_ENDPOINT = '/api/pedidos-preferencia';
   var GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamente en unos minutos.';
+  var RETRY_ERROR_MESSAGE = 'No pudimos reiniciar el pago. Intentá nuevamente en unos minutos.';
+
+  // Misma allow-list de hosts sandbox que usa widget/mercadopago-buy.js:
+  // nunca se navega a una URL de checkout que no sea explicitamente de
+  // Mercado Pago sandbox (protocolo https + host conocido).
+  var ALLOWED_SANDBOX_HOSTS = ['sandbox.mercadopago.com.ar', 'sandbox.mercadopago.com'];
+  function isValidSandboxUrl(url) {
+    if (typeof url !== 'string' || !url) return false;
+    var parsed;
+    try { parsed = new URL(url); } catch (e) { return false; }
+    if (parsed.protocol !== 'https:') return false;
+    return ALLOWED_SANDBOX_HOSTS.indexOf(parsed.hostname) !== -1;
+  }
 
   var PROVINCIAS = [
     'Buenos Aires', 'Ciudad Autónoma de Buenos Aires', 'Catamarca', 'Chaco', 'Chubut',
@@ -63,6 +77,14 @@
   var submitError = null; // string | null
   var submitting = false;
   var pedidoConfirmadoNumero = null;
+  // paymentRetryToken: SOLO vive en memoria (nunca localStorage, nunca se
+  // loguea). Autoriza unicamente un intento de reiniciar el pago de ESTE
+  // pedido puntual; no reemplaza ningun otro identificador. Se recibe de
+  // /api/pedidos SOLAMENTE cuando el pedido se registro correctamente
+  // pero no se pudo iniciar el pago en el mismo request.
+  var paymentRetryToken = null;
+  var retrying = false;
+  var retryError = null;
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -200,11 +222,20 @@
 
   function renderConfirmacionView() {
     if (els.title) els.title.textContent = '¡Pedido registrado!';
+    var retryHtml = '';
+    if (paymentRetryToken) {
+      retryHtml =
+        (retryError ? '<div class="mp-buy-error" role="alert" style="text-align:left;margin:8px 0">' + escapeHtml(retryError) + '</div>' : '') +
+        '<button type="button" class="chk-btn" data-action="retry-payment" ' + (retrying ? 'disabled' : '') + '>' +
+        (retrying ? 'Iniciando pago…' : 'Pagar ahora') +
+        '</button>';
+    }
     els.body.innerHTML =
       '<div class="success">' +
       '<div class="succ-ico">&#9989;</div>' +
       '<div class="succ-t">Pedido ' + escapeHtml(pedidoConfirmadoNumero) + '</div>' +
       '<div class="succ-s">Tu pedido quedó registrado correctamente.<br><strong>Todavía no se realizó ningún cobro.</strong><br>Nos vamos a comunicar para coordinar el pago.</div>' +
+      retryHtml +
       '</div>';
   }
 
@@ -316,14 +347,64 @@
           return;
         }
         pedidoConfirmadoNumero = result.data.numero;
+        paymentRetryToken = typeof result.data.paymentRetryToken === 'string' ? result.data.paymentRetryToken : null;
+        retryError = null;
         // El carrito se vacia UNICAMENTE aca, despues de una confirmacion
-        // real del servidor (nunca antes, ni de forma optimista).
+        // real del servidor (nunca antes, ni de forma optimista): el
+        // pedido ya quedo registrado, se pueda o no continuar con el pago
+        // en este mismo paso.
         window.PadelCart.clear();
+        if (isValidSandboxUrl(result.data.redirectUrl)) {
+          // El pago ya se puede iniciar: se navega directo al checkout de
+          // Mercado Pago sandbox. No hace falta mostrar la vista de
+          // confirmacion (el comprador la va a ver al volver del pago).
+          window.location.href = result.data.redirectUrl;
+          return;
+        }
         goto('confirmacion');
       })
       .catch(function () {
         submitting = false;
         submitError = GENERIC_ERROR_MESSAGE;
+        render();
+      });
+  }
+
+  // --- reintento de pago (POST /api/pedidos-preferencia) -------------------
+  //
+  // Solo se usa cuando el pedido ya se registro pero no se pudo iniciar el
+  // pago en el mismo request. El cliente manda UNICAMENTE
+  // paymentRetryToken (nunca el numero ni ningun otro dato del pedido).
+
+  function retryPayment() {
+    if (retrying || !paymentRetryToken) return;
+    retrying = true;
+    retryError = null;
+    render();
+
+    fetch(RETRY_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentRetryToken: paymentRetryToken }),
+    })
+      .then(function (response) {
+        return response
+          .json()
+          .catch(function () { return {}; })
+          .then(function (data) { return { ok: response.ok, data: data }; });
+      })
+      .then(function (result) {
+        retrying = false;
+        if (!result.ok || !result.data || !isValidSandboxUrl(result.data.redirectUrl)) {
+          retryError = RETRY_ERROR_MESSAGE;
+          render();
+          return;
+        }
+        window.location.href = result.data.redirectUrl;
+      })
+      .catch(function () {
+        retrying = false;
+        retryError = RETRY_ERROR_MESSAGE;
         render();
       });
   }
@@ -345,11 +426,19 @@
     }
   }
 
+  function onBodyClick(e) {
+    var target = e.target && e.target.closest ? e.target.closest('[data-action]') : null;
+    if (!target) return;
+    if (target.dataset.action === 'retry-payment') retryPayment();
+  }
+
   function resetToCarritoView() {
     view = 'carrito';
     currentError = null;
     submitError = null;
     submitting = false;
+    retryError = null;
+    retrying = false;
   }
 
   function init() {
@@ -358,6 +447,7 @@
 
     if (els.body) els.body.addEventListener('input', onBodyInput);
     if (els.body) els.body.addEventListener('change', onBodyInput);
+    if (els.body) els.body.addEventListener('click', onBodyClick);
 
     if (els.continueBtn) {
       els.continueBtn.addEventListener('click', function () {
@@ -380,7 +470,15 @@
       els.nextBtn.addEventListener('click', function () {
         if (view === 'formulario') intentarAvanzarARevision();
         else if (view === 'revision') submitPedido();
-        else if (view === 'confirmacion') goto('carrito');
+        else if (view === 'confirmacion') {
+          // "Seguir comprando": el pedido ya quedo resuelto (con o sin
+          // pago iniciado); se descarta cualquier token de reintento que
+          // hubiera quedado en memoria, nunca se reutiliza para otro
+          // pedido.
+          paymentRetryToken = null;
+          retryError = null;
+          goto('carrito');
+        }
       });
     }
 
@@ -414,5 +512,6 @@
   window.PadelCheckoutWidgetInternal = {
     getView: function () { return view; },
     getFormState: function () { return formState; },
+    getPaymentRetryToken: function () { return paymentRetryToken; },
   };
 })();

@@ -279,10 +279,18 @@ function createPedidosHandler(deps) {
     // segura del estado del pedido, no para reintentos de Mercado Pago),
     // nunca secrets ni datos de Mercado Pago. Solo lo estrictamente
     // necesario para que el frontend continue el flujo.
-    return res.status(201).json({
-      numero: pedido.numero,
-      redirectUrl,
-    });
+    //
+    // paymentRetryToken SOLO se incluye cuando hace falta permitir un
+    // reintento seguro desde el cliente, es decir cuando el request no
+    // pudo devolver ya un redirectUrl (la preferencia inicial fallo o no
+    // se pudo crear). Si el flujo exitoso normal ya tiene redirectUrl,
+    // el cliente no necesita ningun token todavia: se evita exponerlo en
+    // el camino feliz.
+    const respuesta = { numero: pedido.numero, redirectUrl };
+    if (!redirectUrl && pedido.payment_retry_token) {
+      respuesta.paymentRetryToken = pedido.payment_retry_token;
+    }
+    return res.status(201).json(respuesta);
     } catch (err) {
       return sendGenericError(res, 500);
     }

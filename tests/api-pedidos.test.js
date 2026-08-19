@@ -102,7 +102,11 @@ function createFakeCrearPedido(options) {
     return {
       id: 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
       numero: opts.numero || 'P10-000123',
-      access_token: 'token-de-prueba-para-reintento-de-preferencia',
+      access_token: 'token-de-prueba-para-consulta-de-estado',
+      payment_retry_token:
+        opts.paymentRetryToken === undefined
+          ? 'a'.repeat(64) // formato realista: 64 chars hex-like, ver lib/payment-retry-token.js
+          : opts.paymentRetryToken,
     };
   }
   fakeCrearPedido.llamadas = llamadas;
@@ -563,6 +567,38 @@ testAsync('si obtenerItemsPorPedido tira una excepcion, la respuesta igual confi
   assert.strictEqual(res.statusCode, 201);
   assert.strictEqual(typeof res.body.numero, 'string');
   assert.strictEqual(res.body.redirectUrl, null);
+});
+
+// --- paymentRetryToken: solo se expone cuando hace falta (Etapa 3) --------
+
+testAsync('si la preferencia inicial falla, la respuesta incluye paymentRetryToken para permitir un reintento', async () => {
+  const { handler } = crearHandlerDePrueba(
+    { paymentRetryToken: 'b'.repeat(64) },
+    { preferencia: { ok: false, motivo: 'mercado_pago' } }
+  );
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.redirectUrl, null);
+  assert.strictEqual(res.body.paymentRetryToken, 'b'.repeat(64));
+});
+
+testAsync('cuando la preferencia inicial se crea bien, la respuesta NUNCA incluye paymentRetryToken (no hace falta reintentar)', async () => {
+  const { handler } = crearHandlerDePrueba(undefined, {
+    preferencia: { ok: true, checkoutUrl: 'https://sandbox.mercadopago.com.ar/checkout/abc123' },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.redirectUrl, 'https://sandbox.mercadopago.com.ar/checkout/abc123');
+  assert.strictEqual('paymentRetryToken' in res.body, false);
+  assert.deepStrictEqual(Object.keys(res.body).sort(), ['numero', 'redirectUrl']);
+});
+
+testAsync('la respuesta de exito nunca incluye el payment_retry_token en formato snake_case', async () => {
+  const { handler } = crearHandlerDePrueba(undefined, {
+    preferencia: { ok: false, motivo: 'mercado_pago' },
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual('payment_retry_token' in res.body, false);
 });
 
 // --- mapeo de errores de PedidoStoreError a HTTP genericos -----------------
