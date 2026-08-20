@@ -19,6 +19,7 @@ const {
   isValidSandboxInitPoint,
   getTrustedBaseUrl,
   buildBackUrls,
+  buildNotificationUrl,
   buildPreferencePayload,
 } = require('../lib/mercadopago-preference');
 const { getProductById } = require('../lib/padel-catalog');
@@ -195,25 +196,114 @@ test('buildPreferencePayload usa cantidad fija 1 y el precio/nombre del catalogo
   assert.strictEqual(payload.items[0].currency_id, 'ARS');
 });
 
-test('getTrustedBaseUrl solo lee VERCEL_URL (nunca una URL enviada por el navegador)', () => {
-  const previous = process.env.VERCEL_URL;
+// ---------------------------------------------------------------------
+// getTrustedBaseUrl: preferir VERCEL_BRANCH_URL (URL estable de la rama)
+// por sobre VERCEL_URL (URL unica por deployment/commit). Fase 3, fix
+// post-prueba end-to-end: Mercado Pago no pudo entregar el webhook de
+// P10-000006 porque notification_url usaba VERCEL_URL, que no coincide
+// con la URL registrada a mano en el dashboard de Webhooks.
+// ---------------------------------------------------------------------
+
+function withEnv(vars, fn) {
+  const previous = {};
+  const keys = Object.keys(vars);
+  keys.forEach((key) => {
+    previous[key] = process.env[key];
+  });
   try {
-    process.env.VERCEL_URL = 'mi-preview-123.vercel.app';
-    assert.strictEqual(getTrustedBaseUrl(), 'https://mi-preview-123.vercel.app');
+    keys.forEach((key) => {
+      const value = vars[key];
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    });
+    fn();
   } finally {
-    if (previous === undefined) delete process.env.VERCEL_URL;
-    else process.env.VERCEL_URL = previous;
+    keys.forEach((key) => {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    });
   }
+}
+
+test('getTrustedBaseUrl usa VERCEL_BRANCH_URL cuando esta definida (Preview: URL estable de la rama)', () => {
+  withEnv(
+    {
+      VERCEL_BRANCH_URL: 'padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app',
+      VERCEL_URL: 'padel10-store-lx9dir1aa-soultransmutacions-projects.vercel.app',
+    },
+    () => {
+      assert.strictEqual(
+        getTrustedBaseUrl(),
+        'https://padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app'
+      );
+    }
+  );
 });
 
-test('getTrustedBaseUrl devuelve null si VERCEL_URL no esta definida', () => {
-  const previous = process.env.VERCEL_URL;
-  try {
-    delete process.env.VERCEL_URL;
+test('getTrustedBaseUrl hace fallback a VERCEL_URL cuando VERCEL_BRANCH_URL no esta definida', () => {
+  withEnv(
+    { VERCEL_BRANCH_URL: undefined, VERCEL_URL: 'mi-preview-123.vercel.app' },
+    () => {
+      assert.strictEqual(getTrustedBaseUrl(), 'https://mi-preview-123.vercel.app');
+    }
+  );
+});
+
+test('getTrustedBaseUrl hace fallback a VERCEL_URL cuando VERCEL_BRANCH_URL esta vacia o son solo espacios', () => {
+  withEnv(
+    { VERCEL_BRANCH_URL: '   ', VERCEL_URL: 'mi-preview-123.vercel.app' },
+    () => {
+      assert.strictEqual(getTrustedBaseUrl(), 'https://mi-preview-123.vercel.app');
+    }
+  );
+});
+
+test('getTrustedBaseUrl devuelve null si ni VERCEL_BRANCH_URL ni VERCEL_URL estan definidas', () => {
+  withEnv({ VERCEL_BRANCH_URL: undefined, VERCEL_URL: undefined }, () => {
     assert.strictEqual(getTrustedBaseUrl(), null);
-  } finally {
-    if (previous !== undefined) process.env.VERCEL_URL = previous;
-  }
+  });
+});
+
+test('getTrustedBaseUrl siempre devuelve una URL https valida cuando hay variable disponible', () => {
+  withEnv(
+    { VERCEL_BRANCH_URL: 'padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app' },
+    () => {
+      const base = getTrustedBaseUrl();
+      assert.ok(base.startsWith('https://'), 'la base debe empezar con https://');
+      const parsed = new URL(base);
+      assert.strictEqual(parsed.protocol, 'https:');
+    }
+  );
+});
+
+test('notification_url construida desde VERCEL_BRANCH_URL es exacta y coincide con la registrada en el dashboard de Mercado Pago', () => {
+  withEnv(
+    {
+      VERCEL_BRANCH_URL: 'padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app',
+      VERCEL_URL: 'padel10-store-lx9dir1aa-soultransmutacions-projects.vercel.app',
+    },
+    () => {
+      const base = getTrustedBaseUrl();
+      const notificationUrl = buildNotificationUrl(base);
+      assert.strictEqual(
+        notificationUrl,
+        'https://padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app/api/mercadopago-webhook'
+      );
+    }
+  );
+});
+
+test('notification_url es estable entre deployments: no cambia aunque VERCEL_URL (hash por commit) cambie, mientras la rama sea la misma', () => {
+  const branchUrl = 'padel10-store-git-asesor-ia-bcc3b9-soultransmutacions-projects.vercel.app';
+  let primerDeploy;
+  let segundoDeploy;
+  withEnv({ VERCEL_BRANCH_URL: branchUrl, VERCEL_URL: 'padel10-store-lx9dir1aa-soultransmutacions-projects.vercel.app' }, () => {
+    primerDeploy = buildNotificationUrl(getTrustedBaseUrl());
+  });
+  withEnv({ VERCEL_BRANCH_URL: branchUrl, VERCEL_URL: 'padel10-store-otrohash99-soultransmutacions-projects.vercel.app' }, () => {
+    segundoDeploy = buildNotificationUrl(getTrustedBaseUrl());
+  });
+  assert.strictEqual(primerDeploy, segundoDeploy);
 });
 
 // ---------------------------------------------------------------------
