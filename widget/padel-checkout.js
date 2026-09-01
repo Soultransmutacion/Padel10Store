@@ -47,6 +47,30 @@
   var RETRY_ENDPOINT = '/api/pedidos-preferencia';
   var GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamente en unos minutos.';
   var RETRY_ERROR_MESSAGE = 'No pudimos reiniciar el pago. Intentá nuevamente en unos minutos.';
+  // Se muestra cuando se pierde la respuesta (timeout, corte de red) y por
+  // lo tanto no hay forma de saber si el servidor llego a crear el pedido:
+  // a diferencia de GENERIC_ERROR_MESSAGE, deja explicito que reintentar es
+  // seguro (la idempotencyKey nunca se borra en este caso, ver mas abajo).
+  var UNCERTAIN_RESULT_MESSAGE = 'No pudimos confirmar si tu pedido se registró. Podés reintentar tranquilo: no se va a duplicar.';
+  // Se muestra ante un 409: la idempotencyKey guardada ya se uso antes con
+  // datos distintos a los actuales (deberia ser un caso raro: implica que
+  // el contenido cambio sin que se detectara localmente).
+  var CONFLICT_ERROR_MESSAGE = 'Tus datos cambiaron respecto a un intento anterior. Volvé a intentar.';
+  // Tiempo maximo que se espera la respuesta de POST /api/pedidos antes de
+  // abortar el fetch. No implica que el servidor no haya procesado el
+  // pedido igual (ver UNCERTAIN_RESULT_MESSAGE): solo evita que el
+  // comprador quede esperando indefinidamente.
+  var SUBMIT_TIMEOUT_MS = 20000;
+  // Clave de sessionStorage (nunca localStorage: se prefiere que la
+  // proteccion no sobreviva mas alla de la pestaña/sesion actual) donde se
+  // guarda temporalmente { key, firma } de la intencion de compra en
+  // curso. Solo contiene la clave opaca y un hash NO reversible del
+  // contenido (ver hashContenido mas abajo): nunca el nombre, email,
+  // telefono o direccion del comprador en texto plano.
+  var IDEMPOTENCY_STORAGE_KEY = 'padel10store:checkoutIdempotencia';
+  // Mismo formato que valida el servidor para idempotencyKey (16-100
+  // caracteres, [A-Za-z0-9_-]).
+  var IDEMPOTENCY_KEY_REGEX = /^[A-Za-z0-9_-]{16,100}$/;
 
   // Nunca se navega a una URL de checkout que no sea explicitamente de
   // Mercado Pago sandbox (protocolo https + host conocido).
@@ -105,6 +129,140 @@
   var paymentRetryToken = null;
   var retrying = false;
   var retryError = null;
+  // AbortController de la solicitud POST /api/pedidos en curso (null si no
+  // hay ninguna). motivoAborto distingue POR QUE se aborto, para decidir
+  // que hacer cuando esa promesa efectivamente se resuelve/rechaza despues:
+  // 'user' (el comprador navego lejos a proposito: no se muestra nada) vs
+  // 'timeout' (se agoto SUBMIT_TIMEOUT_MS: resultado incierto).
+  var solicitudPedidoEnCurso = null;
+  var motivoAborto = null;
+  var timeoutIdSolicitudPedido = null;
+  // true si, al inicializar el widget, YA habia una idempotencyKey guardada
+  // en sessionStorage de un intento de compra anterior sin confirmar (por
+  // ejemplo, la pestaña se restauro o se recargo en medio del checkout).
+  // Se usa solo para mostrar un aviso; nunca cambia el comportamiento del
+  // envio (la idempotencyKey en si ya resuelve la seguridad real).
+  var sesionConIntentoPrevioSinConfirmar = false;
+
+  function cancelarSolicitudPedidoPendiente() {
+    if (timeoutIdSolicitudPedido) {
+      clearTimeout(timeoutIdSolicitudPedido);
+      timeoutIdSolicitudPedido = null;
+    }
+    if (solicitudPedidoEnCurso) {
+      motivoAborto = 'user';
+      solicitudPedidoEnCurso.abort();
+      solicitudPedidoEnCurso = null;
+    }
+  }
+
+  // Hash NO criptografico (solo para detectar si el contenido del checkout
+  // cambio entre un intento y el siguiente): nunca se usa con fines de
+  // seguridad. El fingerprint de seguridad real (SHA-256) lo calcula
+  // exclusivamente el servidor, a partir del contenido ya validado (nunca
+  // de un valor que mande el navegador).
+  function hashContenido(str) {
+    var h = 5381;
+    for (var i = 0; i < str.length; i += 1) {
+      h = ((h << 5) + h + str.charCodeAt(i)) | 0;
+    }
+    return (h >>> 0).toString(16);
+  }
+
+  function leerIdempotenciaAlmacenada() {
+    try {
+      var raw = window.sessionStorage.getItem(IDEMPOTENCY_STORAGE_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed.key !== 'string' || typeof parsed.firma !== 'string') return null;
+      if (!IDEMPOTENCY_KEY_REGEX.test(parsed.key)) return null;
+      return parsed;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function guardarIdempotenciaAlmacenada(key, firma) {
+    try {
+      window.sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, JSON.stringify({ key: key, firma: firma }));
+    } catch (e) {
+      // Si sessionStorage no esta disponible (modo privado estricto, cuota
+      // agotada, etc.) el checkout sigue funcionando igual: solo se pierde
+      // la proteccion extra ante recarga/restauracion de pestaña.
+    }
+  }
+
+  function borrarIdempotenciaAlmacenada() {
+    try {
+      window.sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
+    } catch (e) {}
+  }
+
+  // Genera una clave de idempotencia opaca. crypto.randomUUID() es el
+  // camino normal; el fallback a getRandomValues cubre navegadores viejos
+  // que tienen Web Crypto pero no randomUUID; el ultimo fallback (Math.random)
+  // solo se usaria si no hubiera Web Crypto en absoluto, algo hoy
+  // practicamente inexistente: sigue siendo aceptable porque esta clave es
+  // unicamente un identificador opaco de idempotencia, nunca un secreto.
+  function generarIdempotencyKeySegura() {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+    if (window.crypto && typeof window.crypto.getRandomValues === 'function') {
+      var bytes = new Uint8Array(24);
+      window.crypto.getRandomValues(bytes);
+      var hex = '';
+      for (var i = 0; i < bytes.length; i += 1) {
+        hex += (bytes[i] < 16 ? '0' : '') + bytes[i].toString(16);
+      }
+      return hex;
+    }
+    var fallback = '';
+    for (var j = 0; j < 32; j += 1) fallback += Math.floor(Math.random() * 16).toString(16);
+    return fallback;
+  }
+
+  // Contenido "relevante" del intento de compra actual: producto(s),
+  // cantidad, talle y datos de comprador/contacto/envio. Se usa tanto para
+  // armar el body real de la request como para calcular la firma que
+  // decide si se reutiliza la idempotencyKey guardada o se genera una
+  // nueva (ver obtenerIdempotencyKeyParaIntento).
+  function contenidoDelIntentoActual() {
+    return {
+      comprador: { nombre: formState.nombre.trim(), apellido: formState.apellido.trim() },
+      contacto: { email: formState.email.trim(), telefono: formState.telefono.trim() },
+      direccionEnvio: {
+        provincia: formState.provincia.trim(),
+        localidad: formState.localidad.trim(),
+        codigoPostal: formState.codigoPostal.trim(),
+        calle: formState.calle.trim(),
+        numero: formState.numero.trim(),
+        pisoDepto: formState.pisoDepto.trim(),
+        aclaraciones: formState.aclaraciones.trim(),
+      },
+      items:
+        mode === 'buyNow' && buyNowLine
+          ? [{ productId: buyNowLine.productId, talle: buyNowLine.talle, cantidad: buyNowLine.cantidad }]
+          : window.PadelCart.getRawLines(),
+    };
+  }
+
+  // Devuelve la idempotencyKey a usar para EL CONTENIDO ACTUAL: si ya habia
+  // una guardada para el mismo contenido (misma firma), la reutiliza -esto
+  // es lo que le permite sobrevivir a una recarga/restauracion de pestaña o
+  // a un reintento manual sin generar pedidos duplicados-; si el contenido
+  // cambio (otro producto, cantidad, talle, direccion, etc.) o no habia
+  // ninguna guardada, genera una nueva.
+  function obtenerIdempotencyKeyParaIntento(contenido) {
+    var firmaActual = hashContenido(JSON.stringify(contenido));
+    var almacenado = leerIdempotenciaAlmacenada();
+    if (almacenado && almacenado.firma === firmaActual) {
+      return almacenado.key;
+    }
+    var nuevaKey = generarIdempotencyKeySegura();
+    guardarIdempotenciaAlmacenada(nuevaKey, firmaActual);
+    return nuevaKey;
+  }
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -211,6 +369,22 @@
     return label + control + errorMsg + '</label>';
   }
 
+  // Aviso de "sesion restaurada": informa, sin bloquear nada, que ya habia
+  // un intento de compra sin confirmar guardado en esta pestaña (recarga o
+  // restauracion de sesion en medio del checkout). Nunca es un error: el
+  // mecanismo de idempotencyKey ya garantiza que continuar es seguro.
+  function avisoSesionRestauradaHtml() {
+    if (!sesionConIntentoPrevioSinConfirmar) return '';
+    return (
+      '<div class="mp-buy-hint" role="status" style="font-size:11px;color:#ffd166;' +
+      'background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.3);' +
+      'border-radius:8px;padding:8px;margin-bottom:8px;line-height:1.4">' +
+      'Encontramos un intento de compra anterior en esta pestaña que no llegamos a confirmar. ' +
+      'Si ya recibiste la confirmación no hace falta repetirlo; si no, podés continuar tranquilo: no se va a duplicar.' +
+      '</div>'
+    );
+  }
+
   function renderFormularioView() {
     if (els.title) els.title.textContent = 'Tus datos';
     var rows = CAMPOS.map(function (c) {
@@ -218,6 +392,7 @@
     }).join('');
     els.body.innerHTML =
       '<div style="padding-bottom:0.5rem">' +
+      avisoSesionRestauradaHtml() +
       '<div class="os-t">COMPRADOR, CONTACTO Y ENVÍO</div>' +
       rows +
       '</div>';
@@ -237,6 +412,7 @@
       .join('');
     var direccionLinea2 = [formState.pisoDepto].filter(Boolean).map(escapeHtml).join(', ');
     els.body.innerHTML =
+      avisoSesionRestauradaHtml() +
       '<div class="ord-sum"><div class="os-t">COMPRADOR</div>' +
       '<div class="os-item"><span>Nombre</span><span>' + escapeHtml(formState.nombre + ' ' + formState.apellido) + '</span></div>' +
       '<div class="os-item"><span>Email</span><span>' + escapeHtml(formState.email) + '</span></div>' +
@@ -286,6 +462,7 @@
     if (els.footerCart) els.footerCart.hidden = true;
     if (els.footerCheckout) els.footerCheckout.hidden = false;
     if (!els.backBtn || !els.nextBtn) return;
+    els.backBtn.disabled = false;
 
     if (view === 'formulario') {
       els.backBtn.hidden = false;
@@ -294,6 +471,12 @@
       els.nextBtn.textContent = 'Revisar pedido';
     } else if (view === 'revision') {
       els.backBtn.hidden = false;
+      // Deshabilitado mientras hay un envio en curso: evita que el
+      // comprador dispare una navegacion mientras se decide si hace falta
+      // cancelarla (igual, el click de todos modos queda cubierto por
+      // cancelarSolicitudPedidoPendiente en el handler, por si llega a
+      // disparase de otra forma).
+      els.backBtn.disabled = submitting;
       els.backBtn.textContent = 'Volver a editar mis datos';
       els.nextBtn.disabled = submitting;
       els.nextBtn.textContent = submitting ? 'Creando pedido…' : 'Confirmar y crear pedido';
@@ -347,48 +530,84 @@
     submitError = null;
     updateFooter();
 
+    var contenido = contenidoDelIntentoActual();
+    var idempotencyKey = obtenerIdempotencyKeyParaIntento(contenido);
+
     var body = {
-      comprador: { nombre: formState.nombre.trim(), apellido: formState.apellido.trim() },
-      contacto: { email: formState.email.trim(), telefono: formState.telefono.trim() },
+      comprador: contenido.comprador,
+      contacto: contenido.contacto,
       direccionEnvio: {
-        provincia: formState.provincia.trim(),
-        localidad: formState.localidad.trim(),
-        codigoPostal: formState.codigoPostal.trim(),
-        calle: formState.calle.trim(),
-        numero: formState.numero.trim(),
+        provincia: contenido.direccionEnvio.provincia,
+        localidad: contenido.direccionEnvio.localidad,
+        codigoPostal: contenido.direccionEnvio.codigoPostal,
+        calle: contenido.direccionEnvio.calle,
+        numero: contenido.direccionEnvio.numero,
       },
       // En modo 'buyNow' se manda UNICAMENTE la linea de "Comprar ahora"
       // (nunca lo que ya hubiera en el carrito persistente, que en ese modo
       // no se toca en ningun momento). En modo 'cart', las lineas reales
       // del carrito, igual que antes.
-      items:
-        mode === 'buyNow' && buyNowLine
-          ? [{ productId: buyNowLine.productId, talle: buyNowLine.talle, cantidad: buyNowLine.cantidad }]
-          : window.PadelCart.getRawLines(),
+      items: contenido.items,
+      idempotencyKey: idempotencyKey,
     };
-    if (formState.pisoDepto.trim()) body.direccionEnvio.pisoDepto = formState.pisoDepto.trim();
-    if (formState.aclaraciones.trim()) body.direccionEnvio.aclaraciones = formState.aclaraciones.trim();
+    if (contenido.direccionEnvio.pisoDepto) body.direccionEnvio.pisoDepto = contenido.direccionEnvio.pisoDepto;
+    if (contenido.direccionEnvio.aclaraciones) body.direccionEnvio.aclaraciones = contenido.direccionEnvio.aclaraciones;
+
+    var controller = new AbortController();
+    solicitudPedidoEnCurso = controller;
+    motivoAborto = null;
+    timeoutIdSolicitudPedido = setTimeout(function () {
+      motivoAborto = 'timeout';
+      controller.abort();
+    }, SUBMIT_TIMEOUT_MS);
 
     fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: controller.signal,
     })
       .then(function (response) {
         return response
           .json()
           .catch(function () { return {}; })
-          .then(function (data) { return { ok: response.ok, data: data }; });
+          .then(function (data) { return { ok: response.ok, status: response.status, data: data }; });
       })
       .then(function (result) {
+        // Si ya no es la solicitud "vigente" (se cancelo, o ya se agoto su
+        // propio timeout y el usuario/flujo siguio adelante), esta
+        // respuesta tardia nunca debe tocar el carrito, cerrar pantallas ni
+        // redirigir: se descarta en silencio.
+        if (controller !== solicitudPedidoEnCurso) return;
+        clearTimeout(timeoutIdSolicitudPedido);
+        timeoutIdSolicitudPedido = null;
+        solicitudPedidoEnCurso = null;
         submitting = false;
+
         if (!result.ok || !result.data || typeof result.data.numero !== 'string') {
           // El carrito NUNCA se vacia si falla la creacion del pedido: el
           // comprador no pierde lo que ya habia armado.
-          submitError = GENERIC_ERROR_MESSAGE;
+          if (result.status === 409) {
+            submitError = CONFLICT_ERROR_MESSAGE;
+            // La idempotencyKey usada ya no corresponde al contenido
+            // actual (segun el servidor): se descarta para que el proximo
+            // intento use una nueva en vez de repetir el mismo conflicto.
+            borrarIdempotenciaAlmacenada();
+          } else {
+            submitError = GENERIC_ERROR_MESSAGE;
+          }
           render();
           return;
         }
+
+        // Exito confirmado por el servidor: recien ACA se descarta la
+        // idempotencyKey guardada (nunca antes, ni en el catch de abajo):
+        // un timeout o un abort no garantizan que el servidor no haya
+        // creado igual el pedido, asi que hasta este punto la clave debe
+        // seguir disponible para que un reintento la reutilice.
+        borrarIdempotenciaAlmacenada();
+        sesionConIntentoPrevioSinConfirmar = false;
+
         pedidoConfirmadoNumero = result.data.numero;
         paymentRetryToken = typeof result.data.paymentRetryToken === 'string' ? result.data.paymentRetryToken : null;
         retryError = null;
@@ -411,8 +630,29 @@
         goto('confirmacion');
       })
       .catch(function () {
+        if (controller !== solicitudPedidoEnCurso) return;
+        clearTimeout(timeoutIdSolicitudPedido);
+        timeoutIdSolicitudPedido = null;
+        var motivo = motivoAborto;
+        solicitudPedidoEnCurso = null;
         submitting = false;
-        submitError = GENERIC_ERROR_MESSAGE;
+
+        if (motivo === 'user') {
+          // El comprador navego lejos a proposito (cerro el drawer, volvio
+          // a editar sus datos): no se muestra ningun mensaje ni se toca
+          // el carrito. La idempotencyKey queda guardada tal cual para un
+          // futuro reintento del mismo contenido.
+          render();
+          return;
+        }
+
+        // Timeout o un error de red genuino: no hay forma de saber con
+        // certeza si el servidor llego a crear el pedido antes de que se
+        // perdiera la respuesta. Nunca se borra la idempotencyKey en este
+        // caso: un reintento del mismo contenido la va a reusar y, gracias
+        // a la RPC idempotente, va a devolver el MISMO pedido en vez de
+        // crear uno duplicado.
+        submitError = UNCERTAIN_RESULT_MESSAGE;
         render();
       });
   }
@@ -480,6 +720,11 @@
   }
 
   function resetToCarritoView() {
+    // Si habia un POST /api/pedidos en vuelo, se cancela: una respuesta
+    // tardia de un checkout que el comprador ya abandono nunca debe volver
+    // a mutar el carrito, cerrar pantallas ni redirigir (ver el
+    // .catch(...) de submitPedido).
+    cancelarSolicitudPedidoPendiente();
     view = 'carrito';
     currentError = null;
     submitError = null;
@@ -503,6 +748,8 @@
     var summary = Core.buildCartSummary([{ productId: productId, talle: talle || null, cantidad: 1 }], getCatalogProduct);
     if (summary.lineas.length !== 1) return; // producto no resuelto contra el catalogo real
 
+    cancelarSolicitudPedidoPendiente();
+    submitting = false;
     mode = 'buyNow';
     buyNowLine = { productId: productId, talle: talle || null, cantidad: 1 };
     currentError = null;
@@ -518,6 +765,13 @@
   function init() {
     cacheEls();
     if (!els.body || !els.footerCart || !els.footerCheckout) return;
+
+    // Si ya habia una idempotencyKey guardada de un intento anterior (la
+    // pestaña se recargo o se restauro en medio de un checkout), se
+    // conserva tal cual (sessionStorage ya la persistio) y solo se marca
+    // para mostrar el aviso correspondiente: nunca se borra ni se genera
+    // una nueva aca.
+    sesionConIntentoPrevioSinConfirmar = Boolean(leerIdempotenciaAlmacenada());
 
     if (els.body) els.body.addEventListener('input', onBodyInput);
     if (els.body) els.body.addEventListener('change', onBodyInput);
@@ -543,6 +797,11 @@
           resetBuyNow();
           goto('carrito');
         } else if (view === 'revision') {
+          // Igual que al cerrar el drawer: si habia un envio en curso, se
+          // cancela para que una respuesta tardia no vuelva a mutar nada
+          // despues de que el comprador ya decidio volver a editar.
+          cancelarSolicitudPedidoPendiente();
+          submitting = false;
           currentError = null;
           goto('formulario');
         }
@@ -606,5 +865,18 @@
     getFormState: function () { return formState; },
     getPaymentRetryToken: function () { return paymentRetryToken; },
     getMode: function () { return mode; },
+    getSubmitError: function () { return submitError; },
+    isSubmitting: function () { return submitting; },
+    getIdempotenciaAlmacenada: function () { return leerIdempotenciaAlmacenada(); },
+    tieneSesionPreviaSinConfirmar: function () { return sesionConIntentoPrevioSinConfirmar; },
+    cancelarSolicitudPendiente: function () { cancelarSolicitudPedidoPendiente(); },
+    // Simula que se cumplio SUBMIT_TIMEOUT_MS sin esperar el tiempo real:
+    // dispara exactamente lo mismo que el setTimeout real de submitPedido.
+    simularTimeoutParaPruebas: function () {
+      if (solicitudPedidoEnCurso) {
+        motivoAborto = 'timeout';
+        solicitudPedidoEnCurso.abort();
+      }
+    },
   };
 })();

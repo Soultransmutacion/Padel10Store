@@ -39,6 +39,7 @@
 const {
   crearPedido: crearPedidoReal,
   obtenerItemsPorPedido: obtenerItemsPorPedidoReal,
+  esIdempotencyKeyValida,
   PedidoStoreError,
 } = require('../lib/padel-orders-store');
 const { getProductById } = require('../lib/padel-catalog');
@@ -52,7 +53,7 @@ const GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamen
 const MAX_BODY_LENGTH = 8000;
 const MAX_ITEMS = 50;
 
-const CAMPOS_RAIZ = ['comprador', 'contacto', 'direccionEnvio', 'items'];
+const CAMPOS_RAIZ = ['comprador', 'contacto', 'direccionEnvio', 'items', 'idempotencyKey'];
 const CAMPOS_COMPRADOR = ['nombre', 'apellido'];
 const CAMPOS_CONTACTO = ['email', 'telefono'];
 const CAMPOS_DIRECCION = ['provincia', 'localidad', 'codigoPostal', 'calle', 'numero', 'pisoDepto', 'aclaraciones'];
@@ -91,11 +92,16 @@ function validarFormaDelBody(parsedBody) {
   if (!isPlainObject(parsedBody)) return { ok: false };
   if (!tieneSoloClaves(parsedBody, CAMPOS_RAIZ)) return { ok: false };
 
-  const { comprador, contacto, direccionEnvio, items } = parsedBody;
+  const { comprador, contacto, direccionEnvio, items, idempotencyKey } = parsedBody;
 
   if (!isPlainObject(comprador) || !tieneSoloClaves(comprador, CAMPOS_COMPRADOR)) return { ok: false };
   if (!isPlainObject(contacto) || !tieneSoloClaves(contacto, CAMPOS_CONTACTO)) return { ok: false };
   if (!isPlainObject(direccionEnvio) || !tieneSoloClaves(direccionEnvio, CAMPOS_DIRECCION)) return { ok: false };
+
+  // idempotencyKey: obligatoria, formato estricto (16-100 caracteres,
+  // [A-Za-z0-9_-]). Se rechaza aca, antes de tocar el catalogo o la base de
+  // datos, igual que cualquier otro campo con formato invalido.
+  if (!esIdempotencyKeyValida(idempotencyKey)) return { ok: false };
 
   if (!Array.isArray(items) || items.length === 0 || items.length > MAX_ITEMS) return { ok: false };
   for (let i = 0; i < items.length; i += 1) {
@@ -199,7 +205,7 @@ function createPedidosHandler(deps) {
       if (!forma.ok) {
         return sendGenericError(res, 400);
       }
-      const { comprador, contacto, direccionEnvio, items } = forma.body;
+      const { comprador, contacto, direccionEnvio, items, idempotencyKey } = forma.body;
 
       // 5) Contenido de comprador/contacto/direccion: mismas reglas que ya
       // corrio (solo a modo de UX) el formulario del navegador.
@@ -236,6 +242,7 @@ function createPedidosHandler(deps) {
         },
         direccionEnvio: checkoutFields.construirDireccionParaPedido(direccionEnvio),
         moneda: 'ARS',
+        idempotencyKey,
         items: resumenCarrito.lineas.map((l) => ({
           productId: l.productId,
           nombre: l.nombre,

@@ -30,6 +30,7 @@ const {
   crearPedido,
   obtenerPedidoPorId,
   obtenerPedidoPorAccessToken,
+  obtenerItemsPorPedido,
   asociarPreferenceId,
   asociarPaymentId,
   actualizarEstadoPago,
@@ -74,52 +75,41 @@ function crearFakeSupabaseClient() {
     return 'P10-' + String(numeroSeq).padStart(6, '0');
   }
 
-  async function rpc(fnName, params) {
-    if (fnName !== 'padel_crear_pedido') {
-      return { data: null, error: { message: `rpc desconocida en fake: ${fnName}` } };
-    }
+  function crearFilaPedido(params, extra) {
+    const pedido = Object.assign(
+      {
+        id: uuid(),
+        numero: nextNumero(),
+        access_token: params.p_access_token,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        comprador_nombre: params.p_comprador_nombre,
+        comprador_email: params.p_comprador_email,
+        comprador_telefono: params.p_comprador_telefono,
+        comprador_documento: params.p_comprador_documento,
+        envio_direccion: params.p_envio_direccion,
+        subtotal: params.p_subtotal,
+        total: params.p_total,
+        moneda: params.p_moneda,
+        estado_pago: 'pendiente',
+        estado_pedido: 'pendiente_pago',
+        mp_preference_id: null,
+        mp_payment_id: null,
+        mp_status_detail: null,
+        payment_retry_token_hash:
+          params.p_payment_retry_token_hash === undefined ? null : params.p_payment_retry_token_hash,
+        idempotency_key: null,
+        checkout_fingerprint: null,
+        pagado_at: null,
+        cancelado_at: null,
+        notas_admin: null,
+      },
+      extra
+    );
 
-    const items = params.p_items;
-    const sumaItems = items.reduce((acc, it) => acc + it.subtotal_linea, 0);
-    if (Math.round(sumaItems * 100) !== Math.round(params.p_subtotal * 100)) {
-      return {
-        data: null,
-        error: { code: 'P0001', message: 'el subtotal no coincide con la suma de los items' },
-      };
-    }
-    if (db.pedidos.some((p) => p.access_token === params.p_access_token)) {
-      return {
-        data: null,
-        error: { code: '23505', message: 'duplicate key value violates unique constraint' },
-      };
-    }
-
-    const pedido = {
-      id: uuid(),
-      numero: nextNumero(),
-      access_token: params.p_access_token,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      comprador_nombre: params.p_comprador_nombre,
-      comprador_email: params.p_comprador_email,
-      comprador_telefono: params.p_comprador_telefono,
-      comprador_documento: params.p_comprador_documento,
-      envio_direccion: params.p_envio_direccion,
-      subtotal: params.p_subtotal,
-      total: params.p_total,
-      moneda: params.p_moneda,
-      estado_pago: 'pendiente',
-      estado_pedido: 'pendiente_pago',
-      mp_preference_id: null,
-      mp_payment_id: null,
-      mp_status_detail: null,
-      pagado_at: null,
-      cancelado_at: null,
-      notas_admin: null,
-    };
     db.pedidos.push(pedido);
 
-    items.forEach((it) => {
+    params.p_items.forEach((it) => {
       db.pedido_items.push(
         Object.assign({ id: uuid(), pedido_id: pedido.id, created_at: new Date().toISOString() }, it)
       );
@@ -133,9 +123,68 @@ function crearFakeSupabaseClient() {
       estado_pago_nuevo: pedido.estado_pago,
       estado_pedido_anterior: null,
       estado_pedido_nuevo: pedido.estado_pedido,
-      metadata: { items_count: items.length },
+      metadata: { items_count: params.p_items.length },
       created_at: new Date().toISOString(),
     });
+
+    return pedido;
+  }
+
+  async function rpc(fnName, params) {
+    if (fnName !== 'padel_crear_pedido' && fnName !== 'padel_crear_pedido_idempotente') {
+      return { data: null, error: { message: `rpc desconocida en fake: ${fnName}` } };
+    }
+    const idempotente = fnName === 'padel_crear_pedido_idempotente';
+
+    const items = params.p_items;
+    const sumaItems = items.reduce((acc, it) => acc + it.subtotal_linea, 0);
+    if (Math.round(sumaItems * 100) !== Math.round(params.p_subtotal * 100)) {
+      return {
+        data: null,
+        error: { code: 'P0001', message: 'el subtotal no coincide con la suma de los items' },
+      };
+    }
+
+    if (idempotente) {
+      if (typeof params.p_idempotency_key !== 'string' || !params.p_idempotency_key) {
+        return { data: null, error: { code: 'P0001', message: 'se requiere idempotency_key' } };
+      }
+      if (typeof params.p_checkout_fingerprint !== 'string' || !/^[0-9a-f]{64}$/.test(params.p_checkout_fingerprint)) {
+        return { data: null, error: { code: 'P0001', message: 'checkout_fingerprint invalido' } };
+      }
+
+      // Emula "insert ... on conflict (idempotency_key) do nothing": si ya
+      // existe una fila con esta clave, NO se crea nada nuevo (nunca se
+      // duplican items/eventos); se devuelve la fila existente tal cual, o
+      // se rechaza si el fingerprint no coincide.
+      const existente = db.pedidos.find((p) => p.idempotency_key === params.p_idempotency_key);
+      if (existente) {
+        if (existente.checkout_fingerprint !== params.p_checkout_fingerprint) {
+          return {
+            data: null,
+            error: {
+              code: 'P0002',
+              message: 'idempotency_key ya utilizada con un contenido de checkout distinto',
+            },
+          };
+        }
+        return { data: Object.assign({}, existente), error: null };
+      }
+    }
+
+    if (db.pedidos.some((p) => p.access_token === params.p_access_token)) {
+      return {
+        data: null,
+        error: { code: '23505', message: 'duplicate key value violates unique constraint' },
+      };
+    }
+
+    const pedido = crearFilaPedido(
+      params,
+      idempotente
+        ? { idempotency_key: params.p_idempotency_key, checkout_fingerprint: params.p_checkout_fingerprint }
+        : {}
+    );
 
     return { data: Object.assign({}, pedido), error: null };
   }
@@ -148,6 +197,10 @@ function crearFakeSupabaseClient() {
 
     const builder = {
       eq(col, val) {
+        filters.push([col, val]);
+        return builder;
+      },
+      is(col, val) {
         filters.push([col, val]);
         return builder;
       },
@@ -264,6 +317,17 @@ function direccionValida(extra) {
   );
 }
 
+// Genera una idempotencyKey fresca y aleatoria en cada llamada: asegura que
+// cada crearPedidoDePrueba()/pedidoInputValido() por defecto represente una
+// intencion de compra DISTINTA (nunca un reintento de la anterior), que es
+// lo que la inmensa mayoria de las pruebas de este archivo necesitan (por
+// ejemplo, las que esperan varios pedidos/numeros distintos). Las pruebas
+// que especificamente quieren ejercitar la idempotencia pasan su propia
+// idempotencyKey (la misma en mas de un llamado) via el parametro extra.
+function idempotencyKeyDePrueba() {
+  return 'idem-' + crypto.randomBytes(16).toString('hex');
+}
+
 function pedidoInputValido(extra) {
   return Object.assign(
     {
@@ -271,6 +335,7 @@ function pedidoInputValido(extra) {
       contacto: { email: 'juana@example.com' },
       direccionEnvio: direccionValida(),
       items: [{ productId: 'royal-padel-cross-black-26', nombre: 'Royal Padel Cross Black 26', talle: 'M', cantidad: 2, precioUnitario: 1000 }],
+      idempotencyKey: idempotencyKeyDePrueba(),
     },
     extra
   );
@@ -728,6 +793,132 @@ test('ninguna credencial sensible (secret key) aparece en errores, logs ni valor
 
   const salidaCompleta = logs.join('\n');
   assert.ok(!salidaCompleta.includes(secretoDePrueba), 'la secret key nunca debe aparecer en logs');
+});
+
+// --- Idempotencia de checkout (Fase 3, Etapa 2) --------------------------
+
+test('esIdempotencyKeyValida acepta solo el formato esperado (16-100 caracteres, [A-Za-z0-9_-])', async () => {
+  assert.strictEqual(store.esIdempotencyKeyValida('a'.repeat(16)), true);
+  assert.strictEqual(store.esIdempotencyKeyValida('a'.repeat(100)), true);
+  assert.strictEqual(store.esIdempotencyKeyValida('0123456789abcdef-_ABC'), true);
+  assert.strictEqual(store.esIdempotencyKeyValida('a'.repeat(15)), false);
+  assert.strictEqual(store.esIdempotencyKeyValida('a'.repeat(101)), false);
+  assert.strictEqual(store.esIdempotencyKeyValida('clave con espacios inv'), false);
+  assert.strictEqual(store.esIdempotencyKeyValida(''), false);
+  assert.strictEqual(store.esIdempotencyKeyValida(null), false);
+  assert.strictEqual(store.esIdempotencyKeyValida(undefined), false);
+  assert.strictEqual(store.esIdempotencyKeyValida(12345), false);
+});
+
+test('crearPedido rechaza una idempotencyKey faltante o con formato invalido', async () => {
+  const client = crearFakeSupabaseClient();
+  await assertRejectsConCodigo(
+    () => crearPedido(pedidoInputValido({ idempotencyKey: undefined }), client),
+    'VALIDACION'
+  );
+  await assertRejectsConCodigo(
+    () => crearPedido(pedidoInputValido({ idempotencyKey: 'demasiado-corta' }), client),
+    'VALIDACION'
+  );
+  await assertRejectsConCodigo(
+    () => crearPedido(pedidoInputValido({ idempotencyKey: 'clave con espacios invalidos!!' }), client),
+    'VALIDACION'
+  );
+});
+
+test('crearPedido: la misma idempotencyKey con el mismo contenido devuelve el MISMO pedido, sin duplicar items ni eventos', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+
+  const primero = await crearPedidoDePrueba(client, { idempotencyKey: key });
+  const segundo = await crearPedidoDePrueba(client, { idempotencyKey: key });
+
+  assert.strictEqual(segundo.id, primero.id);
+  assert.strictEqual(segundo.numero, primero.numero);
+  assert.strictEqual(client._db.pedidos.length, 1, 'no debe crear un segundo pedido');
+
+  const items = await obtenerItemsPorPedido(primero.id, client);
+  assert.strictEqual(items.length, 1, 'no debe duplicar items (1 linea por defecto en pedidoInputValido)');
+
+  const eventos = await obtenerEventosPorPedido(primero.id, client);
+  assert.strictEqual(
+    eventos.filter((e) => e.tipo === 'creacion').length,
+    1,
+    'no debe duplicar el evento de creacion'
+  );
+});
+
+test('crearPedido: el payment_retry_token en claro solo se devuelve en la insercion NUEVA, nunca en un reintento idempotente', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+
+  const primero = await crearPedidoDePrueba(client, { idempotencyKey: key });
+  assert.strictEqual(typeof primero.payment_retry_token, 'string');
+  assert.match(primero.payment_retry_token, /^[0-9a-f]{64}$/);
+
+  const segundo = await crearPedidoDePrueba(client, { idempotencyKey: key });
+  assert.strictEqual(segundo.payment_retry_token, undefined);
+});
+
+test('crearPedido: la misma idempotencyKey con contenido distinto se rechaza (CONFLICTO), sin tocar el pedido existente', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+
+  const primero = await crearPedidoDePrueba(client, { idempotencyKey: key });
+
+  await assertRejectsConCodigo(
+    () =>
+      crearPedido(
+        pedidoInputValido({
+          idempotencyKey: key,
+          comprador: { nombre: 'Otra Persona Completamente Distinta' },
+        }),
+        client
+      ),
+    'CONFLICTO'
+  );
+
+  // El pedido original sigue exactamente igual: no se creo un segundo
+  // pedido ni se modifico el existente.
+  assert.strictEqual(client._db.pedidos.length, 1);
+  const releido = await obtenerPedidoPorId(primero.id, client);
+  assert.strictEqual(releido.comprador_nombre, 'Juana Perez');
+});
+
+test('crearPedido: dos llamadas con la misma clave (simulando concurrencia) resuelven al mismo pedido via el indice unico simulado', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+
+  const [a, b] = await Promise.all([
+    crearPedidoDePrueba(client, { idempotencyKey: key }),
+    crearPedidoDePrueba(client, { idempotencyKey: key }),
+  ]);
+
+  assert.strictEqual(a.id, b.id);
+  assert.strictEqual(client._db.pedidos.length, 1);
+});
+
+test('asociarPreferenceId: dos llamadas para el mismo pedido con preferencias distintas nunca se pisan entre si (la primera gana)', async () => {
+  const client = crearFakeSupabaseClient();
+  const pedido = await crearPedidoDePrueba(client);
+
+  const primeraAsociacion = await asociarPreferenceId(pedido.id, 'pref-primera', client);
+  assert.strictEqual(primeraAsociacion.mp_preference_id, 'pref-primera');
+
+  // La "segunda llamada" (por ejemplo, un reintento concurrente que ya
+  // habia creado su propia preferencia en Mercado Pago antes de enterarse
+  // de que ya existia una) nunca sobreescribe la ganadora: relee el estado
+  // actual y lo devuelve tal cual.
+  const segundaAsociacion = await asociarPreferenceId(pedido.id, 'pref-segunda', client);
+  assert.strictEqual(segundaAsociacion.mp_preference_id, 'pref-primera');
+
+  const releido = await obtenerPedidoPorId(pedido.id, client);
+  assert.strictEqual(releido.mp_preference_id, 'pref-primera');
+
+  // Solo se registro UN evento de asociacion de preferencia (el de la
+  // llamada que efectivamente escribio).
+  const eventos = await obtenerEventosPorPedido(pedido.id, client);
+  assert.strictEqual(eventos.filter((e) => e.tipo === 'asociacion_preference').length, 1);
 });
 
 // --- Runner ------------------------------------------------------------

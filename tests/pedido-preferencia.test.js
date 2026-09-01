@@ -123,10 +123,22 @@ function fakeObtenerPreferencia(respuesta) {
   return fn;
 }
 
-function fakeAsociar() {
+// Simula lib/padel-orders-store.js#asociarPreferenceId: por defecto, "gana
+// la carrera" (devuelve el pedido con el mp_preference_id que se le acaba
+// de pasar, igual que la implementacion real cuando no hay ninguna otra
+// llamada concurrente). Pasando opts.mpPreferenceIdGanador se simula el
+// caso en que OTRA llamada ya gano la carrera antes: el fake devuelve el
+// pedido con esa preferencia (distinta de la que se le pidio asociar),
+// igual que hace la implementacion real via el update condicional
+// ".is('mp_preference_id', null)".
+function fakeAsociar(opts) {
+  const options = opts || {};
   const llamadas = [];
   const fn = async (pedidoId, preferenceId, client) => {
     llamadas.push([pedidoId, preferenceId, client]);
+    const mpPreferenceIdFinal =
+      options.mpPreferenceIdGanador !== undefined ? options.mpPreferenceIdGanador : preferenceId;
+    return { id: pedidoId, mp_preference_id: mpPreferenceIdFinal };
   };
   fn.llamadas = llamadas;
   return fn;
@@ -374,6 +386,75 @@ testAsync('idempotencia: si la relectura de la preferencia existente falla, crea
     assert.strictEqual(asociar.llamadas.length, 1);
   });
 });
+
+// --- Idempotencia de la preferencia ante una carrera concurrente ----------
+
+testAsync(
+  'si otra llamada concurrente ya asocio una preferencia distinta (se pierde la carrera), se relee y devuelve la URL de la GANADORA, no la propia',
+  async () => {
+    await withEnv(ENV_SANDBOX_OK, async () => {
+      const crearPreferencia = fakeCrearPreferencia({
+        ok: true,
+        preferenceId: 'pref-propia-perdedora',
+        sandboxInitPoint: 'https://sandbox.mercadopago.com.ar/checkout/pref-propia-perdedora',
+        initPoint: null,
+      });
+      // asociarPreferenceId devuelve el pedido con OTRA preferencia (la que
+      // gano la carrera), distinta de la que esta llamada intento asociar.
+      const asociar = fakeAsociar({ mpPreferenceIdGanador: 'pref-ganadora' });
+      const obtenerGanadora = fakeObtenerPreferencia({
+        ok: true,
+        preferenceId: 'pref-ganadora',
+        sandboxInitPoint: 'https://sandbox.mercadopago.com.ar/checkout/pref-ganadora',
+        initPoint: null,
+      });
+      const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+        crearPreferenciaEnMercadoPago: crearPreferencia,
+        asociarPreferenceId: asociar,
+        obtenerPreferenciaDeMercadoPago: obtenerGanadora,
+      });
+      const pedido = pedidoValido();
+      const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido, items: itemsValidos() });
+
+      // Se crea la preferencia propia en Mercado Pago (no se puede saber de
+      // antemano que se va a perder la carrera), pero la URL devuelta al
+      // comprador es la de la preferencia GANADORA, nunca la propia.
+      assert.strictEqual(crearPreferencia.llamadas.length, 1);
+      assert.strictEqual(asociar.llamadas.length, 1);
+      assert.strictEqual(asociar.llamadas[0][1], 'pref-propia-perdedora');
+      assert.strictEqual(obtenerGanadora.llamadas.length, 1);
+      assert.strictEqual(obtenerGanadora.llamadas[0].preferenceId, 'pref-ganadora');
+      assert.deepStrictEqual(resultado, {
+        ok: true,
+        checkoutUrl: 'https://sandbox.mercadopago.com.ar/checkout/pref-ganadora',
+      });
+    });
+  }
+);
+
+testAsync(
+  'si se pierde la carrera y ademas releer la preferencia ganadora falla, responde sin_sandbox_init_point (nunca expone la propia)',
+  async () => {
+    await withEnv(ENV_SANDBOX_OK, async () => {
+      const crearPreferencia = fakeCrearPreferencia({
+        ok: true,
+        preferenceId: 'pref-propia-perdedora-2',
+        sandboxInitPoint: 'https://sandbox.mercadopago.com.ar/checkout/pref-propia-perdedora-2',
+        initPoint: null,
+      });
+      const asociar = fakeAsociar({ mpPreferenceIdGanador: 'pref-ganadora-2' });
+      const obtenerGanadora = fakeObtenerPreferencia({ ok: false, motivo: 'respuesta_no_ok' });
+      const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+        crearPreferenciaEnMercadoPago: crearPreferencia,
+        asociarPreferenceId: asociar,
+        obtenerPreferenciaDeMercadoPago: obtenerGanadora,
+      });
+      const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+      assert.deepStrictEqual(resultado, { ok: false, motivo: 'sin_sandbox_init_point' });
+    });
+  }
+);
 
 // --- Runner ------------------------------------------------------------
 

@@ -55,6 +55,12 @@ function direccionValida() {
 function itemsValidos() {
   return [{ productId: PRODUCT_SIN_TALLE, cantidad: 1 }];
 }
+// Genera una idempotencyKey valida y distinta en cada llamada (formato:
+// 16-100 caracteres [A-Za-z0-9_-], igual que
+// lib/padel-orders-store.js#esIdempotencyKeyValida).
+function idempotencyKeyValida() {
+  return 'test-idem-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
 function bodyValido(overrides) {
   return Object.assign(
     {
@@ -62,6 +68,7 @@ function bodyValido(overrides) {
       contacto: contactoValido(),
       direccionEnvio: direccionValida(),
       items: itemsValidos(),
+      idempotencyKey: idempotencyKeyValida(),
     },
     overrides || {}
   );
@@ -257,6 +264,55 @@ testAsync('rechaza un "moneda" enviado manualmente por el cliente en la raiz del
   const res = await ejecutar(handler, { body: bodyValido({ moneda: 'USD' }) });
   assert.strictEqual(res.statusCode, 400);
   assert.strictEqual(fakeCrearPedido.llamadas.length, 0);
+});
+
+// --- idempotencyKey: obligatoria, formato estricto, se pasa a crearPedido --
+
+testAsync('rechaza un body sin idempotencyKey', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba();
+  const body = bodyValido();
+  delete body.idempotencyKey;
+  const res = await ejecutar(handler, { body });
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 0);
+});
+
+testAsync('rechaza una idempotencyKey con formato invalido (demasiado corta)', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba();
+  const res = await ejecutar(handler, { body: bodyValido({ idempotencyKey: 'corta' }) });
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 0);
+});
+
+testAsync('rechaza una idempotencyKey con caracteres fuera del alfabeto permitido', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba();
+  const res = await ejecutar(handler, { body: bodyValido({ idempotencyKey: 'clave con espacios!! invalidos aca' }) });
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 0);
+});
+
+testAsync('rechaza una idempotencyKey que no sea string', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba();
+  const res = await ejecutar(handler, { body: bodyValido({ idempotencyKey: 123456789012345678 }) });
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 0);
+});
+
+testAsync('la idempotencyKey del body llega intacta al input de crearPedido', async () => {
+  const { handler, fakeCrearPedido } = crearHandlerDePrueba();
+  const key = idempotencyKeyValida();
+  const res = await ejecutar(handler, { body: bodyValido({ idempotencyKey: key }) });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(fakeCrearPedido.llamadas[0].idempotencyKey, key);
+});
+
+testAsync('un conflicto de idempotencia (CONFLICTO) responde 409, igual que cualquier otro PedidoStoreError CONFLICTO', async () => {
+  const { handler } = crearHandlerDePrueba({
+    throwError: new PedidoStoreError('CONFLICTO', 'idempotencyKey ya utilizada con otro contenido'),
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 409);
+  assert.deepStrictEqual(res.body, { error: GENERIC_ERROR_MESSAGE });
 });
 
 // --- validacion de comprador/contacto/direccion (mismas reglas que el form) --

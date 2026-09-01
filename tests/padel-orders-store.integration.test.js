@@ -29,6 +29,7 @@
  */
 
 const assert = require('assert');
+const crypto = require('crypto');
 
 const SUPABASE_TEST_URL = process.env.SUPABASE_TEST_URL;
 const SUPABASE_TEST_SECRET_KEY = process.env.SUPABASE_TEST_SECRET_KEY;
@@ -65,15 +66,23 @@ function direccionValida() {
   };
 }
 
-function inputPedidoDePrueba() {
-  return {
-    comprador: { nombre: 'Test Integracion Padel10Store' },
-    contacto: { email: 'integracion-test@example.com' },
-    direccionEnvio: direccionValida(),
-    items: [
-      { productId: 'test-integracion-item', nombre: 'Item de prueba de integracion', cantidad: 1, precioUnitario: 1 },
-    ],
-  };
+function inputPedidoDePrueba(extra) {
+  return Object.assign(
+    {
+      comprador: { nombre: 'Test Integracion Padel10Store' },
+      contacto: { email: 'integracion-test@example.com' },
+      direccionEnvio: direccionValida(),
+      items: [
+        { productId: 'test-integracion-item', nombre: 'Item de prueba de integracion', cantidad: 1, precioUnitario: 1 },
+      ],
+      // Cada llamada representa, por defecto, una intencion de compra
+      // DISTINTA (nunca un reintento de la anterior): una idempotencyKey
+      // fresca y aleatoria en cada invocacion, igual criterio que
+      // tests/padel-orders-store.test.js#pedidoInputValido.
+      idempotencyKey: 'test-integracion-' + crypto.randomBytes(16).toString('hex'),
+    },
+    extra
+  );
 }
 
 test('crearPedido persiste un pedido real con numero P10-XXXXXX generado por Postgres', async () => {
@@ -133,6 +142,37 @@ test('actualizarEstadoPago / actualizarEstadoPedido persisten transiciones reale
 
   const eventos = await store.obtenerEventosPorPedido(pedido.id);
   assert.ok(eventos.length >= 3);
+});
+
+test('idempotencia real de checkout: la misma idempotencyKey devuelve el MISMO pedido contra la RPC real', async () => {
+  const key = 'test-integracion-idem-' + crypto.randomBytes(16).toString('hex');
+  const primero = await store.crearPedido(inputPedidoDePrueba({ idempotencyKey: key }));
+  const segundo = await store.crearPedido(inputPedidoDePrueba({ idempotencyKey: key }));
+  pedidosCreadosParaLimpiar.push(primero.id);
+  if (segundo.id !== primero.id) pedidosCreadosParaLimpiar.push(segundo.id);
+
+  assert.strictEqual(segundo.id, primero.id);
+  assert.strictEqual(segundo.numero, primero.numero);
+
+  const items = await store.obtenerItemsPorPedido(primero.id);
+  assert.strictEqual(items.length, 1, 'no debe duplicar items contra la base real');
+});
+
+test('idempotencia real de checkout: la misma idempotencyKey con contenido distinto se rechaza (CONFLICTO) contra la RPC real', async () => {
+  const key = 'test-integracion-idem-' + crypto.randomBytes(16).toString('hex');
+  const primero = await store.crearPedido(inputPedidoDePrueba({ idempotencyKey: key }));
+  pedidosCreadosParaLimpiar.push(primero.id);
+
+  let error = null;
+  try {
+    await store.crearPedido(
+      inputPedidoDePrueba({ idempotencyKey: key, comprador: { nombre: 'Otra Persona Distinta' } })
+    );
+  } catch (err) {
+    error = err;
+  }
+  assert.ok(error instanceof store.PedidoStoreError);
+  assert.strictEqual(error.code, 'CONFLICTO');
 });
 
 test('idempotencia real de webhooks: el segundo marcado del mismo evento_id falla por UNIQUE', async () => {

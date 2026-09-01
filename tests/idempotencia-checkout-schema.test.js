@@ -1,16 +1,21 @@
 'use strict';
 
 /**
- * Pruebas ESTATICAS de la Etapa 1 de la solucion de idempotencia de
- * checkout (migracion 20260901120000_add_idempotencia_checkout.sql).
+ * Pruebas ESTATICAS de la migracion de idempotencia de checkout
+ * (migracion 20260901120000_add_idempotencia_checkout.sql, Etapa 1 de la
+ * solucion de idempotencia).
  *
  * Mismo criterio que tests/padel-orders-schema.test.js: no requieren
  * ninguna conexion a Supabase, leen directamente los archivos de
- * migracion SQL y el resto del repo. Esta etapa es SOLO esquema: verifica
- * tanto lo que la migracion agrega (columnas, constraints, RPC nueva)
- * como, explicitamente, que la RPC/columnas actuales sigan intactas y que
- * ningun archivo de aplicacion (api/pedidos.js, lib/padel-orders-store.js,
- * widget/padel-checkout.js) las use todavia.
+ * migracion SQL y el resto del repo. Verifica tanto lo que la migracion
+ * agrega (columnas, constraints, RPC nueva) como, explicitamente, que la
+ * RPC/columnas actuales (padel_crear_pedido) sigan 100% intactas.
+ *
+ * La migracion en si es de la Etapa 1 (solo esquema, aplicada y verificada
+ * contra Supabase). La Etapa 2 (api/pedidos.js, lib/padel-orders-store.js y
+ * widget/padel-checkout.js conectados a la RPC nueva) ya esta implementada:
+ * ver mas abajo la prueba que confirma que esos archivos SI la referencian
+ * ahora.
  */
 
 const assert = require('assert');
@@ -197,26 +202,36 @@ test('no se define ninguna policy nueva ni se tocan los grants de las tablas (de
   assert.ok(!/grant /i.test(sqlSinComentarios), 'esta migracion no deberia otorgar ningun permiso nuevo');
 });
 
-// --- Ningun archivo de aplicacion usa todavia lo nuevo ----------------------
+// --- Etapa 2: los archivos de aplicacion ya conectan lo nuevo ---------------
 
-test('api/pedidos.js, lib/padel-orders-store.js y widget/padel-checkout.js todavia NO referencian la RPC ni las columnas nuevas', () => {
-  const archivos = ['api/pedidos.js', 'lib/padel-orders-store.js', 'widget/padel-checkout.js'];
-  const patronesProhibidos = [
-    'padel_crear_pedido_idempotente',
-    'idempotency_key',
-    'idempotencyKey',
-    'checkout_fingerprint',
-    'checkoutFingerprint',
-  ];
-  archivos.forEach((relPath) => {
-    const contenido = leerArchivo(relPath);
-    patronesProhibidos.forEach((patron) => {
-      assert.ok(!contenido.includes(patron), `${relPath} no deberia referenciar "${patron}" todavia (Etapa 1 es solo esquema)`);
-    });
-  });
+test('lib/padel-orders-store.js ya usa la RPC padel_crear_pedido_idempotente y calcula el checkout_fingerprint del lado servidor', () => {
+  const contenido = leerArchivo('lib/padel-orders-store.js');
+  assert.ok(contenido.includes('padel_crear_pedido_idempotente'));
+  assert.ok(contenido.includes('p_idempotency_key'));
+  assert.ok(contenido.includes('p_checkout_fingerprint'));
+  assert.ok(contenido.includes('esIdempotencyKeyValida'));
+  // El fingerprint se calcula SIEMPRE del lado servidor (nunca se recibe
+  // uno ya calculado desde input): la funcion que lo calcula no toma
+  // ningun campo "fingerprint"/"checkoutFingerprint" de `input`.
+  assert.ok(!/input\.checkoutFingerprint/.test(contenido));
+  assert.ok(!/input\.fingerprint/.test(contenido));
 });
 
-test('api/pedidos.js sigue usando exclusivamente crearPedido (la RPC actual), sin cambios de comportamiento', () => {
+test('api/pedidos.js exige idempotencyKey en el body y la pasa al input de crearPedido', () => {
+  const contenido = leerArchivo('api/pedidos.js');
+  assert.ok(contenido.includes('idempotencyKey'));
+  assert.ok(contenido.includes('esIdempotencyKeyValida'));
+});
+
+test('widget/padel-checkout.js genera y persiste la idempotencyKey del lado del navegador (crypto.randomUUID + sessionStorage)', () => {
+  const contenido = leerArchivo('widget/padel-checkout.js');
+  assert.ok(contenido.includes('idempotencyKey'));
+  assert.ok(contenido.includes('crypto.randomUUID'));
+  assert.ok(contenido.includes('sessionStorage'));
+  assert.ok(contenido.includes('AbortController'));
+});
+
+test('api/pedidos.js sigue usando exclusivamente crearPedido (la RPC actual se sigue invocando indirectamente via lib/padel-orders-store.js), sin cambios de firma en el import', () => {
   const contenido = leerArchivo('api/pedidos.js');
   assert.match(contenido, /crearPedido: crearPedidoReal/);
 });
