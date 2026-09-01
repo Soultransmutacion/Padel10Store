@@ -1,8 +1,10 @@
 'use strict';
 
 /**
- * Pruebas para la prueba controlada de Mercado Pago Checkout Pro (SANDBOX).
- * Cubre lib/mercadopago-preference.js y api/create-payment-preference.js.
+ * Cubre lib/mercadopago-preference.js (funciones puras, reutilizadas por el
+ * flujo real de compra en lib/pedido-preferencia.js) y api/create-payment-preference.js
+ * (el endpoint de PRUEBA, hoy DESHABILITADO: ver el comentario al inicio de
+ * ese archivo).
  *
  * Estas pruebas se ejecutan con Node (no dependen del navegador) y no
  * realizan ninguna llamada real a Mercado Pago: cuando es necesario, se
@@ -383,182 +385,89 @@ test('buildPreferencePayload incluye el talle en el titulo cuando corresponde, y
 });
 
 
+// api/create-payment-preference.js quedo DESHABILITADO (ver el comentario
+// al inicio de ese archivo): el flujo real de compra pasa por
+// POST /api/pedidos + POST /api/pedidos-preferencia, que si crean un
+// pedido real con external_reference y notification_url (cubierto en
+// tests/api-pedidos.test.js, tests/api-pedidos-preferencia.test.js y
+// tests/pedido-preferencia.test.js). Estas pruebas verifican unicamente
+// que el endpoint fantasma quedo inerte: nunca ejecuta ninguna logica de
+// negocio, sin importar metodo, entorno, credenciales o body.
 async function runAsyncTests() {
-  await testAsync('bloquea el endpoint fuera de Preview (VERCEL_ENV distinto de preview)', async () => {
+  await testAsync('esta deshabilitado sin importar VERCEL_ENV (incluido "preview", su unico entorno original)', async () => {
+    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
+      const handler = loadHandler();
+      const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
+      const res = createMockRes();
+      await handler(req, res);
+      assert.strictEqual(res.statusCode, 410);
+      assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
+    });
+  });
+
+  await testAsync('esta deshabilitado tambien fuera de Preview (production)', async () => {
     await withEnv({ VERCEL_ENV: 'production', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
       const handler = loadHandler();
       const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
       const res = createMockRes();
       await handler(req, res);
-      assert.strictEqual(res.statusCode, 403);
+      assert.strictEqual(res.statusCode, 410);
       assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
     });
   });
 
-  await testAsync('rechaza metodos distintos de POST', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
+  await testAsync('responde igual (410, error generico) sin importar el metodo HTTP', async () => {
+    for (const method of ['GET', 'POST', 'PUT', 'DELETE']) {
       const handler = loadHandler();
-      const req = { method: 'GET', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
+      const req = { method, headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
       const res = createMockRes();
+      // eslint-disable-next-line no-await-in-loop
       await handler(req, res);
-      assert.strictEqual(res.statusCode, 405);
+      assert.strictEqual(res.statusCode, 410, `metodo ${method} deberia responder 410`);
       assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
-    });
+    }
   });
 
-  await testAsync('rechaza Content-Type distinto de application/json', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const handler = loadHandler();
-      const req = { method: 'POST', headers: { 'content-type': 'text/plain' }, body: { productId: PURCHASABLE_ID } };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 415);
-    });
+  await testAsync('responde igual sin importar el body recibido (incluido un intento de precio manipulado)', async () => {
+    const handler = loadHandler();
+    const req = {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: { productId: PURCHASABLE_ID, price: 1, quantity: 999 },
+    };
+    const res = createMockRes();
+    await handler(req, res);
+    assert.strictEqual(res.statusCode, 410);
+    assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
   });
 
-  await testAsync('rechaza un body excesivamente grande', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const handler = loadHandler();
-      const req = {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: { productId: 'x'.repeat(5000) },
-      };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 413);
-    });
-  });
-
-  await testAsync('rechaza campos inesperados en el body (precio manipulado desde el navegador)', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const handler = loadHandler();
-      const req = {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: { productId: PURCHASABLE_ID, price: 1 },
-      };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 400);
-    });
-  });
-
-  await testAsync('rechaza un productId inexistente', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const handler = loadHandler();
-      const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: 'no-existe' } };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 400);
-      assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
-    });
-  });
-
-  await testAsync('rechaza un producto marcado como "a consultar"', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const consultarProduct = catalogo.find((p) => p.precioConsultar === true);
-      const handler = loadHandler();
-      const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: consultarProduct.id } };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 400);
-    });
-  });
-
-  await testAsync('rechaza un producto valido pero todavia no habilitado para compra', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const otro = catalogo.find(
-        (p) => p.precioConsultar !== true && typeof p.precio === 'number' && p.precio > 0 && p.id !== PURCHASABLE_ID
-      );
-      const handler = loadHandler();
-      const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: otro.id } };
-      const res = createMockRes();
-      await handler(req, res);
-      assert.strictEqual(res.statusCode, 400);
-    });
-  });
-
-  await testAsync('devuelve error generico si falta MERCADOPAGO_ACCESS_TOKEN', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: undefined }, async () => {
+  await testAsync('nunca llama a Mercado Pago (no hace ninguna llamada de red)', async () => {
+    const originalFetch = global.fetch;
+    let fetchCalled = false;
+    global.fetch = async () => {
+      fetchCalled = true;
+      throw new Error('api/create-payment-preference.js no deberia llamar a fetch');
+    };
+    try {
       const handler = loadHandler();
       const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
       const res = createMockRes();
       await handler(req, res);
-      assert.strictEqual(res.statusCode, 500);
-      assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
-    });
+      assert.strictEqual(fetchCalled, false, 'no deberia haber llamado a fetch');
+      assert.strictEqual(res.statusCode, 410);
+    } finally {
+      global.fetch = originalFetch;
+    }
   });
 
-  await testAsync('responde con error seguro si falla la conexion con Mercado Pago (sin exponer detalles tecnicos)', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const originalFetch = global.fetch;
-      global.fetch = async () => {
-        throw new Error('network down');
-      };
-      try {
-        const handler = loadHandler();
-        const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
-        const res = createMockRes();
-        await handler(req, res);
-        assert.strictEqual(res.statusCode, 502);
-        assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
-        assert.strictEqual(JSON.stringify(res.body).includes('network down'), false);
-      } finally {
-        global.fetch = originalFetch;
-      }
-    });
-  });
-
-  await testAsync('rechaza si Mercado Pago devuelve un init_point productivo en lugar de sandbox', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'x.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-token' }, async () => {
-      const originalFetch = global.fetch;
-      global.fetch = async () => ({
-        ok: true,
-        json: async () => ({ init_point: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=1' }),
-      });
-      try {
-        const handler = loadHandler();
-        const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
-        const res = createMockRes();
-        await handler(req, res);
-        assert.strictEqual(res.statusCode, 502);
-        assert.strictEqual(res.body.error, GENERIC_ERROR_MESSAGE);
-      } finally {
-        global.fetch = originalFetch;
-      }
-    });
-  });
-
-  await testAsync('caso exitoso: responde solo con sandboxInitPoint y el monto coincide con el catalogo; el token nunca llega al frontend', async () => {
-    await withEnv({ VERCEL_ENV: 'preview', VERCEL_URL: 'mi-preview-123.vercel.app', MERCADOPAGO_ACCESS_TOKEN: 'TEST-SECRET-TOKEN' }, async () => {
-      const originalFetch = global.fetch;
-      let capturedRequest = null;
-      global.fetch = async (url, options) => {
-        capturedRequest = { url, options };
-        return {
-          ok: true,
-          json: async () => ({
-            sandbox_init_point: 'https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id=abc',
-          }),
-        };
-      };
-      try {
-        const handler = loadHandler();
-        const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
-        const res = createMockRes();
-        await handler(req, res);
-        assert.strictEqual(res.statusCode, 200);
-        assert.strictEqual(res.body.sandboxInitPoint, 'https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id=abc');
-        assert.strictEqual(JSON.stringify(res.body).includes('TEST-SECRET-TOKEN'), false);
-        const sentBody = JSON.parse(capturedRequest.options.body);
-        assert.strictEqual(sentBody.items[0].unit_price, purchasableProduct.precio);
-        assert.strictEqual(sentBody.items[0].quantity, 1);
-        assert.strictEqual(sentBody.back_urls.success, 'https://mi-preview-123.vercel.app/mercadopago/success.html');
-        assert.ok(capturedRequest.options.headers.Authorization.includes('TEST-SECRET-TOKEN'));
-      } finally {
-        global.fetch = originalFetch;
-      }
+  await testAsync('nunca requiere ni expone MERCADOPAGO_ACCESS_TOKEN (responde igual si falta)', async () => {
+    await withEnv({ MERCADOPAGO_ACCESS_TOKEN: undefined }, async () => {
+      const handler = loadHandler();
+      const req = { method: 'POST', headers: { 'content-type': 'application/json' }, body: { productId: PURCHASABLE_ID } };
+      const res = createMockRes();
+      await handler(req, res);
+      assert.strictEqual(res.statusCode, 410);
+      assert.strictEqual(JSON.stringify(res.body).includes('TOKEN'), false);
     });
   });
 }

@@ -133,6 +133,48 @@ test('lib/padel-checkout-fields.js no valida ni pide "documento" (fuera de alcan
   assert.ok(!/\bdocumento\b/i.test(contenido));
 });
 
+// --- "Comprar ahora" ya no llama al endpoint fantasma /api/create-payment-preference --
+
+test('widget/mercadopago-buy.js ya no llama a fetch ni referencia /api/create-payment-preference como URL activa', () => {
+  const contenido = leerArchivo(path.join('widget', 'mercadopago-buy.js'));
+  assert.ok(!/\bfetch\s*\(/.test(contenido), 'no deberia hacer ninguna llamada de red por si mismo');
+  assert.ok(!/['"]\/api\/create-payment-preference['"]/.test(contenido), 'no deberia quedar ninguna URL activa hacia el endpoint retirado');
+  assert.ok(contenido.includes('window.PadelCheckoutWidget') && contenido.includes('startBuyNow'), 'debe delegar en el checkout real (startBuyNow)');
+});
+
+test('widget/padel-advisor.js no referencia /api/create-payment-preference', () => {
+  const contenido = leerArchivo(path.join('widget', 'padel-advisor.js'));
+  assert.ok(!/['"]\/api\/create-payment-preference['"]/.test(contenido));
+});
+
+test('index.html no referencia /api/create-payment-preference', () => {
+  const contenido = leerArchivo('index.html');
+  assert.ok(!/['"]\/api\/create-payment-preference['"]/.test(contenido));
+});
+
+test('api/create-payment-preference.js quedo deshabilitado: nunca importa el catalogo ni el cliente de Mercado Pago', () => {
+  const contenido = leerArchivo(path.join('api', 'create-payment-preference.js'));
+  assert.ok(!contenido.includes("require('./mercadopago-preference')") && !contenido.includes("require('../lib/mercadopago-preference')"));
+  assert.ok(!contenido.includes("require('./mercadopago-client')") && !contenido.includes("require('../lib/mercadopago-client')"));
+  assert.ok(!/console\.(log|error|warn|info|debug)/.test(contenido));
+});
+
+// --- "Comprar ahora" es UN SOLO producto: nunca reutiliza el carrito persistente ---
+
+test('widget/padel-checkout.js#startBuyNow nunca usa window.PadelCart.getRawLines() para armar el body de la compra directa', () => {
+  const contenido = leerArchivo(path.join('widget', 'padel-checkout.js'));
+  const inicio = contenido.indexOf('function startBuyNow');
+  assert.ok(inicio > -1, 'debe existir startBuyNow');
+  const fin = contenido.indexOf('\n  }', inicio);
+  const cuerpo = contenido.slice(inicio, fin > -1 ? fin : undefined);
+  assert.ok(!cuerpo.includes('getRawLines'), 'startBuyNow no deberia leer el carrito persistente');
+});
+
+test('widget/padel-checkout.js nunca vacia el carrito persistente en modo "buyNow" (Comprar ahora nunca lo toca)', () => {
+  const contenido = leerArchivo(path.join('widget', 'padel-checkout.js'));
+  assert.ok(/if\s*\(\s*mode\s*!==\s*['"]buyNow['"]\s*\)\s*\{\s*window\.PadelCart\.clear\(\)/.test(contenido));
+});
+
 // --- Runner --------------------------------------------------------------
 
 function run() {

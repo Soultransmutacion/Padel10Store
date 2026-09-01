@@ -22,11 +22,25 @@
   // este archivo nunca le manda un precio a la API.
 
   var Fields = window.PadelCheckoutFields;
-  if (!Fields) {
-    // Si lib/padel-checkout-fields.js no cargo, el flujo de checkout queda
-    // deshabilitado (el boton "Continuar con mis datos" simplemente no
-    // hace nada) en vez de romper el resto del carrito.
+  var Core = window.PadelCartCore;
+  if (!Fields || !Core) {
+    // Si lib/padel-checkout-fields.js o lib/padel-cart.js no cargaron, el
+    // flujo de checkout queda deshabilitado (el boton "Continuar con mis
+    // datos" simplemente no hace nada) en vez de romper el resto del
+    // carrito.
     return;
+  }
+
+  // Unico producto piloto comprable con "Comprar ahora" (ver tambien
+  // index.html#PURCHASABLE_PRODUCT_IDS y
+  // widget/padel-advisor.js#MP_PURCHASABLE_PRODUCT_ID, que gatean cuando
+  // se muestra el boton). Se vuelve a verificar aca, del lado de quien
+  // arma el pedido, para no depender unicamente de que el boton este
+  // oculto en el resto de los 91 productos.
+  var BUY_NOW_PRODUCT_ID = 'royal-padel-cross-black-26';
+
+  function getCatalogProduct(id) {
+    return (window.CATALOG && window.CATALOG[id]) || null;
   }
 
   var ENDPOINT = '/api/pedidos';
@@ -34,8 +48,7 @@
   var GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamente en unos minutos.';
   var RETRY_ERROR_MESSAGE = 'No pudimos reiniciar el pago. Intentá nuevamente en unos minutos.';
 
-  // Misma allow-list de hosts sandbox que usa widget/mercadopago-buy.js:
-  // nunca se navega a una URL de checkout que no sea explicitamente de
+  // Nunca se navega a una URL de checkout que no sea explicitamente de
   // Mercado Pago sandbox (protocolo https + host conocido).
   var ALLOWED_SANDBOX_HOSTS = ['sandbox.mercadopago.com.ar', 'sandbox.mercadopago.com'];
   function isValidSandboxUrl(url) {
@@ -72,6 +85,13 @@
   // --- estado local (solo en memoria: nunca en localStorage, son datos del
   // comprador) ---------------------------------------------------------
   var view = 'carrito'; // 'carrito' | 'formulario' | 'revision' | 'confirmacion'
+  // mode: 'cart' (flujo normal, el carrito persistente de window.PadelCart)
+  // o 'buyNow' (compra directa de UN SOLO producto disparada por "Comprar
+  // ahora", ver startBuyNow mas abajo). En modo 'buyNow', buyNowLine es la
+  // UNICA linea del pedido: nunca se mezcla con lo que ya hubiera en el
+  // carrito persistente, y ese carrito nunca se toca ni se vacia.
+  var mode = 'cart';
+  var buyNowLine = null; // {productId, talle, cantidad} | null
   var formState = { nombre: '', apellido: '', email: '', telefono: '', provincia: '', localidad: '', codigoPostal: '', calle: '', numero: '', pisoDepto: '', aclaraciones: '' };
   var currentError = null; // { campo, mensaje } | null
   var submitError = null; // string | null
@@ -109,6 +129,22 @@
     piso_depto_invalido: 'Ese piso/depto es demasiado largo.',
     aclaraciones_invalidas: 'Esas aclaraciones son demasiado largas.',
   };
+
+  // Resumen activo: la unica linea de "Comprar ahora" en modo buyNow, o el
+  // carrito persistente real en modo cart. Reutiliza PadelCartCore.buildCartSummary
+  // -la misma funcion que ya usa window.PadelCart- para nunca reimplementar
+  // el calculo de precio/nombre/total de una linea.
+  function getActiveSummary() {
+    if (mode === 'buyNow' && buyNowLine) {
+      return Core.buildCartSummary([buyNowLine], getCatalogProduct);
+    }
+    return window.PadelCart.getSummary();
+  }
+
+  function resetBuyNow() {
+    mode = 'cart';
+    buyNowLine = null;
+  }
 
   function whenReady(fn) {
     if (window.PadelCart && typeof window.PadelCart.whenReady === 'function') {
@@ -275,7 +311,7 @@
     } else if (view === 'formulario') {
       renderFormularioView();
     } else if (view === 'revision') {
-      renderRevisionView(window.PadelCart.getSummary());
+      renderRevisionView(getActiveSummary());
     } else if (view === 'confirmacion') {
       renderConfirmacionView();
     }
@@ -321,7 +357,14 @@
         calle: formState.calle.trim(),
         numero: formState.numero.trim(),
       },
-      items: window.PadelCart.getRawLines(),
+      // En modo 'buyNow' se manda UNICAMENTE la linea de "Comprar ahora"
+      // (nunca lo que ya hubiera en el carrito persistente, que en ese modo
+      // no se toca en ningun momento). En modo 'cart', las lineas reales
+      // del carrito, igual que antes.
+      items:
+        mode === 'buyNow' && buyNowLine
+          ? [{ productId: buyNowLine.productId, talle: buyNowLine.talle, cantidad: buyNowLine.cantidad }]
+          : window.PadelCart.getRawLines(),
     };
     if (formState.pisoDepto.trim()) body.direccionEnvio.pisoDepto = formState.pisoDepto.trim();
     if (formState.aclaraciones.trim()) body.direccionEnvio.aclaraciones = formState.aclaraciones.trim();
@@ -352,8 +395,12 @@
         // El carrito se vacia UNICAMENTE aca, despues de una confirmacion
         // real del servidor (nunca antes, ni de forma optimista): el
         // pedido ya quedo registrado, se pueda o no continuar con el pago
-        // en este mismo paso.
-        window.PadelCart.clear();
+        // en este mismo paso. En modo 'buyNow' el carrito persistente
+        // nunca se toco (la linea de "Comprar ahora" es independiente), asi
+        // que tampoco se vacia aca.
+        if (mode !== 'buyNow') {
+          window.PadelCart.clear();
+        }
         if (isValidSandboxUrl(result.data.redirectUrl)) {
           // El pago ya se puede iniciar: se navega directo al checkout de
           // Mercado Pago sandbox. No hace falta mostrar la vista de
@@ -439,6 +486,33 @@
     submitting = false;
     retryError = null;
     retrying = false;
+    resetBuyNow();
+  }
+
+  // --- "Comprar ahora": inicia el checkout real de UN SOLO producto -------
+  //
+  // Llamado por widget/mercadopago-buy.js cuando se clickea un boton
+  // [data-mp-buy-button] (modal de producto o tarjeta del asesor). Nunca
+  // agrega la linea al carrito persistente (window.PadelCart): abre el
+  // drawer directamente en el paso "Tus datos" con una unica linea en
+  // memoria, sin obligar al comprador a pasar por la vista de carrito ni a
+  // abrirlo manualmente.
+  function startBuyNow(productId, talle) {
+    if (!els.body) return; // el widget todavia no termino de inicializarse
+    if (productId !== BUY_NOW_PRODUCT_ID) return; // unico producto piloto
+    var summary = Core.buildCartSummary([{ productId: productId, talle: talle || null, cantidad: 1 }], getCatalogProduct);
+    if (summary.lineas.length !== 1) return; // producto no resuelto contra el catalogo real
+
+    mode = 'buyNow';
+    buyNowLine = { productId: productId, talle: talle || null, cantidad: 1 };
+    currentError = null;
+    submitError = null;
+    pedidoConfirmadoNumero = null;
+    paymentRetryToken = null;
+    retryError = null;
+    retrying = false;
+    if (window.PadelCart && typeof window.PadelCart.open === 'function') window.PadelCart.open();
+    goto('formulario');
   }
 
   function init() {
@@ -453,6 +527,7 @@
       els.continueBtn.addEventListener('click', function () {
         var summary = window.PadelCart.getSummary();
         if (!summary.lineas.length) return;
+        resetBuyNow();
         currentError = null;
         submitError = null;
         goto('formulario');
@@ -461,8 +536,16 @@
 
     if (els.backBtn) {
       els.backBtn.addEventListener('click', function () {
-        if (view === 'formulario') goto('carrito');
-        else if (view === 'revision') { currentError = null; goto('formulario'); }
+        if (view === 'formulario') {
+          // "Volver al carrito" desde una compra directa ("Comprar ahora")
+          // vuelve a mostrar el carrito persistente real (nunca la linea
+          // de buyNow, que se descarta): son dos cosas independientes.
+          resetBuyNow();
+          goto('carrito');
+        } else if (view === 'revision') {
+          currentError = null;
+          goto('formulario');
+        }
       });
     }
 
@@ -474,9 +557,12 @@
           // "Seguir comprando": el pedido ya quedo resuelto (con o sin
           // pago iniciado); se descarta cualquier token de reintento que
           // hubiera quedado en memoria, nunca se reutiliza para otro
-          // pedido.
+          // pedido. Si el pedido resuelto fue una compra directa, tambien
+          // se descarta ese modo: la proxima vez se vuelve a mostrar el
+          // carrito persistente real.
           paymentRetryToken = null;
           retryError = null;
+          resetBuyNow();
           goto('carrito');
         }
       });
@@ -507,11 +593,18 @@
     whenReady(init);
   }
 
+  // API real: unico punto de entrada que otro archivo de produccion puede
+  // llamar (hoy, widget/mercadopago-buy.js desde el boton "Comprar ahora").
+  window.PadelCheckoutWidget = {
+    startBuyNow: startBuyNow,
+  };
+
   // Expuesto solo para pruebas (tests/padel-checkout-widget.test.js): nunca
   // se usa desde otro archivo de produccion.
   window.PadelCheckoutWidgetInternal = {
     getView: function () { return view; },
     getFormState: function () { return formState; },
     getPaymentRetryToken: function () { return paymentRetryToken; },
+    getMode: function () { return mode; },
   };
 })();
