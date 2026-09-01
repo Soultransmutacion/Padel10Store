@@ -316,9 +316,24 @@ test('el webhook de Mercado Pago existe (Etapa 4) y valida firma via MERCADOPAGO
     /require\(['"]\.\.\/lib\/mercadopago-webhook['"]\)/.test(contenido),
     'el endpoint debe validar la firma usando lib/mercadopago-webhook.js, no reimplementarla'
   );
+
+  // Soporte de merchant_order (topico legado, nunca firmado): agrega logs
+  // sanitizados (ids/topico/motivo, nunca secrets ni datos personales) para
+  // poder distinguir firma faltante / topico no soportado / merchant_order
+  // inexistente / discrepancia de pedido / procesamiento correcto (ver el
+  // comentario de logSeguro en el propio archivo y
+  // tests/api-mercadopago-webhook.test.js#"los logs sanitizados..."). Esto
+  // reemplaza la regla anterior de esta prueba ("el webhook nunca debe
+  // loguear"): en vez de prohibir console.log por completo, se exige que
+  // TODO logging pase por una unica funcion (logSeguro), nunca console.log
+  // suelto en otro lugar del archivo, y que esa funcion nunca reciba el
+  // secreto ni el access token como argumento.
+  assert.ok(contenido.includes('function logSeguro('), 'debe existir una unica funcion logSeguro centralizando el logging');
+  const llamadasConsoleLog = contenido.match(/console\.(log|error|warn)\(/g) || [];
+  assert.strictEqual(llamadasConsoleLog.length, 1, 'console.log/error/warn solo debe usarse UNA vez, dentro de logSeguro');
   assert.ok(
-    !/console\.(log|error|warn)/.test(contenido),
-    'el endpoint del webhook nunca debe loguear (riesgo de exponer secrets/payloads)'
+    !/logSeguro\([^)]*\b(secret|accessToken|xSignatureHeader|webhookSecret)\b/.test(contenido),
+    'ninguna llamada a logSeguro debe recibir el secreto ni el access token'
   );
 
   const envExample = leerArchivo('.env.example');

@@ -14,12 +14,16 @@ const assert = require('assert');
 const crypto = require('crypto');
 const {
   TOPICO_PAGOS,
+  TOPICO_MERCHANT_ORDER,
   esTopicoDePago,
+  esTopicoDeMerchantOrder,
+  esMerchantOrderIdValido,
   parsearXSignature,
   construirManifiesto,
   compararHexEnTiempoConstante,
   validarFirmaWebhook,
   consultarPagoEnMercadoPago,
+  consultarMerchantOrderEnMercadoPago,
 } = require('../lib/mercadopago-webhook');
 
 const results = [];
@@ -56,6 +60,50 @@ test('esTopicoDePago: false para otros topicos o entradas invalidas', () => {
   assert.strictEqual(esTopicoDePago(''), false);
   assert.strictEqual(esTopicoDePago(null), false);
   assert.strictEqual(esTopicoDePago(undefined), false);
+});
+
+// --- esTopicoDeMerchantOrder / TOPICO_MERCHANT_ORDER ----------------------
+
+test('TOPICO_MERCHANT_ORDER es "merchant_order"', () => {
+  assert.strictEqual(TOPICO_MERCHANT_ORDER, 'merchant_order');
+});
+
+test('esTopicoDeMerchantOrder: true solo para "merchant_order" (insensible a mayusculas/espacios)', () => {
+  assert.strictEqual(esTopicoDeMerchantOrder('merchant_order'), true);
+  assert.strictEqual(esTopicoDeMerchantOrder(' Merchant_Order '), true);
+  assert.strictEqual(esTopicoDeMerchantOrder('MERCHANT_ORDER'), true);
+});
+
+test('esTopicoDeMerchantOrder: false para otros topicos o entradas invalidas', () => {
+  assert.strictEqual(esTopicoDeMerchantOrder('payment'), false);
+  assert.strictEqual(esTopicoDeMerchantOrder('point_integration_wh'), false);
+  assert.strictEqual(esTopicoDeMerchantOrder(''), false);
+  assert.strictEqual(esTopicoDeMerchantOrder(null), false);
+  assert.strictEqual(esTopicoDeMerchantOrder(undefined), false);
+});
+
+// --- esMerchantOrderIdValido: validacion ESTRICTA (solo digitos) ---------
+
+test('esMerchantOrderIdValido: true para ids numericos (string o number), con o sin espacios', () => {
+  assert.strictEqual(esMerchantOrderIdValido('99887766'), true);
+  assert.strictEqual(esMerchantOrderIdValido(' 99887766 '), true);
+  assert.strictEqual(esMerchantOrderIdValido(99887766), true);
+  assert.strictEqual(esMerchantOrderIdValido('1'), true);
+});
+
+test('esMerchantOrderIdValido: false ante cualquier valor no puramente numerico (nunca lo "sanea")', () => {
+  assert.strictEqual(esMerchantOrderIdValido('abc'), false);
+  assert.strictEqual(esMerchantOrderIdValido('123abc'), false);
+  assert.strictEqual(esMerchantOrderIdValido('12.3'), false);
+  assert.strictEqual(esMerchantOrderIdValido('-123'), false);
+  assert.strictEqual(esMerchantOrderIdValido('1;DROP TABLE pedidos'), false);
+  assert.strictEqual(esMerchantOrderIdValido('123456789012345678901'), false); // > 20 digitos
+  assert.strictEqual(esMerchantOrderIdValido(''), false);
+  assert.strictEqual(esMerchantOrderIdValido('   '), false);
+  assert.strictEqual(esMerchantOrderIdValido(null), false);
+  assert.strictEqual(esMerchantOrderIdValido(undefined), false);
+  assert.strictEqual(esMerchantOrderIdValido({}), false);
+  assert.strictEqual(esMerchantOrderIdValido(['99887766']), false);
 });
 
 // --- parsearXSignature ------------------------------------------------
@@ -397,6 +445,128 @@ testAsync('consultarPagoEnMercadoPago: nunca revela el accessToken en el resulta
     }),
     async () => {
       const resultado = await consultarPagoEnMercadoPago({ paymentId: '1', accessToken: 'TEST-SECRET-TOKEN' });
+      assert.strictEqual(JSON.stringify(resultado).includes('TEST-SECRET-TOKEN'), false);
+    }
+  );
+});
+
+// --- consultarMerchantOrderEnMercadoPago (mockea global.fetch) -----------
+
+testAsync('consultarMerchantOrderEnMercadoPago: normaliza la respuesta real de Mercado Pago (solo ids de payments, nunca sus datos)', async () => {
+  await withMockFetch(
+    async (url, options) => {
+      assert.strictEqual(url, 'https://api.mercadopago.com/merchant_orders/99887766');
+      assert.strictEqual(options.method, 'GET');
+      assert.ok(options.headers.Authorization.includes('Bearer'));
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          id: 99887766,
+          external_reference: 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
+          preference_id: 'PREF-123456789',
+          payments: [
+            { id: 555000111, status: 'approved', transaction_amount: 206000, currency_id: 'ARS' },
+            { id: 555000111, status: 'approved', transaction_amount: 206000, currency_id: 'ARS' }, // duplicado
+            { id: 555000222, status: 'rejected', transaction_amount: 1, currency_id: 'ARS' },
+          ],
+        }),
+      };
+    },
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '99887766', accessToken: 'TEST-TOKEN' });
+      assert.strictEqual(resultado.ok, true);
+      assert.deepStrictEqual(resultado.merchantOrder, {
+        id: '99887766',
+        externalReference: 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
+        preferenceId: 'PREF-123456789',
+        paymentIds: ['555000111', '555000222'], // deduplicado, solo ids
+      });
+      // Nunca expone status/monto/moneda de los payments embebidos: eso
+      // se debe volver a consultar con consultarPagoEnMercadoPago.
+      assert.strictEqual(JSON.stringify(resultado.merchantOrder).includes('approved'), false);
+      assert.strictEqual(JSON.stringify(resultado.merchantOrder).includes('206000'), false);
+    }
+  );
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: sin payments, paymentIds vacio', async () => {
+  await withMockFetch(
+    async () => ({ ok: true, status: 200, json: async () => ({ id: 1, payments: [] }) }),
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '1', accessToken: 'TEST-TOKEN' });
+      assert.deepStrictEqual(resultado.merchantOrder.paymentIds, []);
+    }
+  );
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: motivo "no_encontrado" ante 404', async () => {
+  await withMockFetch(
+    async () => ({ ok: false, status: 404, json: async () => ({}) }),
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '999', accessToken: 'TEST-TOKEN' });
+      assert.strictEqual(resultado.ok, false);
+      assert.strictEqual(resultado.motivo, 'no_encontrado');
+    }
+  );
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: motivo "respuesta_no_ok" ante otros status de error', async () => {
+  await withMockFetch(
+    async () => ({ ok: false, status: 500, json: async () => ({}) }),
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '999', accessToken: 'TEST-TOKEN' });
+      assert.strictEqual(resultado.ok, false);
+      assert.strictEqual(resultado.motivo, 'respuesta_no_ok');
+    }
+  );
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: motivo "red" ante fallo de fetch', async () => {
+  await withMockFetch(
+    async () => {
+      throw new Error('network down');
+    },
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '999', accessToken: 'TEST-TOKEN' });
+      assert.strictEqual(resultado.ok, false);
+      assert.strictEqual(resultado.motivo, 'red');
+    }
+  );
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: motivo "sin_credencial" si no hay accessToken', async () => {
+  const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '999', accessToken: undefined });
+  assert.strictEqual(resultado.ok, false);
+  assert.strictEqual(resultado.motivo, 'sin_credencial');
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: motivo "merchant_order_id_invalido" ante un id con formato invalido (nunca llega a llamar a fetch)', async () => {
+  const originalFetch = global.fetch;
+  let fetchLlamado = false;
+  global.fetch = async () => {
+    fetchLlamado = true;
+    throw new Error('no deberia llamarse');
+  };
+  try {
+    const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: 'abc-no-numerico', accessToken: 'TEST-TOKEN' });
+    assert.strictEqual(resultado.ok, false);
+    assert.strictEqual(resultado.motivo, 'merchant_order_id_invalido');
+    assert.strictEqual(fetchLlamado, false);
+  } finally {
+    global.fetch = originalFetch;
+  }
+});
+
+testAsync('consultarMerchantOrderEnMercadoPago: nunca revela el accessToken en el resultado', async () => {
+  await withMockFetch(
+    async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ id: 1, payments: [] }),
+    }),
+    async () => {
+      const resultado = await consultarMerchantOrderEnMercadoPago({ merchantOrderId: '1', accessToken: 'TEST-SECRET-TOKEN' });
       assert.strictEqual(JSON.stringify(resultado).includes('TEST-SECRET-TOKEN'), false);
     }
   );

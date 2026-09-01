@@ -105,6 +105,65 @@ function buildReq(notif) {
   };
 }
 
+// --- Notificaciones de merchant_order ("Feed v2.0", legado) --------------
+//
+// A diferencia de notificacionValida/buildReq (webhooks v2, firmadas),
+// estas simulan el formato REAL que Mercado Pago sigue enviando para
+// merchant_order: query clasica ?topic=merchant_order&id={id} y body
+// {resource, topic} (sin `id` de notificacion ni `data.id`), y SIN ningun
+// header de firma por defecto (evidencia real documentada en el modulo:
+// 4/4 notificaciones sin firma HMAC valida).
+
+function notificacionMerchantOrder(overrides) {
+  const base = {
+    merchantOrderId: '99887766',
+  };
+  return Object.assign(base, overrides || {});
+}
+
+function buildReqMerchantOrder(notif) {
+  const query = notif.sinQuery
+    ? {}
+    : Object.assign(
+        notif.idEnQueryData
+          ? { topic: 'merchant_order', 'data.id': notif.merchantOrderId }
+          : { topic: 'merchant_order', id: notif.merchantOrderId },
+        notif.queryExtra || {}
+      );
+  const body =
+    notif.body !== undefined
+      ? notif.body
+      : Object.assign(
+          {
+            resource: notif.sinResource
+              ? undefined
+              : `https://api.mercadopago.com/merchant_orders/${notif.merchantOrderId}`,
+            topic: 'merchant_order',
+          },
+          notif.bodyExtra || {}
+        );
+  return {
+    method: notif.method === undefined ? 'POST' : notif.method,
+    // Sin x-signature/x-request-id por defecto: es EXACTAMENTE lo que
+    // Mercado Pago esta mandando hoy para este topico. `conFirma` permite
+    // simular, igual, el caso en que SI trajera una (valida o no): el
+    // resultado debe ser el mismo en ambos casos, porque este camino nunca
+    // exige la firma.
+    headers: notif.conFirma
+      ? headersValidos({ dataId: notif.merchantOrderId, xRequestId: 'req-mo', ts: '1700000000' })
+      : {},
+    query,
+    body,
+  };
+}
+
+async function ejecutarMerchantOrder(handler, notif) {
+  const req = buildReqMerchantOrder(notif);
+  const res = createMockRes();
+  await handler(req, res);
+  return res;
+}
+
 // --- Pedido "real" de prueba ------------------------------------------
 
 function pedidoValido(overrides) {
@@ -115,6 +174,7 @@ function pedidoValido(overrides) {
       estado_pago: 'pendiente',
       estado_pedido: 'pendiente_pago',
       mp_payment_id: null,
+      mp_preference_id: 'PREF-123456789',
       total: 206000,
       moneda: 'ARS',
     },
@@ -136,6 +196,20 @@ function pagoValido(overrides) {
   );
 }
 
+// --- merchant_order "real" de prueba (topico legado, nunca firmado) -----
+
+function merchantOrderValido(overrides) {
+  return Object.assign(
+    {
+      id: '99887766',
+      externalReference: 'aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee',
+      preferenceId: 'PREF-123456789',
+      paymentIds: ['555000111'],
+    },
+    overrides || {}
+  );
+}
+
 /**
  * Crea un handler con un "mundo" en memoria: un pedido y un mapa de
  * eventos de webhook ya procesados, mas espias de cada operacion de
@@ -148,6 +222,7 @@ function crearHandlerDePrueba(opts) {
   const estado = { pedido: pedidoInicial ? Object.assign({}, pedidoInicial) : null };
   const webhookEventosProcesados = new Set(o.eventosYaProcesados || []);
   const pagos = o.paymentsById || {};
+  const merchantOrders = o.merchantOrdersById || {};
 
   const llamadas = {
     obtenerPedidoPorId: [],
@@ -158,6 +233,7 @@ function crearHandlerDePrueba(opts) {
     estaEventoWebhookProcesado: [],
     marcarEventoWebhookProcesado: [],
     consultarPagoEnMercadoPago: [],
+    consultarMerchantOrderEnMercadoPago: [],
   };
 
   const deps = {
@@ -216,8 +292,20 @@ function crearHandlerDePrueba(opts) {
       llamadas.consultarPagoEnMercadoPago.push({ paymentId, accessToken });
       if (o.throwOnConsultarPago) throw o.throwOnConsultarPago;
       if (o.resultadoConsultarPago) return o.resultadoConsultarPago;
+      if (o.resultadosConsultarPagoPorId && o.resultadosConsultarPagoPorId[paymentId]) {
+        return o.resultadosConsultarPagoPorId[paymentId];
+      }
       const pago = pagos[paymentId] || pagoValido({ id: paymentId });
       return { ok: true, payment: pago };
+    },
+
+    consultarMerchantOrderEnMercadoPago: async ({ merchantOrderId, accessToken }) => {
+      llamadas.consultarMerchantOrderEnMercadoPago.push({ merchantOrderId, accessToken });
+      if (o.throwOnConsultarMerchantOrder) throw o.throwOnConsultarMerchantOrder;
+      if (o.resultadoConsultarMerchantOrder) return o.resultadoConsultarMerchantOrder;
+      const mo = merchantOrders[merchantOrderId];
+      if (mo === null) return { ok: false, motivo: 'no_encontrado', status: 404 };
+      return { ok: true, merchantOrder: mo || merchantOrderValido({ id: merchantOrderId }) };
     },
   };
 
@@ -342,11 +430,20 @@ testAsync('falta data.id (firmado por Mercado Pago sobre el manifest reducido): 
 
 // === No se confia en el body / topico =====================================
 
-testAsync('topico distinto de "payment" se reconoce (200) pero no se procesa', async () => {
+testAsync('topico realmente fuera de alcance (point_integration_wh) se reconoce (200) pero no se procesa', async () => {
   const { handler, llamadas } = crearHandlerDePrueba();
-  const res = await ejecutar(handler, notificacionValida({ tipo: 'merchant_order' }));
+  const res = await ejecutar(handler, notificacionValida({ tipo: 'point_integration_wh' }));
   assert.strictEqual(res.statusCode, 200);
   assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+  assert.strictEqual(llamadas.consultarMerchantOrderEnMercadoPago.length, 0);
+});
+
+testAsync('topico fuera de alcance SIN firma valida: 401 (solo merchant_order esta exceptuado de la firma)', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const res = await ejecutar(handler, notificacionValida({ tipo: 'point_integration_wh', sinHeaders: true }));
+  assert.strictEqual(res.statusCode, 401);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+  assert.strictEqual(llamadas.consultarMerchantOrderEnMercadoPago.length, 0);
 });
 
 testAsync('no se confia en el status que venga en el body: solo se usa el de la API real', async () => {
@@ -615,6 +712,211 @@ testAsync('mp_payment_id ya asociado a otro pedido (conflicto de unicidad): se r
   );
 });
 
+// === merchant_order (topico legado "Feed v2.0", nunca firmado) ============
+
+testAsync('merchant_order valido, sin firma, con pago aprobado: 200, estado_pago=aprobado, mp_payment_id asociado, avanza a_preparar', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba();
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarMerchantOrderEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.consultarMerchantOrderEnMercadoPago[0].merchantOrderId, '99887766');
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago[0].paymentId, '555000111');
+  assert.strictEqual(estado.pedido.estado_pago, 'aprobado');
+  assert.strictEqual(estado.pedido.mp_payment_id, '555000111');
+  assert.strictEqual(estado.pedido.estado_pedido, 'a_preparar');
+});
+
+testAsync('merchant_order con pago pendiente: 200, estado_pago=pendiente, estado_pedido NO avanza', async () => {
+  const { handler, estado } = crearHandlerDePrueba({
+    paymentsById: { 555000111: pagoValido({ status: 'pending', statusDetail: 'pending_waiting_payment' }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(estado.pedido.estado_pago, 'pendiente');
+  assert.strictEqual(estado.pedido.estado_pedido, 'pendiente_pago');
+});
+
+testAsync('merchant_order con pago rechazado: 200, estado_pago=rechazado', async () => {
+  const { handler, estado } = crearHandlerDePrueba({
+    paymentsById: { 555000111: pagoValido({ status: 'rejected', statusDetail: 'cc_rejected_other_reason' }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(estado.pedido.estado_pago, 'rechazado');
+});
+
+testAsync('merchant_order: reintento identico (idempotencia) no repite efectos ni vuelve a consultar el payment', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba();
+  const notif = notificacionMerchantOrder();
+
+  const res1 = await ejecutarMerchantOrder(handler, notif);
+  assert.strictEqual(res1.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.asociarPaymentId.length, 1);
+  assert.strictEqual(llamadas.actualizarEstadoPago.length, 1);
+
+  // Segunda notificacion: mismo merchant_order, mismo payment ya aplicado.
+  // La idempotencia es POR PAYMENT (no por id de notificacion, que en este
+  // formato legado ni siquiera existe de forma confiable), asi que se
+  // detecta ANTES de volver a llamar a consultarPagoEnMercadoPago.
+  const res2 = await ejecutarMerchantOrder(handler, notif);
+  assert.strictEqual(res2.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1, 'no debe volver a consultar el payment ya procesado');
+  assert.strictEqual(llamadas.asociarPaymentId.length, 1, 'no debe repetir la asociacion del payment id');
+  assert.strictEqual(llamadas.actualizarEstadoPago.length, 1, 'no debe repetir la actualizacion de estado');
+  assert.strictEqual(estado.pedido.estado_pago, 'aprobado');
+});
+
+testAsync('merchant_order con id falso/inexistente en Mercado Pago: 200, no toca el pedido ni Mercado Pago mas alla de la consulta', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: { '99887766': null }, // null = 404 simulado (ver harness)
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+  assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+  assert.strictEqual(llamadas.actualizarEstadoPago.length, 0);
+  assert.strictEqual(estado.pedido.estado_pago, 'pendiente');
+});
+
+testAsync('merchant_order con id de formato invalido (no numerico): 400, ni siquiera consulta Mercado Pago', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder({ merchantOrderId: 'abc-no-es-un-id' }));
+  assert.strictEqual(res.statusCode, 400);
+  assert.strictEqual(llamadas.consultarMerchantOrderEnMercadoPago.length, 0);
+});
+
+testAsync('merchant_order con external_reference que no matchea ningun pedido: 200, no toca nada', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: {
+      '99887766': merchantOrderValido({ externalReference: 'bbbbbbbb-cccc-4ddd-8eee-ffffffffffff' }),
+    },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+  assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+});
+
+testAsync('merchant_order con preference_id que NO coincide con pedidos.mp_preference_id: 200, se registra anomalia, no toca nada', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: { '99887766': merchantOrderValido({ preferenceId: 'PREF-DISTINTO-999' }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0, 'nunca deberia llegar a consultar pagos');
+  assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+  assert.strictEqual(estado.pedido.estado_pago, 'pendiente');
+  assert.strictEqual(
+    llamadas.registrarEvento.some((e) => e.metadata && e.metadata.anomalia === 'preference_id_no_coincide'),
+    true
+  );
+});
+
+testAsync('merchant_order sin preference_id en la respuesta de Mercado Pago: se trata igual que no coincide (nunca se "asume" valido)', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: { '99887766': merchantOrderValido({ preferenceId: null }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+});
+
+testAsync('merchant_order: importe del payment incorrecto -> NUNCA se marca aprobado, se registra anomalia', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba({
+    paymentsById: { 555000111: pagoValido({ transactionAmount: 1 }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(estado.pedido.estado_pago, 'pendiente');
+  assert.strictEqual(llamadas.asociarPaymentId.length, 0);
+  assert.strictEqual(
+    llamadas.registrarEvento.some((e) => e.metadata && e.metadata.anomalia === 'monto_moneda_no_coincide'),
+    true
+  );
+});
+
+testAsync('merchant_order: moneda del payment incorrecta -> NUNCA se marca aprobado, se registra anomalia', async () => {
+  const { handler, estado } = crearHandlerDePrueba({
+    paymentsById: { 555000111: pagoValido({ currencyId: 'USD' }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(estado.pedido.estado_pago, 'pendiente');
+});
+
+testAsync('merchant_order: un payment asociado cuyo external_reference no coincide con el pedido se descarta, sin frenar a los demas', async () => {
+  const { handler, estado, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: { '99887766': merchantOrderValido({ paymentIds: ['555000111', '555000222'] }) },
+    paymentsById: {
+      555000111: pagoValido({ id: '555000111', status: 'approved' }),
+      555000222: pagoValido({
+        id: '555000222',
+        externalReference: 'zzzzzzzz-zzzz-4zzz-8zzz-zzzzzzzzzzzz', // apunta a OTRO pedido
+      }),
+    },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(estado.pedido.estado_pago, 'aprobado'); // el payment valido si se aplico
+  assert.strictEqual(estado.pedido.mp_payment_id, '555000111');
+  assert.strictEqual(
+    llamadas.registrarEvento.some((e) => e.metadata && e.metadata.anomalia === 'payment_external_reference_no_coincide'),
+    true
+  );
+});
+
+testAsync('merchant_order sin ningun payment asociado todavia: 200, no es una anomalia, no toca nada', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({
+    merchantOrdersById: { '99887766': merchantOrderValido({ paymentIds: [] }) },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+});
+
+testAsync('merchant_order: error tecnico consultando /merchant_orders (no "no_encontrado"): 502, no se toca nada', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba({
+    resultadoConsultarMerchantOrder: { ok: false, motivo: 'red' },
+  });
+  const res = await ejecutarMerchantOrder(handler, notificacionMerchantOrder());
+  assert.strictEqual(res.statusCode, 502);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 0);
+});
+
+testAsync('merchant_order: notificacion SIN firma que intenta imponer datos manipulados en el body nunca los usa (todo sale de la consulta autenticada)', async () => {
+  const { handler, estado } = crearHandlerDePrueba();
+  // El body simula un intento de manipulacion: un resource que "senala" a
+  // OTRO merchant_order distinto del que realmente se consulta (el id real
+  // usado para consultar sale de la query, nunca de este body adulterado
+  // en un intento de ataque). Ademas, ninguna firma acompana la request.
+  const res = await ejecutarMerchantOrder(
+    handler,
+    notificacionMerchantOrder({
+      conFirma: false,
+      bodyExtra: { resource: 'https://api.mercadopago.com/merchant_orders/000000000', status: 'closed' },
+    })
+  );
+  assert.strictEqual(res.statusCode, 200);
+  // El id realmente usado siguio siendo el de la query (99887766, el unico
+  // configurado en el harness): el pedido se aprobo con datos 100%
+  // provenientes de la consulta autenticada, nunca del body.
+  assert.strictEqual(estado.pedido.estado_pago, 'aprobado');
+});
+
+testAsync('merchant_order: firma presente (valida o invalida) es irrelevante, nunca se exige ni se rechaza por eso', async () => {
+  const { handler: h1, estado: estado1 } = crearHandlerDePrueba();
+  const res1 = await ejecutarMerchantOrder(h1, notificacionMerchantOrder({ conFirma: true }));
+  assert.strictEqual(res1.statusCode, 200);
+  assert.strictEqual(estado1.pedido.estado_pago, 'aprobado');
+
+  const { handler: h2, estado: estado2 } = crearHandlerDePrueba();
+  const res2 = await ejecutarMerchantOrder(h2, notificacionMerchantOrder({ conFirma: false }));
+  assert.strictEqual(res2.statusCode, 200);
+  assert.strictEqual(estado2.pedido.estado_pago, 'aprobado');
+});
+
 // === No exposicion de secrets ================================================
 
 test('ninguna respuesta de esta suite expone el webhook secret ni el access token', async () => {
@@ -649,6 +951,42 @@ test('ninguna respuesta de esta suite expone datos del pedido (uuid, numero, com
     const res = await ejecutar(handler, notificacionValida());
     assert.deepStrictEqual(res.body, {});
   })();
+});
+
+testAsync('los logs sanitizados (console.log) nunca incluyen el webhook secret ni el access token, en ningun escenario (payment o merchant_order)', async () => {
+  const originalLog = console.log;
+  const lineasLogueadas = [];
+  console.log = (linea) => lineasLogueadas.push(String(linea));
+  try {
+    const { handler: hPayment } = crearHandlerDePrueba();
+    await ejecutar(hPayment, notificacionValida());
+    await ejecutar(hPayment, notificacionValida({ secretParaFirmar: 'otro' })); // firma invalida
+
+    const { handler: hMo } = crearHandlerDePrueba();
+    await ejecutarMerchantOrder(hMo, notificacionMerchantOrder());
+    const { handler: hMoAnomalia } = crearHandlerDePrueba({
+      merchantOrdersById: { '99887766': merchantOrderValido({ preferenceId: 'PREF-DISTINTO-999' }) },
+    });
+    await ejecutarMerchantOrder(hMoAnomalia, notificacionMerchantOrder());
+  } finally {
+    console.log = originalLog;
+  }
+
+  assert.ok(lineasLogueadas.length > 0, 'debe haber logueado al menos una linea sanitizada');
+  lineasLogueadas.forEach((linea) => {
+    assert.strictEqual(linea.includes(SECRET), false, 'un log nunca debe incluir el webhook secret');
+    assert.strictEqual(linea.includes(ACCESS_TOKEN), false, 'un log nunca debe incluir el access token');
+    // Tampoco datos personales del comprador (este suite no los pone en
+    // ningun pedido/payment de prueba, asi que alcanza con confirmar que
+    // los logs solo traen las claves tecnicas esperadas).
+    const parsed = JSON.parse(linea);
+    Object.keys(parsed).forEach((clave) => {
+      assert.ok(
+        ['webhook', 'categoria', 'motivo', 'eventoId', 'topico', 'pedidoId', 'merchantOrderId', 'paymentId', 'mpStatus'].includes(clave),
+        `el log no deberia incluir la clave inesperada "${clave}"`
+      );
+    });
+  });
 });
 
 // === Se mantienen los tests anteriores del proyecto (verificado por npm test) ===
