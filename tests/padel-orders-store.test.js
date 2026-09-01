@@ -130,10 +130,25 @@ function crearFakeSupabaseClient() {
     return pedido;
   }
 
+  // Simula un 401 de gateway transitorio: NUNCA toca `db` (representa un
+  // rechazo antes de llegar a Postgres/PostgREST, igual que la evidencia
+  // real: latencia ~0). El body de un 401 asi no tiene por que traer la
+  // forma de un error de PostgREST: a proposito no incluye `code`.
+  let proximas401 = 0;
+  function forzarProximos401(n) {
+    proximas401 = n;
+  }
+
   async function rpc(fnName, params) {
     if (fnName !== 'padel_crear_pedido' && fnName !== 'padel_crear_pedido_idempotente') {
-      return { data: null, error: { message: `rpc desconocida en fake: ${fnName}` } };
+      return { data: null, error: { message: `rpc desconocida en fake: ${fnName}` }, status: 404 };
     }
+
+    if (proximas401 > 0) {
+      proximas401 -= 1;
+      return { data: null, error: { message: 'Invalid API key' }, status: 401 };
+    }
+
     const idempotente = fnName === 'padel_crear_pedido_idempotente';
 
     const items = params.p_items;
@@ -142,15 +157,16 @@ function crearFakeSupabaseClient() {
       return {
         data: null,
         error: { code: 'P0001', message: 'el subtotal no coincide con la suma de los items' },
+        status: 400,
       };
     }
 
     if (idempotente) {
       if (typeof params.p_idempotency_key !== 'string' || !params.p_idempotency_key) {
-        return { data: null, error: { code: 'P0001', message: 'se requiere idempotency_key' } };
+        return { data: null, error: { code: 'P0001', message: 'se requiere idempotency_key' }, status: 400 };
       }
       if (typeof params.p_checkout_fingerprint !== 'string' || !/^[0-9a-f]{64}$/.test(params.p_checkout_fingerprint)) {
-        return { data: null, error: { code: 'P0001', message: 'checkout_fingerprint invalido' } };
+        return { data: null, error: { code: 'P0001', message: 'checkout_fingerprint invalido' }, status: 400 };
       }
 
       // Emula "insert ... on conflict (idempotency_key) do nothing": si ya
@@ -166,9 +182,10 @@ function crearFakeSupabaseClient() {
               code: 'P0002',
               message: 'idempotency_key ya utilizada con un contenido de checkout distinto',
             },
+            status: 400,
           };
         }
-        return { data: Object.assign({}, existente), error: null };
+        return { data: Object.assign({}, existente), error: null, status: 200 };
       }
     }
 
@@ -176,6 +193,7 @@ function crearFakeSupabaseClient() {
       return {
         data: null,
         error: { code: '23505', message: 'duplicate key value violates unique constraint' },
+        status: 409,
       };
     }
 
@@ -186,8 +204,9 @@ function crearFakeSupabaseClient() {
         : {}
     );
 
-    return { data: Object.assign({}, pedido), error: null };
+    return { data: Object.assign({}, pedido), error: null, status: 200 };
   }
+  rpc.forzarProximos401 = forzarProximos401;
 
   function makeBuilder(table, mode, payload) {
     const filters = [];
@@ -292,6 +311,7 @@ function crearFakeSupabaseClient() {
   return {
     _db: db,
     rpc,
+    forzarProximos401,
     from(table) {
       return {
         select() {
@@ -896,6 +916,196 @@ test('crearPedido: dos llamadas con la misma clave (simulando concurrencia) resu
 
   assert.strictEqual(a.id, b.id);
   assert.strictEqual(client._db.pedidos.length, 1);
+});
+
+// --- Reintento estrecho ante un 401 de gateway transitorio (request
+// "perdedor" de la carrera idempotente) ----------------------------------
+
+function espiarRpc(client) {
+  const llamadas = [];
+  const rpcOriginal = client.rpc;
+  client.rpc = function (fnName, params) {
+    llamadas.push(fnName);
+    return rpcOriginal(fnName, params);
+  };
+  return llamadas;
+}
+
+async function capturarLogs(fn) {
+  const lineas = [];
+  const originalLog = console.log;
+  console.log = (...args) => lineas.push(args.join(' '));
+  let resultado;
+  let error = null;
+  try {
+    resultado = await fn();
+  } catch (err) {
+    error = err;
+  } finally {
+    console.log = originalLog;
+  }
+  return { resultado, error, lineas };
+}
+
+test('crearPedido: un 401 de gateway (latencia ~0, sin llegar a Postgres) en el primer intento se reintenta UNA vez y converge al pedido real', async () => {
+  const client = crearFakeSupabaseClient();
+  const llamadas = espiarRpc(client);
+  client.forzarProximos401(1);
+
+  const pedido = await crearPedidoDePrueba(client);
+
+  assert.strictEqual(llamadas.length, 2, 'debe haber exactamente 2 llamadas a la RPC (intento + un unico reintento)');
+  assert.strictEqual(client._db.pedidos.length, 1, 'no debe crear un pedido duplicado');
+  assert.ok(store.esUuidValido(pedido.id));
+});
+
+test('crearPedido: si el reintento por 401 TAMBIEN falla, no se reintenta una segunda vez y se propaga como DB_ERROR', async () => {
+  const client = crearFakeSupabaseClient();
+  const llamadas = espiarRpc(client);
+  client.forzarProximos401(2);
+
+  await assertRejectsConCodigo(() => crearPedidoDePrueba(client), 'DB_ERROR');
+  assert.strictEqual(llamadas.length, 2, 'nunca debe intentar una tercera vez');
+  assert.strictEqual(client._db.pedidos.length, 0);
+});
+
+test('crearPedido: el reintento reusa EXACTAMENTE la misma idempotencyKey y fingerprint (nunca genera datos nuevos)', async () => {
+  const client = crearFakeSupabaseClient();
+  const paramsVistos = [];
+  const rpcOriginal = client.rpc;
+  client.rpc = function (fnName, params) {
+    paramsVistos.push(params);
+    return rpcOriginal(fnName, params);
+  };
+  client.forzarProximos401(1);
+
+  await crearPedidoDePrueba(client);
+
+  assert.strictEqual(paramsVistos.length, 2);
+  assert.strictEqual(paramsVistos[1].p_idempotency_key, paramsVistos[0].p_idempotency_key);
+  assert.strictEqual(paramsVistos[1].p_checkout_fingerprint, paramsVistos[0].p_checkout_fingerprint);
+  assert.strictEqual(paramsVistos[1].p_access_token, paramsVistos[0].p_access_token);
+});
+
+test('crearPedido: un conflicto de fingerprint (P0002) NUNCA se reintenta', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+  await crearPedidoDePrueba(client, { idempotencyKey: key });
+
+  const llamadas = espiarRpc(client);
+  await assertRejectsConCodigo(
+    () =>
+      crearPedido(
+        pedidoInputValido({ idempotencyKey: key, comprador: { nombre: 'Persona Distinta De Prueba' } }),
+        client
+      ),
+    'CONFLICTO'
+  );
+  assert.strictEqual(llamadas.length, 1, 'un conflicto de fingerprint no debe disparar ningun reintento');
+});
+
+test('crearPedido: un error de validacion (P0001, subtotal inconsistente) NUNCA se reintenta', async () => {
+  const client = crearFakeSupabaseClient();
+  const llamadas = espiarRpc(client);
+  await assertRejectsConCodigo(
+    () => crearPedido(pedidoInputValido({ total: -1 }), client),
+    'VALIDACION'
+  );
+  // El total invalido ya se rechaza en la validacion de entrada, antes de
+  // siquiera llamar a la RPC.
+  assert.strictEqual(llamadas.length, 0);
+});
+
+test('crearPedido: un error tecnico generico (no 401) NUNCA se reintenta', async () => {
+  const client = crearFakeSupabaseClient();
+  // access_token duplicado -> 23505, no 401: no debe reintentarse.
+  const primero = await crearPedidoDePrueba(client);
+  const accessTokenForzado = primero.access_token;
+
+  const llamadas = [];
+  const rpcOriginal = client.rpc;
+  client.rpc = function (fnName, params) {
+    llamadas.push(fnName);
+    return rpcOriginal(fnName, Object.assign({}, params, { p_access_token: accessTokenForzado }));
+  };
+  await assertRejectsConCodigo(() => crearPedidoDePrueba(client), 'DB_ERROR');
+  assert.strictEqual(llamadas.length, 1, 'un error tecnico que no es 401 nunca debe reintentarse');
+});
+
+test('logging del reintento por 401: nunca expone la idempotencyKey completa, el fingerprint completo, tokens ni datos del comprador', async () => {
+  const client = crearFakeSupabaseClient();
+  client.forzarProximos401(1);
+  const key = idempotencyKeyDePrueba();
+  const nombreSecreto = 'Nombre Comprador Ultra Secreto De Prueba';
+
+  const { resultado, error, lineas } = await capturarLogs(() =>
+    crearPedidoDePrueba(client, { idempotencyKey: key, comprador: { nombre: nombreSecreto } })
+  );
+
+  assert.strictEqual(error, null);
+  assert.ok(resultado);
+  assert.ok(lineas.length >= 2, 'debe haber logueado al menos el error original y el intento de reintento');
+
+  const salidaCompleta = lineas.join('\n');
+  assert.ok(!salidaCompleta.includes(key), 'nunca debe loguear la idempotencyKey completa');
+  assert.ok(!salidaCompleta.includes(nombreSecreto), 'nunca debe loguear datos del comprador');
+  assert.ok(!salidaCompleta.includes(resultado.access_token), 'nunca debe loguear el access_token');
+  assert.ok(!salidaCompleta.includes('SUPABASE_SECRET'), 'nunca debe mencionar la secret key');
+
+  // Las categorias esperadas del flujo (error inicial -> aviso de
+  // reintento -> recuperado) estan presentes, en formato JSON estructurado.
+  const categorias = lineas.map((l) => JSON.parse(l).categoria);
+  assert.ok(categorias.includes('rpc_crear_pedido_error'));
+  assert.ok(categorias.includes('rpc_crear_pedido_401_reintentando'));
+  assert.ok(categorias.includes('rpc_crear_pedido_401_reintento_recuperado'));
+
+  // Cada linea logueada es JSON valido, con unicamente metadata operativa:
+  // modulo, categoria, operacion, code, status y, como mucho, un prefijo de
+  // correlacion corto (nunca la clave completa).
+  lineas.forEach((linea) => {
+    const parsed = JSON.parse(linea);
+    const clavesPermitidas = ['modulo', 'categoria', 'operacion', 'code', 'status', 'correlacion'];
+    Object.keys(parsed).forEach((k) => {
+      assert.ok(clavesPermitidas.includes(k), `campo de log inesperado: ${k}`);
+    });
+    if (parsed.correlacion) {
+      assert.match(parsed.correlacion, /^[0-9a-f]{12}$/, 'la correlacion debe ser un hash corto, nunca la clave en claro');
+      assert.notStrictEqual(parsed.correlacion, key);
+    }
+  });
+});
+
+test('logging cuando el reintento por 401 tambien falla: se registra la categoria de fallo, sin exponer secretos', async () => {
+  const client = crearFakeSupabaseClient();
+  client.forzarProximos401(2);
+
+  const { error, lineas } = await capturarLogs(() => crearPedidoDePrueba(client));
+
+  assert.ok(error instanceof PedidoStoreError);
+  assert.strictEqual(error.code, 'DB_ERROR');
+  const categorias = lineas.map((l) => JSON.parse(l).categoria);
+  assert.ok(categorias.includes('rpc_crear_pedido_401_reintento_fallido'));
+  const salidaCompleta = lineas.join('\n');
+  assert.ok(!salidaCompleta.includes('SUPABASE_SECRET'));
+});
+
+test('un conflicto de fingerprint (P0002) se loguea pero nunca dispara el aviso de reintento por 401', async () => {
+  const client = crearFakeSupabaseClient();
+  const key = idempotencyKeyDePrueba();
+  await crearPedidoDePrueba(client, { idempotencyKey: key });
+
+  const { error, lineas } = await capturarLogs(() =>
+    crearPedido(
+      pedidoInputValido({ idempotencyKey: key, comprador: { nombre: 'Otra Persona Para El Log' } }),
+      client
+    )
+  );
+
+  assert.ok(error instanceof PedidoStoreError);
+  assert.strictEqual(error.code, 'CONFLICTO');
+  const categorias = lineas.map((l) => JSON.parse(l).categoria);
+  assert.ok(categorias.includes('rpc_crear_pedido_error'));
+  assert.ok(!categorias.includes('rpc_crear_pedido_401_reintentando'));
 });
 
 test('asociarPreferenceId: dos llamadas para el mismo pedido con preferencias distintas nunca se pisan entre si (la primera gana)', async () => {
