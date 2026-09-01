@@ -175,6 +175,38 @@ test('widget/padel-checkout.js nunca vacia el carrito persistente en modo "buyNo
   assert.ok(/if\s*\(\s*mode\s*!==\s*['"]buyNow['"]\s*\)\s*\{\s*window\.PadelCart\.clear\(\)/.test(contenido));
 });
 
+// --- CTA "Comprar ahora" en la tarjeta de Cross Black 26 (grilla) ---------
+
+test('la tarjeta de Cross Black 26 en index.html dispara el checkout real directo, nunca abre la ficha primero', () => {
+  const contenido = leerArchivo('index.html');
+  assert.ok(
+    contenido.includes('<button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-black-26">Comprar ahora</button>'),
+    'el CTA de la tarjeta debe ser data-mp-buy-button, sin onclick="openModal(...)"'
+  );
+});
+
+// --- cierre automatico del modal al comprar desde la ficha ----------------
+
+test('index.html cierra el modal automaticamente al clickear "Comprar ahora" dentro de la ficha', () => {
+  const contenido = leerArchivo('index.html');
+  assert.ok(
+    /if\s*\(\s*buyNowBtn\s*\)\s*buyNowBtn\.addEventListener\(\s*['"]click['"]\s*,\s*closeModal\s*\)/.test(contenido),
+    'debe existir un listener que cierre el modal al clickear el boton "Comprar ahora" de la ficha'
+  );
+});
+
+// --- jerarquia de botones dentro de la ficha (orden en el DOM) ------------
+
+test('dentro de la ficha, "Comprar ahora" aparece antes que "Agregar al carrito" y que "Consultar por WhatsApp"', () => {
+  const contenido = leerArchivo('index.html');
+  const posBuyNow = contenido.indexOf('id="modalBuyNowBtn"');
+  const posAddToCart = contenido.indexOf('id="modalBuyBtn"');
+  const posWhatsapp = contenido.indexOf('id="modalWpBtn"');
+  assert.ok(posBuyNow > -1 && posAddToCart > -1 && posWhatsapp > -1, 'deben existir los tres botones de la ficha');
+  assert.ok(posBuyNow < posAddToCart, '"Comprar ahora" debe ir antes que "Agregar al carrito" en el DOM');
+  assert.ok(posAddToCart < posWhatsapp, '"Agregar al carrito" debe ir antes que "Consultar por WhatsApp" en el DOM');
+});
+
 // --- Runner --------------------------------------------------------------
 
 function run() {

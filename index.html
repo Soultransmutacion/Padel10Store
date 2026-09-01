@@ -267,14 +267,20 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .qty-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;min-width:36px;text-align:center}
 .modal-subtotal{font-size:12px;color:rgba(255,255,255,0.25);margin-left:auto}
 .modal-subtotal strong{color:rgba(201,162,39,0.7);font-weight:700}
-.modal-buy-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111;background:#C9A227;border:none;border-radius:8px;padding:14px;cursor:pointer;transition:filter 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
-.modal-buy-btn:hover{filter:brightness(1.08)}
-.modal-buy-btn:active{transform:scale(0.98)}
+/* Jerarquia de la ficha: "Comprar ahora" (.modal-buynow-btn) es ahora el
+   CTA principal (dorado, solido); "Agregar al carrito" (.modal-buy-btn)
+   pasa a ser secundario (outline); "Consultar por WhatsApp" (.modal-wp-btn,
+   sin cambios) queda tercero. Los nombres de clase se mantienen ligados al
+   mismo id de siempre (evita tocar el resto del JS que ya referencia estos
+   selectores); solo se recolorearon. */
+.modal-buy-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;background:#111;border:1px solid rgba(201,162,39,0.6);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-buy-btn:hover{background:rgba(201,162,39,0.12)}
 .modal-buy-btn.added{background:rgba(201,162,39,0.12);color:#C9A227;border:1px solid rgba(201,162,39,0.3)}
 .modal-wp-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#fff;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .modal-wp-btn:hover{background:rgba(37,211,102,0.25);border-color:rgba(37,211,102,0.5)}
-.modal-buynow-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;background:#111;border:1px solid rgba(201,162,39,0.6);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.modal-buynow-btn:hover{background:rgba(201,162,39,0.12)}
+.modal-buynow-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111;background:#C9A227;border:none;border-radius:8px;padding:14px;cursor:pointer;transition:filter 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-buynow-btn:hover{filter:brightness(1.08)}
+.modal-buynow-btn:active{transform:scale(0.98)}
 .modal-buynow-btn:disabled{opacity:0.6;cursor:not-allowed}
 .modal-buynow-btn[hidden]{display:none}
 .mp-buy-error{width:100%;font-size:12px;color:#f2b8b8;text-align:center;margin-top:-6px}
@@ -467,7 +473,7 @@ footer{padding:2rem 1.25rem}
 <div class="card" data-cat="control" data-product-id="royal-padel-cross-black-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_BLACK_26.webp" alt="Cross Black '26" style="width:100%;height:100%;object-fit:contain;"/>
-        
+
         <span class="fav">♡</span>
       </div>
       <div class="card-body">
@@ -476,7 +482,7 @@ footer{padding:2rem 1.25rem}
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
+        <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-black-26">Comprar ahora</button>
       </div>
     </div>
 <div class="card" data-cat="control" data-product-id="royal-padel-cross-eva-26">
@@ -1986,7 +1992,11 @@ if(isConsultar){
 }
 var pM=encodeURIComponent(waMsg);
 if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
-var buyNowProductId=(product&&(PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1||(Array.isArray(product.talles)&&product.talles.length>0)))?product.id:'';
+// Unico producto piloto comprable con "Comprar ahora": debe coincidir con
+// window.PadelCheckoutWidget.startBuyNow (widget/padel-checkout.js#BUY_NOW_PRODUCT_ID),
+// que ya rechaza cualquier otro productId. Mostrar el boton solo para ese
+// producto evita un CTA dorado que no hace nada en el resto del catalogo.
+var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
 if(buyNowBtn){
 if(buyNowProductId){
 buyNowBtn.hidden=false;
@@ -2021,6 +2031,14 @@ if(qtyPlusEl)qtyPlusEl.addEventListener('click',function(){qty=Math.min(qty+1,20
 if(qtyMinusEl)qtyMinusEl.addEventListener('click',function(){qty=Math.max(qty-1,1);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
 if(buyBtn)buyBtn.addEventListener('click',function(){if(window.__talleGuardActive&&!window.__selectedTalle){if(talleMsgEl)talleMsgEl.textContent='Seleccioná un talle para continuar.';if(talleRowEl)talleRowEl.classList.add('talle-error');if(talleMsgEl)talleMsgEl.focus();return;}if(!currentProduct||!currentProduct.id||!window.PadelCart)return;var res=window.PadelCart.addItem(currentProduct.id,window.__selectedTalle||null,qty);if(!res||!res.ok)return;buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
 if(closeBtn)closeBtn.addEventListener('click',closeModal);
+// "Comprar ahora" desde la ficha: cierra el modal ANTES de que
+// widget/mercadopago-buy.js dispare PadelCheckoutWidget.startBuyNow (que
+// abre el drawer directo en "Tus datos"). Este listener se registra una
+// sola vez y se agrega ANTES que el de mercadopago-buy.js (que recien se
+// registra al terminar de cargar ese script deferido), asi que corre
+// primero en cada click: el modal ya esta cerrado para cuando se abre el
+// paso de datos.
+if(buyNowBtn)buyNowBtn.addEventListener('click',closeModal);
 if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
@@ -2066,8 +2084,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-subtotal">Total: <strong id="modalSubtotal"></strong></div>
 </div>
 <hr class="modal-divider">
-<button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
 <button class="modal-buynow-btn" id="modalBuyNowBtn" data-mp-buy-button hidden>Comprar ahora</button>
+<button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
 <button class="modal-wp-btn" id="modalWpBtn">Consultar por WhatsApp</button>
 <div class="modal-trust-row">
 <div class="modal-trust-item"><span class="modal-trust-icon">&#128274;</span><span class="modal-trust-text">Pago seguro</span></div>
