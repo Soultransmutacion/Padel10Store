@@ -388,6 +388,118 @@ testAsync('firma invalida (en cualquiera de sus variantes): nunca consulta Merca
   }
 });
 
+testAsync('data.id se lee SIEMPRE de la query, nunca del body, aunque difieran (regla oficial documentada)', async () => {
+  // Firmado (por Mercado Pago) sobre el data.id de la QUERY. Si el body
+  // trajera un data.id distinto (nunca deberia pasar en la practica, pero
+  // esto prueba que ni siquiera importaria), el handler debe seguir
+  // usando el de la query para validar la firma Y para consultar el pago.
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const notif = notificacionValida({ dataId: '555000111', bodyExtra: { data: { id: '999999999' } } });
+  const res = await ejecutar(handler, notif);
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago[0].paymentId, '555000111');
+});
+
+testAsync('data.id como number en la query valida y consulta igual que su equivalente string', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const notif = notificacionValida({ dataId: 555000111 });
+  const res = await ejecutar(handler, notif);
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago[0].paymentId, 555000111);
+});
+
+testAsync('topico insensible a mayusculas/espacios tambien a nivel HTTP (type=" PAYMENT ")', async () => {
+  const { handler, llamadas } = crearHandlerDePrueba();
+  const res = await ejecutar(handler, notificacionValida({ tipo: ' PAYMENT ' }));
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(llamadas.consultarPagoEnMercadoPago.length, 1);
+});
+
+// === Logging sanitizado de rechazos de firma (motivo categorizado) =======
+
+testAsync('firma rechazada por HMAC que no coincide: logSeguro registra motivo "hmac_no_coincide" y presencia correcta', async () => {
+  const originalLog = console.log;
+  const lineas = [];
+  console.log = (l) => lineas.push(String(l));
+  let res;
+  try {
+    const { handler } = crearHandlerDePrueba();
+    res = await ejecutar(handler, notificacionValida({ secretParaFirmar: 'secreto-equivocado' }));
+  } finally {
+    console.log = originalLog;
+  }
+  assert.strictEqual(res.statusCode, 401);
+  const rechazo = lineas.map((l) => JSON.parse(l)).find((l) => l.categoria === 'firma_rechazada');
+  assert.ok(rechazo, 'debe haber logueado una linea con categoria firma_rechazada');
+  assert.strictEqual(rechazo.motivo, 'hmac_no_coincide');
+  assert.strictEqual(rechazo.xSignaturePresente, true);
+  assert.strictEqual(rechazo.xRequestIdPresente, true);
+  assert.strictEqual(rechazo.dataIdPresente, true);
+  assert.strictEqual(rechazo.tsPresente, true);
+  assert.strictEqual(rechazo.v1Presente, true);
+  assert.strictEqual(typeof rechazo.correlacion, 'string');
+  assert.strictEqual(rechazo.correlacion.length, 12);
+});
+
+testAsync('firma rechazada por headers ausentes: logSeguro registra motivo "header_ausente_o_incompleto" y presencia en false', async () => {
+  const originalLog = console.log;
+  const lineas = [];
+  console.log = (l) => lineas.push(String(l));
+  let res;
+  try {
+    const { handler } = crearHandlerDePrueba();
+    res = await ejecutar(handler, notificacionValida({ sinHeaders: true }));
+  } finally {
+    console.log = originalLog;
+  }
+  assert.strictEqual(res.statusCode, 401);
+  const rechazo = lineas.map((l) => JSON.parse(l)).find((l) => l.categoria === 'firma_rechazada');
+  assert.ok(rechazo);
+  assert.strictEqual(rechazo.motivo, 'header_ausente_o_incompleto');
+  assert.strictEqual(rechazo.xSignaturePresente, false);
+  assert.strictEqual(rechazo.xRequestIdPresente, false);
+  assert.strictEqual(rechazo.correlacion, null);
+});
+
+testAsync('firma rechazada por secreto no configurado: logSeguro registra motivo "secreto_no_configurado"', async () => {
+  const originalLog = console.log;
+  const lineas = [];
+  console.log = (l) => lineas.push(String(l));
+  let res;
+  try {
+    const { handler } = crearHandlerDePrueba({ secret: '' });
+    res = await ejecutar(handler, notificacionValida());
+  } finally {
+    console.log = originalLog;
+  }
+  assert.strictEqual(res.statusCode, 401);
+  const rechazo = lineas.map((l) => JSON.parse(l)).find((l) => l.categoria === 'firma_rechazada');
+  assert.ok(rechazo);
+  assert.strictEqual(rechazo.motivo, 'secreto_no_configurado');
+  assert.strictEqual(rechazo.xSignaturePresente, true); // el header llego, solo falta el secreto propio
+});
+
+testAsync('dos rechazos de la MISMA notificacion (reintento identico de Mercado Pago) loguean la misma correlacion; uno distinto, otra', async () => {
+  const originalLog = console.log;
+  const lineas = [];
+  console.log = (l) => lineas.push(String(l));
+  try {
+    const { handler } = crearHandlerDePrueba();
+    const notif = notificacionValida({ secretParaFirmar: 'secreto-equivocado' });
+    await ejecutar(handler, notif); // primer intento
+    await ejecutar(handler, notif); // "reintento" identico (mismo header exacto)
+    await ejecutar(handler, notificacionValida({ secretParaFirmar: 'secreto-equivocado' })); // notificacion DISTINTA (ts/xRequestId propios)
+  } finally {
+    console.log = originalLog;
+  }
+  const rechazos = lineas.map((l) => JSON.parse(l)).filter((l) => l.categoria === 'firma_rechazada');
+  assert.strictEqual(rechazos.length, 3);
+  assert.strictEqual(rechazos[0].correlacion, rechazos[1].correlacion); // mismo header -> misma correlacion
+  assert.notStrictEqual(rechazos[0].correlacion, rechazos[2].correlacion); // header distinto -> correlacion distinta
+});
+
 // === Regla oficial de Mercado Pago: data.id / x-request-id ausentes se ===
 // === omiten del manifest, no invalidan la firma por si solos ==============
 //
@@ -982,7 +1094,27 @@ testAsync('los logs sanitizados (console.log) nunca incluyen el webhook secret n
     const parsed = JSON.parse(linea);
     Object.keys(parsed).forEach((clave) => {
       assert.ok(
-        ['webhook', 'categoria', 'motivo', 'eventoId', 'topico', 'pedidoId', 'merchantOrderId', 'paymentId', 'mpStatus'].includes(clave),
+        [
+          'webhook',
+          'categoria',
+          'motivo',
+          'eventoId',
+          'topico',
+          'pedidoId',
+          'merchantOrderId',
+          'paymentId',
+          'mpStatus',
+          // Diagnostico de rechazos de firma (ver logSeguro('firma_rechazada', ...)
+          // en api/mercadopago-webhook.js y diagnosticarFirmaWebhook en
+          // lib/mercadopago-webhook.js): solo presencia (booleanos) y un
+          // hash no reversible, nunca valores reales.
+          'xSignaturePresente',
+          'xRequestIdPresente',
+          'dataIdPresente',
+          'tsPresente',
+          'v1Presente',
+          'correlacion',
+        ].includes(clave),
         `el log no deberia incluir la clave inesperada "${clave}"`
       );
     });

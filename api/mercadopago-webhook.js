@@ -54,8 +54,10 @@
  *   ningun dato personal del comprador (nombre/email/telefono/direccion).
  *   Solo ids tecnicos (evento, merchant_order, payment, pedido), topico y
  *   motivo. Sirven para poder distinguir, mirando los logs: firma
- *   faltante, topico no soportado, merchant_order inexistente,
- *   discrepancia de pedido y procesamiento correcto (ver logSeguro).
+ *   rechazada (con motivo categorizado y presencia de cada pieza, ver
+ *   diagnosticarFirmaWebhook en lib/mercadopago-webhook.js), topico no
+ *   soportado, merchant_order inexistente, discrepancia de pedido y
+ *   procesamiento correcto (ver logSeguro).
  *
  * Respuesta HTTP: siempre un body minimo (nunca datos del pedido, nunca un
  * secreto). El status code es lo unico que le importa a Mercado Pago:
@@ -89,7 +91,7 @@ const {
   esTopicoDePago,
   esTopicoDeMerchantOrder,
   esMerchantOrderIdValido,
-  validarFirmaWebhook: validarFirmaWebhookReal,
+  diagnosticarFirmaWebhook: diagnosticarFirmaWebhookReal,
   consultarPagoEnMercadoPago: consultarPagoEnMercadoPagoReal,
   consultarMerchantOrderEnMercadoPago: consultarMerchantOrderEnMercadoPagoReal,
 } = require('../lib/mercadopago-webhook');
@@ -201,7 +203,7 @@ function createMercadoPagoWebhookHandler(deps) {
   const registrarEvento = d.registrarEvento || registrarEventoReal;
   const estaEventoWebhookProcesado = d.estaEventoWebhookProcesado || estaEventoWebhookProcesadoReal;
   const marcarEventoWebhookProcesado = d.marcarEventoWebhookProcesado || marcarEventoWebhookProcesadoReal;
-  const validarFirmaWebhook = d.validarFirmaWebhook || validarFirmaWebhookReal;
+  const diagnosticarFirmaWebhook = d.diagnosticarFirmaWebhook || diagnosticarFirmaWebhookReal;
   const consultarPagoEnMercadoPago = d.consultarPagoEnMercadoPago || consultarPagoEnMercadoPagoReal;
   const consultarMerchantOrderEnMercadoPago =
     d.consultarMerchantOrderEnMercadoPago || consultarMerchantOrderEnMercadoPagoReal;
@@ -602,14 +604,31 @@ function createMercadoPagoWebhookHandler(deps) {
       // mirar el topico o el body.
       // ======================================================================
 
-      const firmaValida = validarFirmaWebhook({
+      const diagnosticoFirma = diagnosticarFirmaWebhook({
         xSignatureHeader,
         xRequestId,
         dataId,
         secret,
       });
-      if (!firmaValida) {
-        logSeguro('firma_faltante', { topico: topico || null });
+      if (!diagnosticoFirma.valida) {
+        // Logging sanitizado de rechazos: motivo categorizado y presencia
+        // (nunca el valor) de cada pieza de la firma, para poder
+        // diagnosticar futuros 401 sin acceso a los logs crudos de
+        // Vercel. Nunca incluye el secreto, el manifest ni la firma real:
+        // "correlacion" es un hash SHA-256 no reversible del header
+        // completo (ver lib/mercadopago-webhook.js#calcularCorrelacionFirma),
+        // solo sirve para saber si dos rechazos corresponden al mismo
+        // intento/reintento.
+        logSeguro('firma_rechazada', {
+          topico: topico || null,
+          motivo: diagnosticoFirma.motivo,
+          xSignaturePresente: diagnosticoFirma.xSignaturePresente,
+          xRequestIdPresente: diagnosticoFirma.xRequestIdPresente,
+          dataIdPresente: diagnosticoFirma.dataIdPresente,
+          tsPresente: diagnosticoFirma.tsPresente,
+          v1Presente: diagnosticoFirma.v1Presente,
+          correlacion: diagnosticoFirma.correlacion,
+        });
         return ack(res, 401);
       }
 

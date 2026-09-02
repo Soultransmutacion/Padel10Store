@@ -21,6 +21,8 @@ const {
   parsearXSignature,
   construirManifiesto,
   compararHexEnTiempoConstante,
+  calcularCorrelacionFirma,
+  diagnosticarFirmaWebhook,
   validarFirmaWebhook,
   consultarPagoEnMercadoPago,
   consultarMerchantOrderEnMercadoPago,
@@ -345,6 +347,166 @@ test('validarFirmaWebhook: nunca lanza excepcion ante entradas completamente vac
   assert.strictEqual(validarFirmaWebhook({}), false);
 });
 
+// Mercado Pago envia data.id como string en la practica (query param HTTP,
+// y tambien como string dentro de data.id en el body), pero
+// construirManifiesto/tienePresencia normalizan con String(...), asi que
+// un data.id que llegara como number (por ejemplo, si algun llamador lo
+// parseara con Number() antes de pasarlo) debe firmar/validar exactamente
+// igual que su equivalente string.
+test('validarFirmaWebhook: data.id como number valida igual que su equivalente string', () => {
+  const xRequestId = 'req-abc';
+  const ts = '1700000000';
+  const { header } = firmarNotificacion({ dataId: 123456789, xRequestId, ts });
+  assert.strictEqual(
+    validarFirmaWebhook({ xSignatureHeader: header, xRequestId, dataId: 123456789, secret: SECRET }),
+    true
+  );
+  // Y la firma calculada para el number coincide exactamente con la del
+  // string equivalente (mismo manifest, misma firma).
+  const { header: headerString } = firmarNotificacion({ dataId: '123456789', xRequestId, ts });
+  assert.strictEqual(header, headerString);
+});
+
+test('construirManifiesto: data.id number y string equivalente producen el mismo manifest', () => {
+  assert.strictEqual(
+    construirManifiesto({ dataId: 123456789, xRequestId: 'req-1', ts: '1' }),
+    construirManifiesto({ dataId: '123456789', xRequestId: 'req-1', ts: '1' })
+  );
+});
+
+// --- calcularCorrelacionFirma ---------------------------------------------
+
+test('calcularCorrelacionFirma: null ante header ausente/vacio', () => {
+  assert.strictEqual(calcularCorrelacionFirma(undefined), null);
+  assert.strictEqual(calcularCorrelacionFirma(null), null);
+  assert.strictEqual(calcularCorrelacionFirma(''), null);
+  assert.strictEqual(calcularCorrelacionFirma('   '), null);
+});
+
+test('calcularCorrelacionFirma: hash hex de 12 caracteres, estable para el mismo header', () => {
+  const header = 'ts=1700000000,v1=abc123def456';
+  const correlacion = calcularCorrelacionFirma(header);
+  assert.strictEqual(typeof correlacion, 'string');
+  assert.strictEqual(correlacion.length, 12);
+  assert.ok(/^[0-9a-f]{12}$/.test(correlacion));
+  assert.strictEqual(calcularCorrelacionFirma(header), correlacion); // determinista
+});
+
+test('calcularCorrelacionFirma: headers distintos producen hashes distintos, y nunca contiene el header original', () => {
+  const c1 = calcularCorrelacionFirma('ts=1700000000,v1=abc123');
+  const c2 = calcularCorrelacionFirma('ts=1700000001,v1=def456');
+  assert.notStrictEqual(c1, c2);
+  assert.strictEqual(c1.includes('abc123'), false);
+});
+
+// --- diagnosticarFirmaWebhook ----------------------------------------------
+//
+// Nucleo compartido con validarFirmaWebhook (misma logica exacta, ver
+// comentario en lib/mercadopago-webhook.js): estas pruebas confirman que
+// el campo "valida" siempre coincide con validarFirmaWebhook para el mismo
+// input, que el "motivo" categoriza correctamente cada caso, y que la
+// salida NUNCA expone el secreto, el manifest ni la firma real (v1).
+
+test('diagnosticarFirmaWebhook: motivo "secreto_no_configurado" si falta el secreto', () => {
+  const { header } = firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1700000000' });
+  const resultado = diagnosticarFirmaWebhook({ xSignatureHeader: header, xRequestId: 'req', dataId: '1', secret: undefined });
+  assert.strictEqual(resultado.valida, false);
+  assert.strictEqual(resultado.motivo, 'secreto_no_configurado');
+  assert.strictEqual(resultado.xSignaturePresente, true);
+});
+
+test('diagnosticarFirmaWebhook: motivo "header_ausente_o_incompleto" si falta x-signature o le falta ts/v1', () => {
+  const casos = [
+    { xSignatureHeader: undefined, xSignaturePresenteEsperado: false },
+    { xSignatureHeader: '', xSignaturePresenteEsperado: false },
+    { xSignatureHeader: 'formato-invalido', xSignaturePresenteEsperado: true },
+    { xSignatureHeader: 'ts=1700000000', xSignaturePresenteEsperado: true }, // falta v1
+    { xSignatureHeader: 'v1=abc', xSignaturePresenteEsperado: true }, // falta ts
+  ];
+  casos.forEach(({ xSignatureHeader, xSignaturePresenteEsperado }) => {
+    const resultado = diagnosticarFirmaWebhook({ xSignatureHeader, xRequestId: 'req', dataId: '1', secret: SECRET });
+    assert.strictEqual(resultado.valida, false);
+    assert.strictEqual(resultado.motivo, 'header_ausente_o_incompleto');
+    assert.strictEqual(resultado.xSignaturePresente, xSignaturePresenteEsperado);
+  });
+});
+
+test('diagnosticarFirmaWebhook: motivo "hmac_no_coincide" si todo esta presente pero la firma no matchea', () => {
+  const dataId = '123456789';
+  const xRequestId = 'req-abc';
+  const ts = '1700000000';
+  const { header } = firmarNotificacion({ dataId, xRequestId, ts, secret: 'otro-secreto' });
+  const resultado = diagnosticarFirmaWebhook({ xSignatureHeader: header, xRequestId, dataId, secret: SECRET });
+  assert.strictEqual(resultado.valida, false);
+  assert.strictEqual(resultado.motivo, 'hmac_no_coincide');
+  assert.strictEqual(resultado.xSignaturePresente, true);
+  assert.strictEqual(resultado.xRequestIdPresente, true);
+  assert.strictEqual(resultado.dataIdPresente, true);
+  assert.strictEqual(resultado.tsPresente, true);
+  assert.strictEqual(resultado.v1Presente, true);
+});
+
+test('diagnosticarFirmaWebhook: motivo "valida" con presencia correcta de cada pieza cuando todo coincide', () => {
+  const dataId = '123456789';
+  const xRequestId = 'req-abc';
+  const ts = '1700000000';
+  const { header } = firmarNotificacion({ dataId, xRequestId, ts });
+  const resultado = diagnosticarFirmaWebhook({ xSignatureHeader: header, xRequestId, dataId, secret: SECRET });
+  assert.strictEqual(resultado.valida, true);
+  assert.strictEqual(resultado.motivo, 'valida');
+  assert.strictEqual(resultado.xSignaturePresente, true);
+  assert.strictEqual(resultado.xRequestIdPresente, true);
+  assert.strictEqual(resultado.dataIdPresente, true);
+  assert.strictEqual(resultado.tsPresente, true);
+  assert.strictEqual(resultado.v1Presente, true);
+  assert.strictEqual(resultado.correlacion, calcularCorrelacionFirma(header));
+});
+
+test('diagnosticarFirmaWebhook: dataIdPresente/xRequestIdPresente reflejan ausencia real (manifest reducido)', () => {
+  const ts = '1700000000';
+  const { header } = firmarNotificacion({ dataId: undefined, xRequestId: undefined, ts });
+  const resultado = diagnosticarFirmaWebhook({ xSignatureHeader: header, xRequestId: undefined, dataId: undefined, secret: SECRET });
+  assert.strictEqual(resultado.valida, true); // manifest reducido, pero criptograficamente valido
+  assert.strictEqual(resultado.dataIdPresente, false);
+  assert.strictEqual(resultado.xRequestIdPresente, false);
+});
+
+test('diagnosticarFirmaWebhook: "valida" siempre coincide con validarFirmaWebhook para el mismo input (fuzz simple)', () => {
+  const escenarios = [
+    { xSignatureHeader: undefined, xRequestId: 'req', dataId: '1', secret: SECRET },
+    { xSignatureHeader: 'formato-invalido', xRequestId: 'req', dataId: '1', secret: SECRET },
+    { xSignatureHeader: firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1' }).header, xRequestId: 'req', dataId: '1', secret: '' },
+    { xSignatureHeader: firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1' }).header, xRequestId: 'req', dataId: '1', secret: SECRET },
+    { xSignatureHeader: firmarNotificacion({ dataId: '1', xRequestId: 'req', ts: '1' }).header, xRequestId: 'req', dataId: '2', secret: SECRET },
+  ];
+  escenarios.forEach((args) => {
+    assert.strictEqual(diagnosticarFirmaWebhook(args).valida, validarFirmaWebhook(args));
+  });
+});
+
+test('diagnosticarFirmaWebhook: nunca expone el secreto, el manifest ni la firma real (v1) en su salida', () => {
+  const dataId = '123456789';
+  const xRequestId = 'req-abc';
+  const ts = '1700000000';
+  const { header, v1 } = firmarNotificacion({ dataId, xRequestId, ts });
+  const resultado = diagnosticarFirmaWebhook({ xSignatureHeader: header, xRequestId, dataId, secret: SECRET });
+  const serializado = JSON.stringify(resultado);
+  assert.strictEqual(serializado.includes(SECRET), false);
+  assert.strictEqual(serializado.includes(v1), false);
+  // Las unicas claves permitidas: nada de "manifest", "firma", "secret" ni
+  // el header original completo.
+  assert.deepStrictEqual(
+    Object.keys(resultado).sort(),
+    ['correlacion', 'dataIdPresente', 'motivo', 'tsPresente', 'v1Presente', 'valida', 'xRequestIdPresente', 'xSignaturePresente'].sort()
+  );
+});
+
+test('diagnosticarFirmaWebhook: nunca lanza excepcion ante entradas completamente vacias', () => {
+  assert.doesNotThrow(() => diagnosticarFirmaWebhook());
+  assert.doesNotThrow(() => diagnosticarFirmaWebhook({}));
+  assert.strictEqual(diagnosticarFirmaWebhook().valida, false);
+});
+
 // --- consultarPagoEnMercadoPago (mockea global.fetch) --------------------
 
 function withMockFetch(mockFn, run) {
@@ -428,6 +590,20 @@ testAsync('consultarPagoEnMercadoPago: motivo "sin_credencial" si no hay accessT
   const resultado = await consultarPagoEnMercadoPago({ paymentId: '999', accessToken: undefined });
   assert.strictEqual(resultado.ok, false);
   assert.strictEqual(resultado.motivo, 'sin_credencial');
+});
+
+testAsync('consultarPagoEnMercadoPago: acepta paymentId como number, igual que su equivalente string', async () => {
+  await withMockFetch(
+    async (url) => {
+      assert.strictEqual(url, 'https://api.mercadopago.com/v1/payments/123456789');
+      return { ok: true, status: 200, json: async () => ({ id: 123456789, status: 'approved' }) };
+    },
+    async () => {
+      const resultado = await consultarPagoEnMercadoPago({ paymentId: 123456789, accessToken: 'TEST-TOKEN' });
+      assert.strictEqual(resultado.ok, true);
+      assert.strictEqual(resultado.payment.id, '123456789');
+    }
+  );
 });
 
 testAsync('consultarPagoEnMercadoPago: motivo "payment_id_invalido" ante id vacio', async () => {
