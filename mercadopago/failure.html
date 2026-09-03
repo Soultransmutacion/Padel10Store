@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Pago rechazado (prueba) — Padel10Store</title>
+<title>El pago no se completó — Padel10Store</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Barlow',Arial,sans-serif;background:#111;color:#f0f0f0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
@@ -13,20 +13,37 @@ body{font-family:'Barlow',Arial,sans-serif;background:#111;color:#f0f0f0;min-hei
 h1{font-family:'Barlow Condensed',Arial,sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;color:#fff;margin-bottom:0.75rem}
 p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:1rem}
 p strong{color:#C9A227}
-.notice{background:rgba(224,85,85,0.08);border:1px solid rgba(224,85,85,0.3);border-radius:8px;padding:12px 14px;font-size:13px;color:#f2b8b8;text-align:left;margin-top:1.25rem;line-height:1.6}
-a.back{display:inline-block;margin-top:1.5rem;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;color:#111;background:#C9A227;border-radius:6px;padding:10px 22px;text-decoration:none;letter-spacing:0.5px}
+.notice{background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.25);border-radius:8px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.75);text-align:left;margin-top:1.25rem;line-height:1.6}
+.thanks{font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;font-size:14px;margin-top:1.5rem}
+a.back{display:inline-block;margin-top:1rem;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;color:#111;background:#C9A227;border-radius:6px;padding:10px 22px;text-decoration:none;letter-spacing:0.5px}
 </style>
 </head>
 <body>
 <div class="box">
-<div class="badge">Entorno de prueba · Sandbox</div>
+<div class="badge" id="envBadge" hidden>Entorno de prueba · Sandbox</div>
 <div class="icon">&#10060;</div>
-<h1>Pago de prueba rechazado o cancelado</h1>
-<p>Mercado Pago informó que este pago de <strong>prueba (sandbox)</strong> fue <strong>rechazado o cancelado</strong>. No se realizó ningún cobro real.</p>
+<h1>El pago no se completó</h1>
+<p>Mercado Pago informó que este pago <strong>no se completó</strong> (fue rechazado o cancelado).</p>
 <div class="notice">
-Este resultado corresponde a un entorno de <strong>prueba</strong>. No hay ninguna compra confirmada ni pedido real registrado. Podés volver a intentarlo desde la tienda.
+No podemos asegurar desde esta página cuál es el estado final de tu pedido: si querés confirmarlo o tenés dudas, contactanos con el número de pedido que te compartimos. Podés volver a intentar el pago tranquilamente desde la tienda cuando quieras.
 </div>
+<p class="thanks">Gracias por elegir Padel10Store</p>
 <a class="back" href="/">Volver a la tienda</a>
 </div>
+<script>
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('mp_env') === 'sandbox') {
+      var badge = document.getElementById('envBadge');
+      if (badge) badge.hidden = false;
+    }
+  } catch (e) {
+    // Si URLSearchParams no esta disponible, el badge simplemente queda
+    // oculto (comportamiento seguro por defecto: nunca mostrar "prueba"
+    // por error).
+  }
+})();
+</script>
 </body>
 </html>

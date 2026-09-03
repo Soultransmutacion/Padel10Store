@@ -73,14 +73,28 @@
   var IDEMPOTENCY_KEY_REGEX = /^[A-Za-z0-9_-]{16,100}$/;
 
   // Nunca se navega a una URL de checkout que no sea explicitamente de
-  // Mercado Pago sandbox (protocolo https + host conocido).
+  // Mercado Pago (protocolo https + host EXACTO conocido). El backend
+  // (lib/pedido-preferencia.js + lib/mercadopago-preference.js) es quien
+  // decide si el entorno efectivo es sandbox o production (cruzando
+  // MERCADOPAGO_ENV con VERCEL_ENV) y arma la URL en consecuencia: este
+  // navegador no tiene forma de conocer esa decision de antemano, asi que
+  // valida el resultado contra la UNION de los dos allow-lists oficiales
+  // (nunca contra un patron laxo, nunca un subdominio ni un sufijo). Son
+  // los mismos hosts, byte a byte, que valida el backend
+  // (ALLOWED_SANDBOX_HOSTS / ALLOWED_PRODUCTION_HOSTS en
+  // lib/mercadopago-preference.js): si alguno de los dos lados cambia,
+  // debe cambiar el otro a la vez.
   var ALLOWED_SANDBOX_HOSTS = ['sandbox.mercadopago.com.ar', 'sandbox.mercadopago.com'];
-  function isValidSandboxUrl(url) {
+  var ALLOWED_PRODUCTION_HOSTS = ['www.mercadopago.com.ar'];
+  function isValidCheckoutRedirectUrl(url) {
     if (typeof url !== 'string' || !url) return false;
     var parsed;
     try { parsed = new URL(url); } catch (e) { return false; }
     if (parsed.protocol !== 'https:') return false;
-    return ALLOWED_SANDBOX_HOSTS.indexOf(parsed.hostname) !== -1;
+    return (
+      ALLOWED_SANDBOX_HOSTS.indexOf(parsed.hostname) !== -1 ||
+      ALLOWED_PRODUCTION_HOSTS.indexOf(parsed.hostname) !== -1
+    );
   }
 
   var PROVINCIAS = [
@@ -620,7 +634,7 @@
         if (mode !== 'buyNow') {
           window.PadelCart.clear();
         }
-        if (isValidSandboxUrl(result.data.redirectUrl)) {
+        if (isValidCheckoutRedirectUrl(result.data.redirectUrl)) {
           // El pago ya se puede iniciar: se navega directo al checkout de
           // Mercado Pago sandbox. No hace falta mostrar la vista de
           // confirmacion (el comprador la va a ver al volver del pago).
@@ -682,7 +696,7 @@
       })
       .then(function (result) {
         retrying = false;
-        if (!result.ok || !result.data || !isValidSandboxUrl(result.data.redirectUrl)) {
+        if (!result.ok || !result.data || !isValidCheckoutRedirectUrl(result.data.redirectUrl)) {
           retryError = RETRY_ERROR_MESSAGE;
           render();
           return;

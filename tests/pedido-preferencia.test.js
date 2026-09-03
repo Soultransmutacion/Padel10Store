@@ -456,6 +456,154 @@ testAsync(
   }
 );
 
+// ===========================================================================
+// Matriz VERCEL_ENV x MERCADOPAGO_ENV a nivel de orquestacion completa
+// (crearOReutilizarPreferenciaParaPedido), no solo de la funcion pura
+// resolverEntornoMercadoPago (esa matriz ya esta cubierta en
+// tests/mercadopago-preference.test.js). Ademas de la matriz, verifica
+// las 2 reglas de host que no pueden expresarse a nivel de funcion pura:
+// sandbox_init_point NUNCA se usa en production, e init_point NUNCA se
+// usa en Preview/sandbox.
+// ===========================================================================
+
+const ENV_PRODUCTION_OK = {
+  MERCADOPAGO_ACCESS_TOKEN: 'token-de-produccion-no-real',
+  MERCADOPAGO_ENV: 'production',
+  VERCEL_ENV: 'production',
+  VERCEL_URL: 'padel10store.vercel.app',
+};
+
+function fakeCrearPreferenciaConAmbosInitPoints() {
+  return fakeCrearPreferencia({
+    ok: true,
+    preferenceId: 'pref-matriz-1',
+    sandboxInitPoint: 'https://sandbox.mercadopago.com.ar/checkout/pref-matriz-1',
+    initPoint: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=pref-matriz-1',
+  });
+}
+
+testAsync('matriz: Production (Vercel) + production (Mercado Pago) -> usa init_point, NUNCA sandbox_init_point', async () => {
+  await withEnv(ENV_PRODUCTION_OK, async () => {
+    const crearPreferencia = fakeCrearPreferenciaConAmbosInitPoints();
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+      crearPreferenciaEnMercadoPago: crearPreferencia,
+      asociarPreferenceId: fakeAsociar(),
+    });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, {
+      ok: true,
+      checkoutUrl: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=pref-matriz-1',
+    });
+    // back_urls enviadas a Mercado Pago llevan ?mp_env=production (para el
+    // badge "Entorno de prueba" de las paginas de retorno: nunca debe
+    // mostrarse en production).
+    const payload = crearPreferencia.llamadas[0].payload;
+    assert.strictEqual(payload.back_urls.success, 'https://padel10store.vercel.app/mercadopago/success.html?mp_env=production');
+  });
+});
+
+testAsync('matriz: Preview + production (Mercado Pago) -> RECHAZADO, nunca llega a llamar a Mercado Pago', async () => {
+  await withEnv(Object.assign({}, ENV_PRODUCTION_OK, { VERCEL_ENV: 'preview' }), async () => {
+    const crearPreferencia = fakeCrearPreferenciaConAmbosInitPoints();
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({ crearPreferenciaEnMercadoPago: crearPreferencia });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, { ok: false, motivo: 'entorno_no_habilitado' });
+    assert.strictEqual(crearPreferencia.llamadas.length, 0, 'fail closed: nunca debe llamar a Mercado Pago');
+  });
+});
+
+testAsync('matriz: VERCEL_ENV ausente + production (Mercado Pago) -> RECHAZADO igual que Preview', async () => {
+  await withEnv(Object.assign({}, ENV_PRODUCTION_OK, { VERCEL_ENV: undefined }), async () => {
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({});
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+    assert.deepStrictEqual(resultado, { ok: false, motivo: 'entorno_no_habilitado' });
+  });
+});
+
+testAsync('matriz: Production (Vercel) + sandbox (Mercado Pago) -> permitido, usa sandbox_init_point (nunca init_point)', async () => {
+  await withEnv(Object.assign({}, ENV_PRODUCTION_OK, { MERCADOPAGO_ENV: 'sandbox' }), async () => {
+    const crearPreferencia = fakeCrearPreferenciaConAmbosInitPoints();
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+      crearPreferenciaEnMercadoPago: crearPreferencia,
+      asociarPreferenceId: fakeAsociar(),
+    });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, {
+      ok: true,
+      checkoutUrl: 'https://sandbox.mercadopago.com.ar/checkout/pref-matriz-1',
+    });
+    const payload = crearPreferencia.llamadas[0].payload;
+    assert.strictEqual(payload.back_urls.success, 'https://padel10store.vercel.app/mercadopago/success.html?mp_env=sandbox');
+  });
+});
+
+testAsync('regla de host: en production, un init_point con host falso/parecido nunca se usa (responde sin_production_init_point)', async () => {
+  await withEnv(ENV_PRODUCTION_OK, async () => {
+    const crearPreferencia = fakeCrearPreferencia({
+      ok: true,
+      preferenceId: 'pref-host-falso',
+      sandboxInitPoint: null,
+      initPoint: 'https://www.mercadopago.com.ar.evil.com/checkout/pref-host-falso',
+    });
+    const asociar = fakeAsociar();
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+      crearPreferenciaEnMercadoPago: crearPreferencia,
+      asociarPreferenceId: asociar,
+    });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, { ok: false, motivo: 'sin_production_init_point' });
+    // El pedido ya quedo con la preferencia asociada (igual criterio que el
+    // caso sandbox equivalente): el proximo reintento puede releerla.
+    assert.strictEqual(asociar.llamadas.length, 1);
+  });
+});
+
+testAsync('regla de host: en sandbox/Preview, un sandbox_init_point con host falso/parecido nunca se usa', async () => {
+  await withEnv(ENV_SANDBOX_OK, async () => {
+    const crearPreferencia = fakeCrearPreferencia({
+      ok: true,
+      preferenceId: 'pref-host-falso-2',
+      sandboxInitPoint: 'https://sandbox.mercadopago.com.ar.evil.com/checkout/pref-host-falso-2',
+      initPoint: null,
+    });
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+      crearPreferenciaEnMercadoPago: crearPreferencia,
+      asociarPreferenceId: fakeAsociar(),
+    });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido: pedidoValido(), items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, { ok: false, motivo: 'sin_sandbox_init_point' });
+  });
+});
+
+testAsync('idempotencia en production: si el pedido ya tiene mp_preference_id, relee con init_point (nunca sandbox_init_point)', async () => {
+  await withEnv(ENV_PRODUCTION_OK, async () => {
+    const obtener = fakeObtenerPreferencia({
+      ok: true,
+      preferenceId: 'pref-prod-existente',
+      sandboxInitPoint: 'https://sandbox.mercadopago.com.ar/checkout/pref-prod-existente',
+      initPoint: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=pref-prod-existente',
+    });
+    const crearPreferencia = fakeCrearPreferenciaConAmbosInitPoints();
+    const crearOReutilizarPreferenciaParaPedido = cargarConMocks({
+      obtenerPreferenciaDeMercadoPago: obtener,
+      crearPreferenciaEnMercadoPago: crearPreferencia,
+    });
+    const pedido = pedidoValido({ mp_preference_id: 'pref-prod-existente' });
+    const resultado = await crearOReutilizarPreferenciaParaPedido({ pedido, items: itemsValidos() });
+
+    assert.deepStrictEqual(resultado, {
+      ok: true,
+      checkoutUrl: 'https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=pref-prod-existente',
+    });
+    assert.strictEqual(crearPreferencia.llamadas.length, 0);
+  });
+});
+
 // --- Runner ------------------------------------------------------------
 
 async function run() {

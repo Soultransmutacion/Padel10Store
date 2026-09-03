@@ -19,6 +19,8 @@ const {
   validateRequestBody,
   getPurchasableProduct,
   isValidSandboxInitPoint,
+  isValidProductionInitPoint,
+  resolverEntornoMercadoPago,
   getTrustedBaseUrl,
   buildBackUrls,
   buildNotificationUrl,
@@ -382,6 +384,143 @@ test('buildPreferencePayload incluye el talle en el titulo cuando corresponde, y
   assert.ok(conTalle.items[0].title.includes('Talle ' + conTalles.talles[0]));
   const sinTalle = buildPreferencePayload({ product: conTalles, backUrls, talle: null });
   assert.strictEqual(sinTalle.items[0].title, conTalles.nombre);
+});
+
+// ===========================================================================
+// resolverEntornoMercadoPago: matriz completa VERCEL_ENV x MERCADOPAGO_ENV
+// (preparacion tecnica para Production, ver lib/mercadopago-preference.js).
+// ===========================================================================
+
+test('resolverEntornoMercadoPago: Preview + sandbox -> permitido, en sandbox', () => {
+  withEnv({ VERCEL_ENV: 'preview', MERCADOPAGO_ENV: 'sandbox' }, () => {
+    assert.deepStrictEqual(resolverEntornoMercadoPago(), { entorno: 'sandbox', habilitado: true });
+  });
+});
+
+test('resolverEntornoMercadoPago: Preview + production -> RECHAZADO (nunca se habilita production en Preview)', () => {
+  withEnv({ VERCEL_ENV: 'preview', MERCADOPAGO_ENV: 'production' }, () => {
+    const resultado = resolverEntornoMercadoPago();
+    assert.strictEqual(resultado.entorno, 'production');
+    assert.strictEqual(resultado.habilitado, false);
+  });
+});
+
+test('resolverEntornoMercadoPago: Production (Vercel) + production (Mercado Pago) -> permitido, en production', () => {
+  withEnv({ VERCEL_ENV: 'production', MERCADOPAGO_ENV: 'production' }, () => {
+    assert.deepStrictEqual(resolverEntornoMercadoPago(), { entorno: 'production', habilitado: true });
+  });
+});
+
+test('resolverEntornoMercadoPago: Production (Vercel) + sandbox (Mercado Pago) -> definido explicitamente: permitido, en sandbox', () => {
+  withEnv({ VERCEL_ENV: 'production', MERCADOPAGO_ENV: 'sandbox' }, () => {
+    assert.deepStrictEqual(resolverEntornoMercadoPago(), { entorno: 'sandbox', habilitado: true });
+  });
+});
+
+test('resolverEntornoMercadoPago: VERCEL_ENV ausente + production -> RECHAZADO (fail closed, no solo Preview)', () => {
+  withEnv({ VERCEL_ENV: undefined, MERCADOPAGO_ENV: 'production' }, () => {
+    assert.strictEqual(resolverEntornoMercadoPago().habilitado, false);
+  });
+});
+
+test('resolverEntornoMercadoPago: VERCEL_ENV=development + production -> RECHAZADO', () => {
+  withEnv({ VERCEL_ENV: 'development', MERCADOPAGO_ENV: 'production' }, () => {
+    assert.strictEqual(resolverEntornoMercadoPago().habilitado, false);
+  });
+});
+
+test('resolverEntornoMercadoPago: sin MERCADOPAGO_ENV (default sandbox) en cualquier VERCEL_ENV -> permitido, en sandbox', () => {
+  withEnv({ VERCEL_ENV: 'production', MERCADOPAGO_ENV: undefined }, () => {
+    assert.deepStrictEqual(resolverEntornoMercadoPago(), { entorno: 'sandbox', habilitado: true });
+  });
+  withEnv({ VERCEL_ENV: undefined, MERCADOPAGO_ENV: undefined }, () => {
+    assert.deepStrictEqual(resolverEntornoMercadoPago(), { entorno: 'sandbox', habilitado: true });
+  });
+});
+
+// ===========================================================================
+// isValidProductionInitPoint: mismo criterio que isValidSandboxInitPoint
+// (https + hostname EXACTO), pero contra el allow-list de PRODUCCION.
+// ===========================================================================
+
+test('isValidProductionInitPoint acepta el init_point oficial de Mercado Pago Argentina', () => {
+  assert.strictEqual(
+    isValidProductionInitPoint('https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123'),
+    true
+  );
+});
+
+test('isValidProductionInitPoint rechaza el sandbox_init_point: los dos campos nunca se cruzan', () => {
+  assert.strictEqual(
+    isValidProductionInitPoint('https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id=123'),
+    false
+  );
+});
+
+test('isValidSandboxInitPoint rechaza el init_point de produccion: los dos campos nunca se cruzan (inverso)', () => {
+  assert.strictEqual(
+    isValidSandboxInitPoint('https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123'),
+    false
+  );
+});
+
+test('isValidProductionInitPoint rechaza http (exige https)', () => {
+  assert.strictEqual(
+    isValidProductionInitPoint('http://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123'),
+    false
+  );
+});
+
+test('isValidProductionInitPoint rechaza subdominios, sufijos y dominios que solo imitan al oficial', () => {
+  assert.strictEqual(isValidProductionInitPoint('https://www.mercadopago.com.ar.evil.com/x'), false);
+  assert.strictEqual(isValidProductionInitPoint('https://evil.com/www.mercadopago.com.ar'), false);
+  assert.strictEqual(isValidProductionInitPoint('https://malicioso-www.mercadopago.com.ar/x'), false);
+  assert.strictEqual(isValidProductionInitPoint('https://www.mercadopago.com.ar.co/x'), false);
+  assert.strictEqual(isValidProductionInitPoint('https://www.mercadopago.com.ar@evil.com/x'), false);
+});
+
+test('isValidProductionInitPoint rechaza otros dominios de Mercado Pago no incluidos explicitamente (sin coincidencia parcial)', () => {
+  assert.strictEqual(isValidProductionInitPoint('https://www.mercadopago.com/checkout/v1/redirect?pref_id=123'), false);
+  assert.strictEqual(isValidProductionInitPoint('https://mercadopago.com.ar/checkout/v1/redirect?pref_id=123'), false);
+});
+
+test('isValidProductionInitPoint rechaza valores vacios, nulos o invalidos', () => {
+  assert.strictEqual(isValidProductionInitPoint(''), false);
+  assert.strictEqual(isValidProductionInitPoint(null), false);
+  assert.strictEqual(isValidProductionInitPoint(undefined), false);
+  assert.strictEqual(isValidProductionInitPoint(123), false);
+});
+
+// ===========================================================================
+// buildBackUrls: query param mp_env (badge "Entorno de prueba" en las
+// paginas de retorno, ver mercadopago/success.html / pending.html /
+// failure.html).
+// ===========================================================================
+
+test('buildBackUrls sin entorno mantiene el comportamiento previo (sin query param)', () => {
+  const backUrls = buildBackUrls('https://ejemplo.vercel.app');
+  assert.strictEqual(backUrls.success, 'https://ejemplo.vercel.app/mercadopago/success.html');
+  assert.strictEqual(backUrls.pending, 'https://ejemplo.vercel.app/mercadopago/pending.html');
+  assert.strictEqual(backUrls.failure, 'https://ejemplo.vercel.app/mercadopago/failure.html');
+});
+
+test('buildBackUrls con entorno sandbox agrega ?mp_env=sandbox a las 3 URLs', () => {
+  const backUrls = buildBackUrls('https://ejemplo.vercel.app', 'sandbox');
+  assert.strictEqual(backUrls.success, 'https://ejemplo.vercel.app/mercadopago/success.html?mp_env=sandbox');
+  assert.strictEqual(backUrls.pending, 'https://ejemplo.vercel.app/mercadopago/pending.html?mp_env=sandbox');
+  assert.strictEqual(backUrls.failure, 'https://ejemplo.vercel.app/mercadopago/failure.html?mp_env=sandbox');
+});
+
+test('buildBackUrls con entorno production agrega ?mp_env=production a las 3 URLs', () => {
+  const backUrls = buildBackUrls('https://ejemplo.vercel.app', 'production');
+  assert.strictEqual(backUrls.success, 'https://ejemplo.vercel.app/mercadopago/success.html?mp_env=production');
+  assert.strictEqual(backUrls.pending, 'https://ejemplo.vercel.app/mercadopago/pending.html?mp_env=production');
+  assert.strictEqual(backUrls.failure, 'https://ejemplo.vercel.app/mercadopago/failure.html?mp_env=production');
+});
+
+test('buildBackUrls ignora un valor de entorno invalido (nunca agrega un query param con basura)', () => {
+  const backUrls = buildBackUrls('https://ejemplo.vercel.app', 'otra-cosa');
+  assert.strictEqual(backUrls.success, 'https://ejemplo.vercel.app/mercadopago/success.html');
 });
 
 

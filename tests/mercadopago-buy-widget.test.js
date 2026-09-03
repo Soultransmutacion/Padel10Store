@@ -305,6 +305,74 @@ testAsync('startBuyNow ignora cualquier producto que no sea el piloto (defensa e
   assert.strictEqual(h.mode(), 'cart');
 });
 
+// --- Validacion de host del redirectUrl (defensa en profundidad, mismo
+// allow-list que valida el backend en lib/mercadopago-preference.js) -----
+//
+// Estas pruebas verifican el comportamiento observable: si el widget NO
+// redirige (window.location.href no cambia en jsdom, ver mas abajo), la
+// unica senal fiable disponible es que el flujo nunca llega a
+// goto('confirmacion') (el codigo hace `return` antes de esa linea, ver
+// widget/padel-checkout.js). Cuando SI redirige, la vista se queda tal
+// cual estaba (todavia 'revision'), porque el codigo tambien vuelve antes
+// de llegar a goto('confirmacion') - la diferencia real (efectivamente
+// navegar) no es observable en jsdom (loguea "Not implemented:
+// navigation" y no lanza), asi que estas pruebas se apoyan en que el host
+// invalido es el UNICO camino que efectivamente muestra la vista de
+// confirmacion sin redirigir.
+
+function crearHarnessConRedirect(redirectUrl) {
+  return createHarness({
+    apiPedidosResponses: [
+      { ok: true, status: 201, body: { numero: 'P10-000950', redirectUrl: redirectUrl } },
+    ],
+  });
+}
+
+async function completarCompraDirecta(h) {
+  await withReadyCatalog(h);
+  h.click(h.buyNowBtn());
+  h.llenarFormularioValido();
+  h.click(h.nextBtn()); // -> revision
+  h.click(h.nextBtn()); // -> confirmar y crear pedido
+  await flushAll();
+}
+
+testAsync('redirectUrl con host sandbox oficial: el flujo intenta redirigir (nunca muestra la vista de confirmacion)', async () => {
+  const h = crearHarnessConRedirect('https://sandbox.mercadopago.com.ar/checkout/v1/redirect?pref_id=1');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'revision', 'un host sandbox oficial debe disparar la redireccion, no la vista de confirmacion');
+});
+
+testAsync('redirectUrl con host de produccion oficial: el flujo intenta redirigir (nunca muestra la vista de confirmacion)', async () => {
+  const h = crearHarnessConRedirect('https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=1');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'revision', 'un host de produccion oficial debe disparar la redireccion, no la vista de confirmacion');
+});
+
+testAsync('redirectUrl con host que solo imita al sandbox oficial (typosquatting): nunca redirige, muestra confirmacion', async () => {
+  const h = crearHarnessConRedirect('https://sandbox.mercadopago.com.ar.evil.com/checkout/v1/redirect?pref_id=1');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'confirmacion', 'un host que no matchea el allow-list nunca debe disparar una redireccion');
+});
+
+testAsync('redirectUrl con host que solo imita al de produccion (typosquatting): nunca redirige, muestra confirmacion', async () => {
+  const h = crearHarnessConRedirect('https://www.mercadopago.com.ar.evil.com/checkout/v1/redirect?pref_id=1');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'confirmacion');
+});
+
+testAsync('redirectUrl con protocolo http (no https) sobre un host valido: nunca redirige, muestra confirmacion', async () => {
+  const h = crearHarnessConRedirect('http://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=1');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'confirmacion');
+});
+
+testAsync('redirectUrl con un dominio totalmente ajeno a Mercado Pago: nunca redirige, muestra confirmacion', async () => {
+  const h = crearHarnessConRedirect('https://sitio-cualquiera.com/checkout');
+  await completarCompraDirecta(h);
+  assert.strictEqual(h.view(), 'confirmacion');
+});
+
 // --- Runner --------------------------------------------------------------
 
 async function run() {

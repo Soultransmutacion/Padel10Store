@@ -3,6 +3,15 @@
     "functions": {
           "api/padel-assistant.js": {
                   "maxDuration": 25
+          },
+          "api/pedidos.js": {
+                  "maxDuration": 20
+          },
+          "api/pedidos-preferencia.js": {
+                  "maxDuration": 20
+          },
+          "api/mercadopago-webhook.js": {
+                  "maxDuration": 20
           }
     }
 }
