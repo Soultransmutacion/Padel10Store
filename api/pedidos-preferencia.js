@@ -17,6 +17,11 @@
  * el pago de ESE pedido puntual. Ver lib/payment-retry-token.js.
  *
  * Pasos del servidor (en este orden):
+ * 0) Interruptor de seguridad (lib/checkout-config.js): si el checkout
+ *    esta deshabilitado (CHECKOUT_ENABLED !== 'true'), responde de
+ *    inmediato con un mensaje comercial, sin tocar Supabase ni Mercado
+ *    Pago. Fail closed: cualquier valor que no sea exactamente 'true'
+ *    deja esto deshabilitado.
  * 1) Valida el formato del token recibido.
  * 2) Encuentra el pedido correspondiente por el HASH del token (nunca se
  *    guarda ni se busca por el token en claro).
@@ -66,6 +71,11 @@ const {
   crearOReutilizarPreferenciaParaPedido,
   pedidoAdmitePago,
 } = require('../lib/pedido-preferencia');
+const {
+  esCheckoutHabilitado: esCheckoutHabilitadoReal,
+  CHECKOUT_DISABLED_MESSAGE,
+  CHECKOUT_DISABLED_STATUS,
+} = require('../lib/checkout-config');
 
 const GENERIC_ERROR_MESSAGE = 'No pudimos reiniciar el pago. Intentá nuevamente en unos minutos.';
 const MAX_BODY_LENGTH = 500;
@@ -73,6 +83,13 @@ const CAMPOS_RAIZ = ['paymentRetryToken'];
 
 function sendGenericError(res, status) {
   res.status(status).json({ error: GENERIC_ERROR_MESSAGE });
+}
+
+// Interruptor de seguridad (ver lib/checkout-config.js): con el checkout
+// deshabilitado, responde de inmediato con un mensaje comercial (nunca un
+// detalle tecnico), sin tocar Supabase ni Mercado Pago.
+function sendCheckoutDisabled(res) {
+  res.status(CHECKOUT_DISABLED_STATUS).json({ error: CHECKOUT_DISABLED_MESSAGE });
 }
 
 function isPlainObject(value) {
@@ -127,6 +144,7 @@ function createPedidosPreferenciaHandler(deps) {
   const obtenerItemsPorPedido = (deps && deps.obtenerItemsPorPedido) || obtenerItemsPorPedidoReal;
   const crearPreferenciaParaPedido =
     (deps && deps.crearPreferenciaParaPedido) || crearOReutilizarPreferenciaParaPedido;
+  const esCheckoutHabilitado = (deps && deps.esCheckoutHabilitado) || esCheckoutHabilitadoReal;
 
   return async function handler(req, res) {
     try {
@@ -135,13 +153,22 @@ function createPedidosPreferenciaHandler(deps) {
         return sendGenericError(res, 405);
       }
 
-      // 2) Content-Type estricto.
+      // 2) Interruptor de seguridad: con el checkout deshabilitado, se
+      // corta ACA, antes de leer/parsear el body y antes de tocar la base
+      // de datos o Mercado Pago. Fail closed (ver lib/checkout-config.js):
+      // cualquier valor de CHECKOUT_ENABLED que no sea exactamente 'true'
+      // deja esto deshabilitado.
+      if (!esCheckoutHabilitado()) {
+        return sendCheckoutDisabled(res);
+      }
+
+      // 3) Content-Type estricto.
       const contentType = String((req.headers && req.headers['content-type']) || '').toLowerCase();
       if (!contentType.includes('application/json')) {
         return sendGenericError(res, 415);
       }
 
-      // 3) Tamano de body acotado (el body esperado es minusculo: un
+      // 4) Tamano de body acotado (el body esperado es minusculo: un
       // solo token de 64 caracteres).
       const rawBody = req.body;
       const bodyString = getBodyAsString(rawBody);
@@ -158,7 +185,7 @@ function createPedidosPreferenciaHandler(deps) {
         }
       }
 
-      // 4) Forma del body + formato del token. Cualquier otro campo, o un
+      // 5) Forma del body + formato del token. Cualquier otro campo, o un
       // token con formato invalido, se rechaza aca (nunca se llega a
       // tocar la base de datos con un valor que no cumple el formato
       // esperado).
@@ -167,7 +194,7 @@ function createPedidosPreferenciaHandler(deps) {
         return sendGenericError(res, 400);
       }
 
-      // 5) Encuentra el pedido por el HASH del token (nunca se guarda ni
+      // 6) Encuentra el pedido por el HASH del token (nunca se guarda ni
       // se busca por el valor en claro).
       const hash = hashPaymentRetryToken(forma.paymentRetryToken);
       let pedido;
@@ -180,14 +207,14 @@ function createPedidosPreferenciaHandler(deps) {
         return sendGenericError(res, mapPedidoStoreErrorToStatus(err));
       }
 
-      // 6) El pedido debe seguir en un estado que permita pagar. Si ya
+      // 7) El pedido debe seguir en un estado que permita pagar. Si ya
       // se aprobo el pago, o el pedido esta cancelado/expirado/en otro
       // punto del fulfillment, se rechaza sin tocar Mercado Pago.
       if (!pedidoAdmitePago(pedido)) {
         return sendGenericError(res, 409);
       }
 
-      // 7) Crea (o reutiliza) la preferencia con la misma logica que usa
+      // 8) Crea (o reutiliza) la preferencia con la misma logica que usa
       // api/pedidos.js: nunca crea una segunda preferencia si ya existe
       // una reutilizable, y los items/precios salen siempre del snapshot
       // ya persistido (pedido_items), nunca de un valor mandado por el
@@ -204,7 +231,7 @@ function createPedidosPreferenciaHandler(deps) {
         return sendGenericError(res, 502);
       }
 
-      // 8) Respuesta minima: SOLO redirectUrl. Nunca el UUID interno,
+      // 9) Respuesta minima: SOLO redirectUrl. Nunca el UUID interno,
       // nunca access_token ni el payment_retry_token/su hash, nunca
       // datos personales ni detalles de Mercado Pago/Supabase.
       return res.status(200).json({ redirectUrl: resultado.checkoutUrl });

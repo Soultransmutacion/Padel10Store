@@ -12,6 +12,11 @@
  * mp_preference_id asociado. No se cobra nada en este endpoint.
  *
  * Reglas de seguridad (mismo criterio que api/create-payment-preference.js):
+ * - Interruptor de seguridad (lib/checkout-config.js): si el checkout esta
+ *   deshabilitado (CHECKOUT_ENABLED !== 'true'), responde de inmediato con
+ *   un mensaje comercial, sin tocar el catalogo, Supabase ni Mercado Pago.
+ *   Fail closed: cualquier valor que no sea exactamente 'true' lo deja
+ *   deshabilitado.
  * - Metodo estricto (solo POST), Content-Type estricto (application/json),
  *   limite de tamano de body.
  * - Allow-list estricta de campos en cada nivel del body: cualquier campo
@@ -48,6 +53,11 @@ const checkoutFields = require('../lib/padel-checkout-fields');
 const {
   crearOReutilizarPreferenciaParaPedido,
 } = require('../lib/pedido-preferencia');
+const {
+  esCheckoutHabilitado: esCheckoutHabilitadoReal,
+  CHECKOUT_DISABLED_MESSAGE,
+  CHECKOUT_DISABLED_STATUS,
+} = require('../lib/checkout-config');
 
 const GENERIC_ERROR_MESSAGE = 'No pudimos registrar tu pedido. Intentá nuevamente en unos minutos.';
 const MAX_BODY_LENGTH = 8000;
@@ -61,6 +71,13 @@ const CAMPOS_ITEM = ['productId', 'talle', 'cantidad'];
 
 function sendGenericError(res, status) {
   res.status(status).json({ error: GENERIC_ERROR_MESSAGE });
+}
+
+// Interruptor de seguridad (ver lib/checkout-config.js): con el checkout
+// deshabilitado, responde de inmediato con un mensaje comercial (nunca un
+// detalle tecnico), sin tocar el catalogo, Supabase ni Mercado Pago.
+function sendCheckoutDisabled(res) {
+  res.status(CHECKOUT_DISABLED_STATUS).json({ error: CHECKOUT_DISABLED_MESSAGE });
 }
 
 function isPlainObject(value) {
@@ -168,6 +185,7 @@ function createPedidosHandler(deps) {
   const obtenerItemsPorPedido = (deps && deps.obtenerItemsPorPedido) || obtenerItemsPorPedidoReal;
   const crearPreferenciaParaPedido =
     (deps && deps.crearPreferenciaParaPedido) || crearOReutilizarPreferenciaParaPedido;
+  const esCheckoutHabilitado = (deps && deps.esCheckoutHabilitado) || esCheckoutHabilitadoReal;
 
   return async function handler(req, res) {
     try {
@@ -176,13 +194,22 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, 405);
       }
 
-      // 2) Content-Type estricto.
+      // 2) Interruptor de seguridad: con el checkout deshabilitado, se
+      // corta ACA, antes de leer/parsear el body y antes de tocar el
+      // catalogo, Supabase o Mercado Pago. Fail closed (ver
+      // lib/checkout-config.js): cualquier valor de CHECKOUT_ENABLED que
+      // no sea exactamente 'true' deja esto deshabilitado.
+      if (!esCheckoutHabilitado()) {
+        return sendCheckoutDisabled(res);
+      }
+
+      // 3) Content-Type estricto.
       const contentType = String((req.headers && req.headers['content-type']) || '').toLowerCase();
       if (!contentType.includes('application/json')) {
         return sendGenericError(res, 415);
       }
 
-      // 3) Tamano de body acotado.
+      // 4) Tamano de body acotado.
       const rawBody = req.body;
       const bodyString = getBodyAsString(rawBody);
       if (bodyString.length > MAX_BODY_LENGTH) {
@@ -198,7 +225,7 @@ function createPedidosHandler(deps) {
         }
       }
 
-      // 4) Forma del body: allow-list estricta en cada nivel. Cualquier
+      // 5) Forma del body: allow-list estricta en cada nivel. Cualquier
       // campo inesperado (documento, pais, precioUnitario, total, etc.) se
       // rechaza aca, antes de tocar el catalogo o crearPedido.
       const forma = validarFormaDelBody(parsedBody);
@@ -207,7 +234,7 @@ function createPedidosHandler(deps) {
       }
       const { comprador, contacto, direccionEnvio, items, idempotencyKey } = forma.body;
 
-      // 5) Contenido de comprador/contacto/direccion: mismas reglas que ya
+      // 6) Contenido de comprador/contacto/direccion: mismas reglas que ya
       // corrio (solo a modo de UX) el formulario del navegador.
       const validacionFormulario = checkoutFields.validarFormularioCheckout({
         comprador,
@@ -218,7 +245,7 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, 400);
       }
 
-      // 6) Carrito: se reconstruye entero contra el catalogo real. Si CUALQUIER
+      // 7) Carrito: se reconstruye entero contra el catalogo real. Si CUALQUIER
       // linea no es valida, se rechaza la request completa: nunca se crea un
       // pedido parcial. La cantidad se valida en forma ESTRICTA (nunca se
       // "corrige" en silencio una cantidad invalida, a diferencia de lo que
@@ -231,7 +258,7 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, 400);
       }
 
-      // 7) Arma el input real de crearPedido(): precios/nombres salen
+      // 8) Arma el input real de crearPedido(): precios/nombres salen
       // exclusivamente de resumenCarrito.lineas (catalogo real), nunca del
       // body original.
       const input = {
@@ -261,7 +288,7 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, mapPedidoStoreErrorToStatus(err));
       }
 
-    // 8) El pedido YA EXISTE en este punto. Intentamos crear (o reutilizar)
+    // 9) El pedido YA EXISTE en este punto. Intentamos crear (o reutilizar)
     // la preferencia de Mercado Pago en el mismo request. Un fallo aca
     // NUNCA borra ni modifica el pedido: queda pendiente_pago. El pedido
     // ya quedo registrado; informar esto al comprador es responsabilidad
@@ -281,7 +308,7 @@ function createPedidosHandler(deps) {
       redirectUrl = null;
     }
 
-    // 9) Respuesta minima: nunca el id interno (UUID) del pedido, nunca
+    // 10) Respuesta minima: nunca el id interno (UUID) del pedido, nunca
     // el access_token de seguimiento (reservado para la futura consulta
     // segura del estado del pedido, no para reintentos de Mercado Pago),
     // nunca secrets ni datos de Mercado Pago. Solo lo estrictamente

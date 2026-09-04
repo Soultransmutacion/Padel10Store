@@ -38,6 +38,7 @@ const INDEX_HTML = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 const CART_CORE_SRC = fs.readFileSync(path.join(ROOT, 'lib', 'padel-cart.js'), 'utf8');
 const CHECKOUT_FIELDS_SRC = fs.readFileSync(path.join(ROOT, 'lib', 'padel-checkout-fields.js'), 'utf8');
 const CART_WIDGET_SRC = fs.readFileSync(path.join(ROOT, 'widget', 'padel-cart.js'), 'utf8');
+const CHECKOUT_AVAILABILITY_SRC = fs.readFileSync(path.join(ROOT, 'widget', 'checkout-availability.js'), 'utf8');
 const CHECKOUT_WIDGET_SRC = fs.readFileSync(path.join(ROOT, 'widget', 'padel-checkout.js'), 'utf8');
 const MERCADOPAGO_BUY_SRC = fs.readFileSync(path.join(ROOT, 'widget', 'mercadopago-buy.js'), 'utf8');
 
@@ -56,6 +57,10 @@ async function flushAll(times) {
 
 function createHarness(options) {
   const opts = options || {};
+  // Por defecto, checkout HABILITADO: es lo que asumen todas las pruebas
+  // existentes de este archivo (el interruptor de seguridad tiene su
+  // propia seccion dedicada, mas abajo).
+  const checkoutEnabled = opts.checkoutEnabled !== false;
   const dom = new JSDOM(INDEX_HTML, { url: 'https://padel10store.test/', runScripts: 'outside-only', pretendToBeVisual: true });
   const window = dom.window;
   const document = window.document;
@@ -67,6 +72,9 @@ function createHarness(options) {
     fetchCalls.push(String(url));
     if (String(url).indexOf('products.json') !== -1) {
       return Promise.resolve({ ok: true, json: () => Promise.resolve(productsJson) });
+    }
+    if (String(url).indexOf('/api/checkout-config') !== -1) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ enabled: checkoutEnabled }) });
     }
     if (String(url).indexOf('/api/pedidos-preferencia') !== -1) {
       return Promise.reject(new Error('no mockeado en este harness'));
@@ -110,6 +118,7 @@ function createHarness(options) {
   window.eval(CART_CORE_SRC);
   window.eval(CHECKOUT_FIELDS_SRC);
   window.eval(CART_WIDGET_SRC);
+  window.eval(CHECKOUT_AVAILABILITY_SRC);
   window.eval(CHECKOUT_WIDGET_SRC);
   window.eval(MERCADOPAGO_BUY_SRC);
 
@@ -143,6 +152,7 @@ function createHarness(options) {
     view: () => window.PadelCheckoutWidgetInternal.getView(),
     mode: () => window.PadelCheckoutWidgetInternal.getMode(),
     modalBuyNowBtn: () => document.getElementById('modalBuyNowBtn'),
+    modalCheckoutPausedMsg: () => document.getElementById('modalCheckoutPausedMsg'),
   };
 }
 
@@ -245,22 +255,28 @@ testAsync('carrito sin modificaciones: "Comprar ahora" desde la ficha (con cierr
   assert.deepStrictEqual(h.window.PadelCart.getRawLines(), antes);
 });
 
-// --- ninguna llamada a APIs antes de que el usuario confirme sus datos ----
+// --- ninguna llamada a APIs de pedidos antes de que el usuario confirme sus datos ----
+//
+// /api/checkout-config SI se consulta al arrancar (el interruptor de
+// seguridad, ver widget/checkout-availability.js): eso es esperado y no
+// es lo que estas pruebas verifican. Lo que nunca debe pasar es que se
+// llame a /api/pedidos (ni al endpoint retirado) antes de que el usuario
+// confirme sus datos.
 
-testAsync('no se llama a ninguna API (ni /api/pedidos ni el endpoint retirado) hasta que el usuario confirme sus datos', async () => {
+testAsync('no se llama a ninguna API de pedidos (ni /api/pedidos ni el endpoint retirado) hasta que el usuario confirme sus datos', async () => {
   const h = createHarness();
   await withCatalogReady(h);
-  const llamadasIniciales = h.fetchCalls.length; // solo products.json, al arrancar
+  const llamadasIniciales = h.fetchCalls.length; // products.json + /api/checkout-config, al arrancar
 
   h.click(h.crossBlackCardBtn()); // abre "Tus datos" directo
   await flushAll();
 
-  const llamadasDeApi = h.fetchCalls.filter((u) => u.indexOf('/api/') !== -1);
-  assert.strictEqual(llamadasDeApi.length, 0, 'no debe haber ninguna llamada a /api/* con solo abrir "Tus datos"');
-  assert.strictEqual(h.fetchCalls.length, llamadasIniciales, 'no debe haber fetches nuevos mas alla del catalogo inicial');
+  const llamadasDePedidos = h.fetchCalls.filter((u) => u.indexOf('/api/') !== -1 && u.indexOf('/api/checkout-config') === -1);
+  assert.strictEqual(llamadasDePedidos.length, 0, 'no debe haber ninguna llamada a una API de pedidos con solo abrir "Tus datos"');
+  assert.strictEqual(h.fetchCalls.length, llamadasIniciales, 'no debe haber fetches nuevos mas alla del catalogo/checkout-config inicial');
 });
 
-testAsync('lo mismo abriendo "Comprar ahora" desde la ficha: sin llamadas a APIs hasta confirmar', async () => {
+testAsync('lo mismo abriendo "Comprar ahora" desde la ficha: sin llamadas a APIs de pedidos hasta confirmar', async () => {
   const h = createHarness();
   await withCatalogReady(h);
   h.window.openModal(h.crossBlackCardEl());
@@ -268,8 +284,104 @@ testAsync('lo mismo abriendo "Comprar ahora" desde la ficha: sin llamadas a APIs
   h.click(h.modalBuyNowBtn());
   await flushAll();
 
-  const llamadasDeApi = h.fetchCalls.filter((u) => u.indexOf('/api/') !== -1);
-  assert.strictEqual(llamadasDeApi.length, 0);
+  const llamadasDePedidos = h.fetchCalls.filter((u) => u.indexOf('/api/') !== -1 && u.indexOf('/api/checkout-config') === -1);
+  assert.strictEqual(llamadasDePedidos.length, 0);
+});
+
+// ===========================================================================
+// Interruptor de seguridad del checkout, contra el index.html REAL: con
+// /api/checkout-config respondiendo {enabled:false}, "Comprar ahora"
+// (tarjeta y ficha) nunca debe iniciar un pedido; el mensaje comercial
+// debe verse en la ficha; el catalogo, el carrito y "Consultar por
+// WhatsApp" deben seguir funcionando igual.
+// ===========================================================================
+
+testAsync('checkout deshabilitado: clickear "Comprar ahora" en la tarjeta nunca abre "Tus datos" ni llama a /api/pedidos', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withCatalogReady(h);
+
+  h.click(h.crossBlackCardBtn());
+  await flushAll();
+
+  assert.strictEqual(h.view(), 'carrito', 'nunca debe avanzar al formulario de compra directa');
+  assert.strictEqual(h.drawerOpen(), false);
+  assert.ok(!h.fetchCalls.some((u) => u.indexOf('/api/pedidos') !== -1));
+});
+
+testAsync('checkout deshabilitado: clickear "Comprar ahora" en la tarjeta abre la ficha (con el mensaje y WhatsApp) en vez de comprar', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withCatalogReady(h);
+
+  h.click(h.crossBlackCardBtn());
+  await flushAll();
+
+  assert.strictEqual(h.modalOpen(), true, 'debe abrir la ficha del producto en vez de comprar directo');
+  assert.strictEqual(h.modalBuyNowBtn().hidden, true, 'el boton "Comprar ahora" de la ficha debe quedar oculto');
+  assert.strictEqual(h.modalCheckoutPausedMsg().hidden, false, 'debe mostrar el mensaje comercial');
+  assert.ok(/temporalmente pausada/i.test(h.modalCheckoutPausedMsg().textContent));
+});
+
+testAsync('checkout deshabilitado: dentro de la ficha, "Consultar por WhatsApp" sigue disponible y visible', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withCatalogReady(h);
+  h.window.openModal(h.crossBlackCardEl());
+
+  const wpBtn = h.document.getElementById('modalWpBtn');
+  assert.strictEqual(wpBtn.hidden, false);
+  assert.strictEqual(typeof wpBtn.onclick, 'function');
+});
+
+testAsync('checkout deshabilitado: "Agregar al carrito" sigue funcionando en la ficha de cualquier producto', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withCatalogReady(h);
+  h.window.openModal(h.crossBlackCardEl());
+
+  h.click(h.document.getElementById('modalBuyBtn'));
+
+  assert.strictEqual(h.window.PadelCart.getRawLines().length, 1);
+  assert.strictEqual(h.window.PadelCart.getRawLines()[0].productId, BUY_NOW_PRODUCT_ID);
+});
+
+testAsync('checkout deshabilitado: el catalogo sigue publico y las tarjetas siguen siendo clickeables', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withCatalogReady(h);
+
+  assert.ok(h.document.querySelectorAll('.card').length > 0, 'el catalogo debe seguir renderizado');
+  h.window.openModal(h.crossBlackCardEl());
+  assert.strictEqual(h.modalOpen(), true, 'las fichas de producto deben seguir pudiendo abrirse');
+});
+
+testAsync('checkout habilitado explicitamente (default de esta suite): "Comprar ahora" sigue funcionando igual, la ficha nunca se abre', async () => {
+  const h = createHarness({ checkoutEnabled: true });
+  await withCatalogReady(h);
+
+  h.click(h.crossBlackCardBtn());
+
+  assert.strictEqual(h.view(), 'formulario');
+  assert.strictEqual(h.mode(), 'buyNow');
+  assert.strictEqual(h.modalOpen(), false);
+});
+
+testAsync('no hay un instante en el que "Comprar ahora" pueda iniciar un pedido antes de que /api/checkout-config resuelva', async () => {
+  // Igual que produccion: mientras la consulta esta en curso, el estado
+  // por default de PadelCheckoutAvailability es false (fail closed) - un
+  // click INMEDIATO, antes de que el fetch mockeado siquiera resuelva su
+  // primer microtask, nunca debe alcanzar a iniciar el checkout directo.
+  const h = createHarness({ checkoutEnabled: true });
+  // Sobreescribe el fetch DESPUES de crear el harness (el harness ya
+  // registro window.fetch, pero el primer eval de checkout-availability.js
+  // ya disparo la consulta con el fetch original antes de que podamos
+  // interceptarla desde aca): en cambio, se verifica directamente que el
+  // estado arranca en false antes de cualquier flush.
+  assert.strictEqual(h.window.PadelCheckoutAvailability.isEnabled(), false, 'debe arrancar en false, incluso cuando terminara habilitado');
+
+  h.click(h.crossBlackCardBtn());
+
+  // Como el click ocurrio ANTES de que el fetch mockeado (una promesa ya
+  // resuelta, pero que igual necesita al menos una vuelta de microtask)
+  // tuviera chance de resolver, el boton debe haber tratado esto como
+  // deshabilitado: nunca debe haber abierto "Tus datos".
+  assert.notStrictEqual(h.view(), 'formulario');
 });
 
 // --- Runner --------------------------------------------------------------

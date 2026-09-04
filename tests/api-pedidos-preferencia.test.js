@@ -112,7 +112,19 @@ function createFakeCrearPreferencia(options) {
   return fake;
 }
 
-function crearHandlerDePrueba({ pedidoOverrides, obtenerPedidoOptions, itemsOptions, preferenciaOptions } = {}) {
+// Por defecto, checkout HABILITADO (no es lo que prueba la mayoria de
+// estos casos; ver la seccion dedicada al interruptor de seguridad, mas
+// abajo, para el caso contrario). Pasar `checkoutHabilitado: false` (o
+// `esCheckoutHabilitado` directamente) simula el interruptor apagado sin
+// tocar ninguna variable de entorno real.
+function crearHandlerDePrueba({
+  pedidoOverrides,
+  obtenerPedidoOptions,
+  itemsOptions,
+  preferenciaOptions,
+  checkoutHabilitado,
+  esCheckoutHabilitado,
+} = {}) {
   const fakeObtenerPedido = createFakeObtenerPedido(
     obtenerPedidoOptions || { pedido: pedidoValido(pedidoOverrides) }
   );
@@ -122,6 +134,7 @@ function crearHandlerDePrueba({ pedidoOverrides, obtenerPedidoOptions, itemsOpti
     obtenerPedidoPorPaymentRetryTokenHash: fakeObtenerPedido,
     obtenerItemsPorPedido: fakeObtenerItems,
     crearPreferenciaParaPedido: fakeCrearPreferencia,
+    esCheckoutHabilitado: esCheckoutHabilitado || (() => checkoutHabilitado !== false),
   });
   return { handler, fakeObtenerPedido, fakeObtenerItems, fakeCrearPreferencia };
 }
@@ -359,6 +372,57 @@ test('ningun mensaje de error de esta suite revela detalles internos (uuid, secr
     const res = await ejecutar(handler, escenario);
     assert.deepStrictEqual(res.body, { error: GENERIC_ERROR_MESSAGE });
   }
+});
+
+// ===========================================================================
+// Interruptor de seguridad del checkout (lib/checkout-config.js): con el
+// checkout deshabilitado, POST /api/pedidos-preferencia nunca debe crear
+// ni reutilizar ninguna preferencia, sin importar el resto del body.
+// ===========================================================================
+
+testAsync('checkout deshabilitado: responde 503 con el mensaje comercial, nunca el mensaje generico tecnico', async () => {
+  const { handler } = crearHandlerDePrueba({ checkoutHabilitado: false });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 503);
+  assert.deepStrictEqual(res.body, {
+    error: 'La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.',
+  });
+});
+
+testAsync('checkout deshabilitado: nunca llama a obtenerPedidoPorPaymentRetryTokenHash, obtenerItemsPorPedido ni crearPreferenciaParaPedido', async () => {
+  const { handler, fakeObtenerPedido, fakeObtenerItems, fakeCrearPreferencia } = crearHandlerDePrueba({
+    checkoutHabilitado: false,
+  });
+  await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(fakeObtenerPedido.llamadas.length, 0);
+  assert.strictEqual(fakeObtenerItems.llamadas.length, 0);
+  assert.strictEqual(fakeCrearPreferencia.llamadas.length, 0);
+});
+
+testAsync('checkout deshabilitado: se corta ANTES de validar el formato del token (un body invalido igual responde 503, no 400)', async () => {
+  const { handler, fakeObtenerPedido } = crearHandlerDePrueba({ checkoutHabilitado: false });
+  const res = await ejecutar(handler, { body: { paymentRetryToken: 'no-tiene-el-formato-correcto' } });
+  assert.strictEqual(res.statusCode, 503);
+  assert.strictEqual(fakeObtenerPedido.llamadas.length, 0);
+});
+
+testAsync('checkout deshabilitado: se corta ANTES de validar el Content-Type', async () => {
+  const { handler } = crearHandlerDePrueba({ checkoutHabilitado: false });
+  const res = await ejecutar(handler, { contentType: 'text/plain', body: bodyValido() });
+  assert.strictEqual(res.statusCode, 503);
+});
+
+testAsync('checkout deshabilitado: un metodo distinto de POST sigue respondiendo 405 (el metodo se valida primero)', async () => {
+  const { handler } = crearHandlerDePrueba({ checkoutHabilitado: false });
+  const res = await ejecutar(handler, { method: 'GET', body: bodyValido() });
+  assert.strictEqual(res.statusCode, 405);
+});
+
+testAsync('checkout habilitado explicitamente (default de esta suite): el camino feliz sigue funcionando igual', async () => {
+  const { handler } = crearHandlerDePrueba({ checkoutHabilitado: true });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 200);
+  assert.strictEqual(typeof res.body.redirectUrl, 'string');
 });
 
 // --- Runner --------------------------------------------------------------
