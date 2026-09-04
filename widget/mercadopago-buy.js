@@ -23,11 +23,36 @@
  * notification_url a Mercado Pago. Ese endpoint quedo retirado de todo
  * consumidor (ver api/create-payment-preference.js para el detalle de por
  * que se deshabilito en lugar de borrarse).
+ *
+ * Interruptor de seguridad del checkout (widget/checkout-availability.js):
+ * antes de disparar startBuyNow, siempre se consulta
+ * window.PadelCheckoutAvailability.isEnabled(). Mientras el checkout este
+ * deshabilitado (o su consulta a /api/checkout-config todavia no
+ * resolvio: arranca en false, fail closed), este boton NUNCA inicia un
+ * pedido: si el click vino de la tarjeta del catalogo, abre la ficha del
+ * producto (que ya muestra el mensaje comercial y el boton "Consultar por
+ * WhatsApp", ver index.html#actualizarBotonComprarAhora) en vez de
+ * comprar. Si el click viniera del boton de la propia ficha, ese boton ya
+ * deberia estar oculto en este estado -este chequeo es una segunda capa
+ * de defensa, nunca la unica-.
  */
+
+function checkoutEstaHabilitado() {
+  return window.PadelCheckoutAvailability ? window.PadelCheckoutAvailability.isEnabled() : false;
+}
 
 function handleBuyClick(button) {
   var productId = button.dataset.productId;
   if (!productId) return;
+
+  if (!checkoutEstaHabilitado()) {
+    var card = button.closest ? button.closest('.card') : null;
+    if (card && typeof window.openModal === 'function') {
+      window.openModal(card);
+    }
+    return;
+  }
+
   var talle = button.dataset.talle || null;
   if (!window.PadelCheckoutWidget || typeof window.PadelCheckoutWidget.startBuyNow !== 'function') return;
   window.PadelCheckoutWidget.startBuyNow(productId, talle);

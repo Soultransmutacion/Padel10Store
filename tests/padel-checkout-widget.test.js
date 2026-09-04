@@ -29,6 +29,7 @@ function test(name, fn) {
 const CART_CORE_SRC = fs.readFileSync(path.join(__dirname, '..', 'lib', 'padel-cart.js'), 'utf8');
 const CHECKOUT_FIELDS_SRC = fs.readFileSync(path.join(__dirname, '..', 'lib', 'padel-checkout-fields.js'), 'utf8');
 const CART_WIDGET_SRC = fs.readFileSync(path.join(__dirname, '..', 'widget', 'padel-cart.js'), 'utf8');
+const CHECKOUT_AVAILABILITY_SRC = fs.readFileSync(path.join(__dirname, '..', 'widget', 'checkout-availability.js'), 'utf8');
 const CHECKOUT_WIDGET_SRC = fs.readFileSync(path.join(__dirname, '..', 'widget', 'padel-checkout.js'), 'utf8');
 
 const PRODUCT_SIN_TALLE = 'royal-padel-aniversario-36';
@@ -47,6 +48,7 @@ function drawerHtml() {
     '<div class="drw-f" id="cartDrawerFooterCart">' +
     '<div class="total-row"><span class="total-lbl">Total</span><span class="total-v" id="cartDrawerTotal">$0</span></div>' +
     '<button class="chk-btn" id="cartDrawerContinueBtn">Continuar con mis datos</button>' +
+    '<div class="checkout-paused-msg" id="cartCheckoutPausedMsg" hidden>La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.</div>' +
     '<button class="chk-btn" id="cartDrawerCheckoutBtn">Consultar por WhatsApp</button>' +
     '</div>' +
     '<div class="drw-f" id="cartDrawerFooterCheckout" hidden>' +
@@ -72,6 +74,11 @@ async function flushAll(times) {
 // el estado interno de cada widget nunca se filtre entre pruebas.
 function createHarness(options) {
   const opts = options || {};
+  // Por defecto, checkout HABILITADO: es lo que asumen todas las pruebas
+  // existentes de este archivo (el interruptor de seguridad tiene su
+  // propia seccion dedicada, mas abajo). Pasar `checkoutEnabled: false`
+  // simula el interruptor apagado sin tocar ninguna variable de entorno.
+  const checkoutEnabled = opts.checkoutEnabled !== false;
   const dom = new JSDOM(drawerHtml(), { url: 'https://padel10store.test/', runScripts: 'outside-only', pretendToBeVisual: true });
   const window = dom.window;
   const document = window.document;
@@ -88,6 +95,9 @@ function createHarness(options) {
     if (String(url).indexOf('products.json') !== -1) {
       return Promise.resolve({ ok: true, json: () => Promise.resolve(productsJson) });
     }
+    if (String(url).indexOf('/api/checkout-config') !== -1) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ enabled: checkoutEnabled }) });
+    }
     if (String(url).indexOf('/api/pedidos') !== -1) {
       const next = apiPedidosResponses.length ? apiPedidosResponses.shift() : { ok: true, status: 201, body: { numero: 'P10-000001' } };
       return Promise.resolve({
@@ -102,6 +112,7 @@ function createHarness(options) {
   window.eval(CART_CORE_SRC);
   window.eval(CHECKOUT_FIELDS_SRC);
   window.eval(CART_WIDGET_SRC);
+  window.eval(CHECKOUT_AVAILABILITY_SRC);
   window.eval(CHECKOUT_WIDGET_SRC);
 
   function field(key) {
@@ -142,6 +153,7 @@ function createHarness(options) {
     nextBtn: () => document.getElementById('cartDrawerNextBtn'),
     continueBtn: () => document.getElementById('cartDrawerContinueBtn'),
     checkoutBtn: () => document.getElementById('cartDrawerCheckoutBtn'),
+    checkoutPausedMsg: () => document.getElementById('cartCheckoutPausedMsg'),
   };
 }
 
@@ -562,6 +574,9 @@ testAsync('sesion restaurada: si ya habia una idempotencyKey guardada al iniciar
     if (String(url).indexOf('products.json') !== -1) {
       return Promise.resolve({ ok: true, json: () => Promise.resolve(productsJson) });
     }
+    if (String(url).indexOf('/api/checkout-config') !== -1) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve({ enabled: true }) });
+    }
     return Promise.reject(new Error('no mockeado'));
   };
   // Simula que, ANTES de que el widget se inicialice, ya habia quedado una
@@ -575,6 +590,7 @@ testAsync('sesion restaurada: si ya habia una idempotencyKey guardada al iniciar
   w.eval(CART_CORE_SRC);
   w.eval(CHECKOUT_FIELDS_SRC);
   w.eval(CART_WIDGET_SRC);
+  w.eval(CHECKOUT_AVAILABILITY_SRC);
   w.eval(CHECKOUT_WIDGET_SRC);
   await flushAll();
 
@@ -589,6 +605,113 @@ testAsync('sesion restaurada: si ya habia una idempotencyKey guardada al iniciar
     /intento de compra anterior/i.test(w.document.getElementById('cartDrawerBody').innerHTML),
     'debe mostrar el aviso de sesion restaurada en la vista de formulario'
   );
+});
+
+// ===========================================================================
+// Interruptor de seguridad del checkout (widget/checkout-availability.js):
+// con /api/checkout-config respondiendo {enabled:false}, "Continuar con
+// mis datos" nunca debe iniciar un pedido, pero el carrito (agregar/quitar
+// lineas, ver el total) y "Consultar por WhatsApp" deben seguir
+// funcionando exactamente igual.
+// ===========================================================================
+
+testAsync('checkout deshabilitado: "Continuar con mis datos" queda deshabilitado aunque el carrito tenga productos', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+
+  assert.strictEqual(h.continueBtn().disabled, true);
+});
+
+testAsync('checkout deshabilitado: muestra el mensaje comercial junto a "Continuar con mis datos" cuando hay productos', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+
+  assert.strictEqual(h.checkoutPausedMsg().hidden, false);
+  assert.ok(/temporalmente pausada/i.test(h.checkoutPausedMsg().textContent));
+});
+
+testAsync('checkout deshabilitado y carrito vacio: no hace falta el mensaje (el boton ya esta deshabilitado por eso)', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h, []);
+
+  assert.strictEqual(h.continueBtn().disabled, true);
+  assert.strictEqual(h.checkoutPausedMsg().hidden, true);
+});
+
+testAsync('checkout deshabilitado: clickear "Continuar con mis datos" (por ejemplo, saltandose el atributo disabled) nunca avanza al formulario ni llama a /api/pedidos', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+
+  h.continueBtn().disabled = false; // simula saltear la primera capa de defensa
+  h.click(h.continueBtn());
+
+  assert.strictEqual(h.view(), 'carrito');
+  assert.ok(!h.fetchCalls.some((u) => String(u).indexOf('/api/pedidos') !== -1));
+});
+
+testAsync('checkout deshabilitado: el carrito sigue funcionando (agregar, ver total) sin ninguna restriccion', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h);
+
+  h.window.PadelCart.addItem(PRODUCT_SIN_TALLE, null, 2);
+  await flushAll();
+
+  assert.strictEqual(h.window.PadelCart.getSummary().lineas.length, 1);
+  assert.strictEqual(h.window.PadelCart.getSummary().lineas[0].cantidad, 2);
+});
+
+testAsync('checkout deshabilitado: "Consultar por WhatsApp" sigue funcionando exactamente igual', async () => {
+  const h = createHarness({ checkoutEnabled: false });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+
+  h.click(h.checkoutBtn());
+
+  assert.strictEqual(h.windowOpenCalls.length, 1);
+  assert.ok(h.windowOpenCalls[0].indexOf('wa.me') !== -1);
+});
+
+testAsync('checkout habilitado explicitamente (default de esta suite): "Continuar con mis datos" sigue funcionando igual, sin mensaje', async () => {
+  const h = createHarness({ checkoutEnabled: true });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+
+  assert.strictEqual(h.continueBtn().disabled, false);
+  assert.strictEqual(h.checkoutPausedMsg().hidden, true);
+  h.click(h.continueBtn());
+  assert.strictEqual(h.view(), 'formulario');
+});
+
+testAsync('el interruptor puede resolver DESPUES del primer render del drawer: el boton se re-habilita solo, sin recargar', async () => {
+  let resolverConfig;
+  const dom = new JSDOM(drawerHtml(), { url: 'https://padel10store.test/', runScripts: 'outside-only', pretendToBeVisual: true });
+  const w = dom.window;
+  w.fetch = function (url) {
+    if (String(url).indexOf('products.json') !== -1) {
+      return Promise.resolve({ ok: true, json: () => Promise.resolve(productsJson) });
+    }
+    if (String(url).indexOf('/api/checkout-config') !== -1) {
+      return new Promise((resolve) => {
+        resolverConfig = resolve;
+      });
+    }
+    return Promise.reject(new Error('no mockeado'));
+  };
+  w.eval(CART_CORE_SRC);
+  w.eval(CHECKOUT_FIELDS_SRC);
+  w.eval(CART_WIDGET_SRC);
+  w.eval(CHECKOUT_AVAILABILITY_SRC);
+  w.eval(CHECKOUT_WIDGET_SRC);
+  await flushAll();
+  w.PadelCart.addItem(PRODUCT_SIN_TALLE, null, 1);
+  await flushAll();
+
+  // La consulta a /api/checkout-config todavia esta pendiente: el boton
+  // debe seguir deshabilitado, sin importar que el carrito tenga productos.
+  assert.strictEqual(w.document.getElementById('cartDrawerContinueBtn').disabled, true);
+
+  resolverConfig({ ok: true, json: () => Promise.resolve({ enabled: true }) });
+  await flushAll();
+
+  assert.strictEqual(w.document.getElementById('cartDrawerContinueBtn').disabled, false);
 });
 
 // --- Runner --------------------------------------------------------------

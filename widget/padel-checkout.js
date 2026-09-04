@@ -31,6 +31,18 @@
     return;
   }
 
+  // Interruptor de seguridad del checkout (widget/checkout-availability.js):
+  // unica fuente de verdad del lado navegador para decidir si "Continuar
+  // con mis datos" y "Pagar ahora" pueden iniciar un pedido/pago real.
+  // Fail closed: si el widget no cargo por algun motivo, se asume
+  // deshabilitado (nunca habilitado por default).
+  var Availability = window.PadelCheckoutAvailability || {
+    isEnabled: function () { return false; },
+    subscribe: function (cb) { cb(false); return function () {}; },
+  };
+  var CHECKOUT_PAUSED_MESSAGE =
+    'La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.';
+
   // Unico producto piloto comprable con "Comprar ahora" (ver tambien
   // index.html#PURCHASABLE_PRODUCT_IDS y
   // widget/padel-advisor.js#MP_PURCHASABLE_PRODUCT_ID, que gatean cuando
@@ -354,6 +366,7 @@
     els.footerCart = document.getElementById('cartDrawerFooterCart');
     els.footerCheckout = document.getElementById('cartDrawerFooterCheckout');
     els.continueBtn = document.getElementById('cartDrawerContinueBtn');
+    els.checkoutPausedMsg = document.getElementById('cartCheckoutPausedMsg');
     els.backBtn = document.getElementById('cartDrawerBackBtn');
     els.nextBtn = document.getElementById('cartDrawerNextBtn');
     els.overlay = document.getElementById('cartDrawerOverlay');
@@ -450,9 +463,18 @@
     if (els.title) els.title.textContent = '¡Pedido registrado!';
     var retryHtml = '';
     if (paymentRetryToken) {
+      // Interruptor de seguridad: si el checkout se deshabilito DESPUES
+      // de que este pedido ya obtuviera un paymentRetryToken (caso raro:
+      // requiere que se apague en medio de la misma sesion del
+      // comprador), "Pagar ahora" queda deshabilitado y muestra el mismo
+      // mensaje comercial, en vez de intentar reiniciar un pago real.
+      var checkoutHabilitado = Availability.isEnabled();
       retryHtml =
         (retryError ? '<div class="mp-buy-error" role="alert" style="text-align:left;margin:8px 0">' + escapeHtml(retryError) + '</div>' : '') +
-        '<button type="button" class="chk-btn" data-action="retry-payment" ' + (retrying ? 'disabled' : '') + '>' +
+        (!checkoutHabilitado
+          ? '<div class="checkout-paused-msg" role="status">' + escapeHtml(CHECKOUT_PAUSED_MESSAGE) + '</div>'
+          : '') +
+        '<button type="button" class="chk-btn" data-action="retry-payment" ' + (retrying || !checkoutHabilitado ? 'disabled' : '') + '>' +
         (retrying ? 'Iniciando pago…' : 'Pagar ahora') +
         '</button>';
     }
@@ -470,7 +492,14 @@
       if (els.footerCart) els.footerCart.hidden = false;
       if (els.footerCheckout) els.footerCheckout.hidden = true;
       var summary = window.PadelCart.getSummary();
-      if (els.continueBtn) els.continueBtn.disabled = summary.lineas.length === 0;
+      var checkoutHabilitado = Availability.isEnabled();
+      if (els.continueBtn) els.continueBtn.disabled = summary.lineas.length === 0 || !checkoutHabilitado;
+      // El mensaje de pausa solo tiene sentido cuando hay algo para
+      // comprar: con el carrito vacio, "Continuar con mis datos" ya esta
+      // deshabilitado por eso, sin necesidad de ninguna explicacion extra.
+      if (els.checkoutPausedMsg) {
+        els.checkoutPausedMsg.hidden = checkoutHabilitado || summary.lineas.length === 0;
+      }
       return;
     }
     if (els.footerCart) els.footerCart.hidden = true;
@@ -540,6 +569,16 @@
 
   function submitPedido() {
     if (submitting) return;
+    // Segunda capa de defensa (la primera es que "Continuar con mis
+    // datos" ya deberia haber bloqueado llegar hasta aca, ver
+    // updateFooter): si el checkout se deshabilito en medio de la misma
+    // sesion del comprador, nunca se llama a POST /api/pedidos. Se
+    // muestra el mismo mensaje comercial en vez de un error tecnico.
+    if (!Availability.isEnabled()) {
+      submitError = CHECKOUT_PAUSED_MESSAGE;
+      render();
+      return;
+    }
     submitting = true;
     submitError = null;
     updateFooter();
@@ -679,6 +718,11 @@
 
   function retryPayment() {
     if (retrying || !paymentRetryToken) return;
+    // Segunda capa de defensa (la primera es que el boton ya deberia
+    // estar disabled/oculto en este estado, ver renderConfirmacionView):
+    // con el checkout deshabilitado, nunca se llama a
+    // /api/pedidos-preferencia.
+    if (!Availability.isEnabled()) return;
     retrying = true;
     retryError = null;
     render();
@@ -795,6 +839,10 @@
       els.continueBtn.addEventListener('click', function () {
         var summary = window.PadelCart.getSummary();
         if (!summary.lineas.length) return;
+        // Segunda capa de defensa (la primera es que el boton ya deberia
+        // estar disabled en este estado, ver updateFooter): con el
+        // checkout deshabilitado, nunca se avanza al formulario.
+        if (!Availability.isEnabled()) return;
         resetBuyNow();
         currentError = null;
         submitError = null;
@@ -855,6 +903,15 @@
 
     window.PadelCart.onChange(function () {
       if (view === 'carrito') updateFooter();
+    });
+
+    // El interruptor de seguridad puede resolver DESPUES de que este
+    // drawer ya se haya renderizado por primera vez (la consulta a
+    // /api/checkout-config es asincronica): re-renderiza para reflejar el
+    // estado real apenas se conoce, sin esperar a la proxima interaccion
+    // del comprador.
+    Availability.subscribe(function () {
+      render();
     });
 
     updateFooter();

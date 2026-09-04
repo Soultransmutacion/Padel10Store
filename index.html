@@ -304,6 +304,8 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .modal-buynow-btn:active{transform:scale(0.98)}
 .modal-buynow-btn:disabled{opacity:0.6;cursor:not-allowed}
 .modal-buynow-btn[hidden]{display:none}
+.checkout-paused-msg{width:100%;font-size:12px;line-height:1.5;color:#C9A227;text-align:center;background:rgba(201,162,39,0.08);border:1px solid rgba(201,162,39,0.3);border-radius:8px;padding:10px 12px}
+.checkout-paused-msg[hidden]{display:none}
 .mp-buy-error{width:100%;font-size:12px;color:#f2b8b8;text-align:center;margin-top:-6px}
 .modal-trust-row{display:flex;gap:8px}
 .modal-trust-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:8px 4px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px}
@@ -1978,6 +1980,45 @@ function parsePrice(s){return s?parseInt(s.replace(/[^0-9]/g,''))||0:0;}
 function formatPrice(n){return '$'+n.toLocaleString('es-AR');}
 function updateSub(){if(!subtotalEl)return;if(isConsultar){subtotalEl.textContent='PRECIO A CONSULTAR';return;}subtotalEl.textContent=formatPrice(currentPrice*qty);}
 
+// Interruptor de seguridad del checkout (widget/checkout-availability.js):
+// unica fuente de verdad del lado navegador para decidir si el boton
+// "Comprar ahora" de la ficha puede mostrarse. Fail closed: si el widget
+// no cargo por algun motivo, se asume deshabilitado (nunca habilitado por
+// default).
+var modalCheckoutPausedMsgEl=document.getElementById('modalCheckoutPausedMsg');
+function checkoutEstaHabilitado(){return window.PadelCheckoutAvailability?window.PadelCheckoutAvailability.isEnabled():false;}
+// Recalcula la visibilidad de "Comprar ahora" y del mensaje de pausa para
+// el producto actualmente abierto en la ficha (currentProduct). Se llama
+// al abrir la ficha Y cada vez que cambia el estado del interruptor (por
+// si la consulta a /api/checkout-config resuelve con la ficha ya abierta).
+function actualizarBotonComprarAhora(){
+if(!buyNowBtn)return;
+var product=currentProduct;
+var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
+var habilitado=checkoutEstaHabilitado();
+if(buyNowProductId&&habilitado){
+buyNowBtn.hidden=false;
+buyNowBtn.dataset.productId=buyNowProductId;
+buyNowBtn.disabled=false;
+buyNowBtn.textContent='Comprar ahora';
+buyNowBtn.dataset.mpBusy='';
+buyNowBtn.dataset.talle=window.__selectedTalle||'';
+var existingErr=buyNowBtn.nextElementSibling;
+if(existingErr&&existingErr.classList&&existingErr.classList.contains('mp-buy-error')){existingErr.textContent='';}
+if(modalCheckoutPausedMsgEl)modalCheckoutPausedMsgEl.hidden=true;
+}else{
+buyNowBtn.hidden=true;
+buyNowBtn.removeAttribute('data-product-id');
+// El mensaje de pausa solo tiene sentido para el producto piloto (el
+// unico que alguna vez mostraria "Comprar ahora"): para el resto del
+// catalogo, ocultar el boton no necesita ninguna explicacion.
+if(modalCheckoutPausedMsgEl)modalCheckoutPausedMsgEl.hidden=!(buyNowProductId&&!habilitado);
+}
+}
+if(window.PadelCheckoutAvailability&&typeof window.PadelCheckoutAvailability.subscribe==='function'){
+window.PadelCheckoutAvailability.subscribe(function(){actualizarBotonComprarAhora();});
+}
+
 function openModal(card){
 var ci=card.querySelector('.card-img img');
 var cn=card.querySelector('.card-name');
@@ -2017,22 +2058,13 @@ if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text=
 // window.PadelCheckoutWidget.startBuyNow (widget/padel-checkout.js#BUY_NOW_PRODUCT_ID),
 // que ya rechaza cualquier otro productId. Mostrar el boton solo para ese
 // producto evita un CTA dorado que no hace nada en el resto del catalogo.
-var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
-if(buyNowBtn){
-if(buyNowProductId){
-buyNowBtn.hidden=false;
-buyNowBtn.dataset.productId=buyNowProductId;
-buyNowBtn.disabled=false;
-buyNowBtn.textContent='Comprar ahora';
-buyNowBtn.dataset.mpBusy='';
-buyNowBtn.dataset.talle=window.__selectedTalle||'';
-var existingErr=buyNowBtn.nextElementSibling;
-if(existingErr&&existingErr.classList&&existingErr.classList.contains('mp-buy-error')){existingErr.textContent='';}
-}else{
-buyNowBtn.hidden=true;
-buyNowBtn.removeAttribute('data-product-id');
-}
-}
+// Ademas, el interruptor de seguridad del checkout (window.PadelCheckoutAvailability,
+// widget/checkout-availability.js) debe estar habilitado: mientras este
+// deshabilitado (o su consulta a /api/checkout-config todavia no
+// resolvio: arranca en false), el boton nunca se muestra, y en su lugar
+// se muestra #modalCheckoutPausedMsg (con el boton "Consultar por
+// WhatsApp" ya disponible debajo, sin cambios).
+actualizarBotonComprarAhora();
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
 
@@ -2106,6 +2138,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 </div>
 <hr class="modal-divider">
 <button class="modal-buynow-btn" id="modalBuyNowBtn" data-mp-buy-button hidden>Comprar ahora</button>
+<div class="checkout-paused-msg" id="modalCheckoutPausedMsg" role="status" hidden>La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.</div>
 <button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
 <button class="modal-wp-btn" id="modalWpBtn">Consultar por WhatsApp</button>
 <div class="modal-trust-row">
@@ -2136,6 +2169,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <span class="total-v" id="cartDrawerTotal">$0</span>
 </div>
 <button class="chk-btn" id="cartDrawerContinueBtn">Continuar con mis datos</button>
+<div class="checkout-paused-msg" id="cartCheckoutPausedMsg" role="status" hidden>La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.</div>
 <button class="chk-btn" id="cartDrawerCheckoutBtn" style="margin-top:8px;background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Consultar por WhatsApp</button>
 </div>
 <div class="drw-f" id="cartDrawerFooterCheckout" hidden>
@@ -2154,6 +2188,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
   <script src="lib/padel-cart.js" defer></script>
   <script src="lib/padel-checkout-fields.js" defer></script>
   <script src="widget/padel-cart.js" defer></script>
+  <script src="widget/checkout-availability.js" defer></script>
   <script src="widget/padel-checkout.js" defer></script>
   <script src="widget/mercadopago-buy.js" defer></script>
 <script src="widget/padel-advisor.js" defer></script>
