@@ -3,6 +3,27 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!-- Redireccion permanente del hosting antiguo (GitHub Pages) hacia el
+     sitio real en Vercel. Corre lo antes posible, antes de cualquier otro
+     recurso, para minimizar cuanto contenido del hosting antiguo llega a
+     pintarse. La logica de decision (que hostname/ruta matchean, y a que
+     URL exacta redirigir) es pura y esta en lib/legacy-host-redirect.js
+     (probada con Node puro, ver tests/legacy-host-redirect.test.js): este
+     bloque es solo el efecto (location.replace). Nunca redirige fuera de
+     ese hostname EXACTO (nunca en localhost, Preview de Vercel, dominios
+     *.vercel.app ni ningun otro host). -->
+<script src="lib/legacy-host-redirect.js"></script>
+<script>
+(function () {
+  if (!window.PadelLegacyRedirect) return;
+  var loc = window.location;
+  var destino = window.PadelLegacyRedirect.calcularRedireccionHostingAntiguo(
+    loc.hostname, loc.pathname, loc.search, loc.hash
+  );
+  if (destino) loc.replace(destino);
+})();
+</script>
+<link rel="canonical" href="https://padel10-store.vercel.app/"/>
 <title>Padel10Store — Todo para jugar al pádel</title>
 <meta name="description" content="La tienda de pádel de confianza. Paletas, ropa, calzado y accesorios de las mejores marcas. Envíos a todo Argentina desde Rosario."/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
