@@ -3,6 +3,27 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<!-- Redireccion permanente del hosting antiguo (GitHub Pages) hacia el
+     sitio real en Vercel. Corre lo antes posible, antes de cualquier otro
+     recurso, para minimizar cuanto contenido del hosting antiguo llega a
+     pintarse. La logica de decision (que hostname/ruta matchean, y a que
+     URL exacta redirigir) es pura y esta en lib/legacy-host-redirect.js
+     (probada con Node puro, ver tests/legacy-host-redirect.test.js): este
+     bloque es solo el efecto (location.replace). Nunca redirige fuera de
+     ese hostname EXACTO (nunca en localhost, Preview de Vercel, dominios
+     *.vercel.app ni ningun otro host). -->
+<script src="lib/legacy-host-redirect.js"></script>
+<script>
+(function () {
+  if (!window.PadelLegacyRedirect) return;
+  var loc = window.location;
+  var destino = window.PadelLegacyRedirect.calcularRedireccionHostingAntiguo(
+    loc.hostname, loc.pathname, loc.search, loc.hash
+  );
+  if (destino) loc.replace(destino);
+})();
+</script>
+<link rel="canonical" href="https://padel10-store.vercel.app/"/>
 <title>Padel10Store — Todo para jugar al pádel</title>
 <meta name="description" content="La tienda de pádel de confianza. Paletas, ropa, calzado y accesorios de las mejores marcas. Envíos a todo Argentina desde Rosario."/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -11,7 +32,7 @@
 body{font-family:'Barlow',sans-serif;background:#111;color:#f0f0f0}
 nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:62px;background:#111;border-bottom:2px solid #C9A227;position:sticky;top:0;z-index:200}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-escudo{width:38px;height:38px;object-fit:contain;flex-shrink:0}hh
+.logo-escudo{width:38px;height:38px;object-fit:contain;flex-shrink:0}
 .nav-links{display:flex;gap:24px}
 .nav-links a{font-size:13px;color:rgba(255,255,255,0.4);text-decoration:none;font-weight:500;transition:color 0.15s}
 .nav-links a:hover{color:#C9A227}
@@ -267,12 +288,23 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .qty-val{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;min-width:36px;text-align:center}
 .modal-subtotal{font-size:12px;color:rgba(255,255,255,0.25);margin-left:auto}
 .modal-subtotal strong{color:rgba(201,162,39,0.7);font-weight:700}
-.modal-buy-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111;background:#C9A227;border:none;border-radius:8px;padding:14px;cursor:pointer;transition:filter 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
-.modal-buy-btn:hover{filter:brightness(1.08)}
-.modal-buy-btn:active{transform:scale(0.98)}
+/* Jerarquia de la ficha: "Comprar ahora" (.modal-buynow-btn) es ahora el
+   CTA principal (dorado, solido); "Agregar al carrito" (.modal-buy-btn)
+   pasa a ser secundario (outline); "Consultar por WhatsApp" (.modal-wp-btn,
+   sin cambios) queda tercero. Los nombres de clase se mantienen ligados al
+   mismo id de siempre (evita tocar el resto del JS que ya referencia estos
+   selectores); solo se recolorearon. */
+.modal-buy-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;background:#111;border:1px solid rgba(201,162,39,0.6);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-buy-btn:hover{background:rgba(201,162,39,0.12)}
 .modal-buy-btn.added{background:rgba(201,162,39,0.12);color:#C9A227;border:1px solid rgba(201,162,39,0.3)}
 .modal-wp-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#fff;background:rgba(37,211,102,0.15);border:1px solid rgba(37,211,102,0.3);border-radius:8px;padding:12px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:8px}
 .modal-wp-btn:hover{background:rgba(37,211,102,0.25);border-color:rgba(37,211,102,0.5)}
+.modal-buynow-btn{width:100%;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:#111;background:#C9A227;border:none;border-radius:8px;padding:14px;cursor:pointer;transition:filter 0.15s,transform 0.1s;display:flex;align-items:center;justify-content:center;gap:8px}
+.modal-buynow-btn:hover{filter:brightness(1.08)}
+.modal-buynow-btn:active{transform:scale(0.98)}
+.modal-buynow-btn:disabled{opacity:0.6;cursor:not-allowed}
+.modal-buynow-btn[hidden]{display:none}
+.mp-buy-error{width:100%;font-size:12px;color:#f2b8b8;text-align:center;margin-top:-6px}
 .modal-trust-row{display:flex;gap:8px}
 .modal-trust-item{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1;padding:8px 4px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:8px}
 .modal-trust-icon{font-size:15px}
@@ -286,7 +318,47 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .modal-info{padding:1.25rem}
 .modal-name{font-size:24px}
 .modal-price-main{font-size:30px}
-}</style>
+}.gallery-nav[hidden]{display:none}
+.gallery-nav{position:absolute;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.25);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2}
+.gallery-nav:hover{background:rgba(201,162,39,.85)}
+.gallery-prev{left:10px}
+.gallery-next{right:10px}
+.gallery-dots{position:absolute;bottom:10px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2}
+.gallery-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:background .15s}
+.gallery-dot.active{background:#C9A227}
+.modal-talle-row{margin:10px 0}
+.modal-talle-buttons{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.talle-btn{min-width:42px;padding:6px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.05);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;cursor:pointer;transition:all .15s}
+.talle-btn:hover{border-color:#C9A227}
+.talle-btn.selected{background:#C9A227;color:#111;border-color:#C9A227}
+.modal-talle-msg{color:#ff6b6b;font-size:13px;font-weight:700;margin-top:6px;min-height:16px}.modal-talle-msg:focus{outline:2px solid #ff6b6b;outline-offset:3px;border-radius:3px}.modal-talle-row.talle-error .modal-talle-buttons{border:1px solid #ff6b6b;border-radius:8px;padding:6px;background:rgba(255,107,107,.08)}
+.wa-float{position:fixed;right:20px;bottom:20px;z-index:250;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.45);transition:filter .15s,transform .15s;text-decoration:none}
+.wa-float:hover{filter:brightness(1.08);transform:translateY(-2px)}
+@media (max-width:480px){.wa-float{right:16px;bottom:16px;width:52px;height:52px}}
+.nav-toggle{display:none;flex-direction:column;justify-content:center;align-items:center;gap:4px;width:36px;height:36px;background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:6px;cursor:pointer;padding:0;flex-shrink:0}
+.nav-toggle span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:transform .15s,opacity .15s}
+nav.nav-open .nav-toggle span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+nav.nav-open .nav-toggle span:nth-child(2){opacity:0}
+nav.nav-open .nav-toggle span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+@media (max-width:860px){
+nav{flex-wrap:wrap;row-gap:10px;height:auto;padding:12px 16px;justify-content:flex-start}
+.logo{order:1}
+.nav-toggle{display:flex;order:2;margin-left:auto}
+.nav-right{display:contents}
+.cart-btn{order:3}
+.nav-search{order:4;display:none;width:100%;flex:1 1 100%;margin:0}
+.nav-search input{width:100%;flex:1;min-width:0}
+.nav-links{order:5;display:none;width:100%;flex:1 1 100%;flex-direction:column;gap:0}
+.nav-links a{padding:10px 2px;border-bottom:1px solid rgba(255,255,255,.06)}
+nav.nav-open .nav-search{display:flex}
+nav.nav-open .nav-links{display:flex}
+}
+@media (max-width:640px){
+.footer-top{grid-template-columns:1fr;gap:1.5rem}
+.footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
+footer{padding:2rem 1.25rem}
+}
+</style>
 </head>
 <body>
 
@@ -298,7 +370,8 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
       <span class="l2">10STORE</span>
     </div>
   </div>
-  <div class="nav-links">
+  <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+  <div class="nav-links" id="navLinks">
     <a href="#">Paletas</a><a href="#">Ropa</a><a href="#">Calzado</a><a href="#">Accesorios</a><a href="#">Ofertas</a><a href="#">Bull Padel</a>
   </div>
   <div class="nav-right">
@@ -388,7 +461,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas de Control</span><span class="sec-sub">⚪ Redondo · Punto dulce amplio · Todos los niveles</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-aniversario-36">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO_36.webp" alt="Aniversario 36" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -400,10 +473,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$256.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $218.025</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-aniversario-36-light">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp" alt="Aniversario 36 Light" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -415,13 +488,13 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$256.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $218.025</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-black-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_BLACK_26.webp" alt="Cross Black '26" style="width:100%;height:100%;object-fit:contain;"/>
-        
+
         <span class="fav">♡</span>
       </div>
       <div class="card-body">
@@ -430,10 +503,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-black-26">Comprar ahora</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-eva-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_EVA_26.webp" alt="Cross Eva '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -445,10 +518,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-cross-woman-26">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_WOMAN_26.webp" alt="Cross Woman '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -460,10 +533,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-europe-fiber-26">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_FIBER_26.webp" alt="Europe Fiber '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -475,10 +548,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.080</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-europe-lite">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_LITE.webp" alt="Europe Lite" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -490,10 +563,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.080</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-evolution">
       <div class="card-img">
         <img src="Palas%20royal%202/EVOLUTION.webp" alt="Evolution" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -505,10 +578,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-gris">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_-_GRIS.webp" alt="M27 Gris" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -520,10 +593,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-carbono">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_CARBONO.webp" alt="M27 Carbono" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">TOP</span>
@@ -535,10 +608,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$365.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $310.845</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-m27-light">
       <div class="card-img">
         <img src="Palas%20royal%203/M27_LIGHT.webp" alt="M27 Light" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -550,10 +623,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-p38">
       <div class="card-img">
         <img src="Palas%20royal%203/P38.webp" alt="P38" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -565,10 +638,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$164.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $139.400</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-torino-woman">
       <div class="card-img">
         <img src="palas%20royal/TORINO_WOMAN.webp" alt="Torino Woman" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -580,10 +653,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-toro-black">
       <div class="card-img">
         <img src="palas%20royal/TORO_BLACK.webp" alt="Toro Black" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -595,10 +668,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.695</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="control" data-product-id="royal-padel-toro-white">
       <div class="card-img">
         <img src="palas%20royal/TORO_WHITE.webp" alt="Toro White" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -610,7 +683,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$206.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.695</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
 </div>
@@ -619,7 +692,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas de Ataque</span><span class="sec-sub">🔴 Máxima potencia · Carbono · Nivel avanzado</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-aniv36-pink-2026">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIV36_PINK_2026.webp" alt="Aniv36 Pink 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -631,10 +704,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-aniversario-36-poly-espanola">
       <div class="card-img">
         <img src="Palas%20royal%202/ANIVERSARIO36_POLY_ESPAOLA.webp" alt="Aniversario 36 Poly Española" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -646,10 +719,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-europe-carbono">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_CARBONO.webp" alt="Europe Carbono" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">TOP</span>
@@ -661,10 +734,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$365.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $310.845</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-europe-lite-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp" alt="Europe Lite Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -676,10 +749,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-gran-torino-fiber-bronce">
       <div class="card-img">
         <img src="Palas%20royal%202/GRAN_TORINO_FIBER_-_Bronce_-.webp" alt="Gran Torino Fiber - Bronce" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -691,10 +764,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$277.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $235.450</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-japan-r-26">
       <div class="card-img">
         <img src="Palas%20royal%203/JAPAN_R_26.webp" alt="Japan R '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -706,10 +779,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$271.300</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $230.605</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-japan-rpro-bordeaux-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JAPAN_RPRO_BORDEAUS_-_EUROPEA_2026.webp" alt="Japan RPro Bordeaux Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -721,10 +794,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-r30-black">
       <div class="card-img">
         <img src="Palas%20royal%203/R30_BLACK.webp" alt="R30 Black" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -736,10 +809,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$310.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $263.500</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-r30-white-europea-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp" alt="R30 White Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -751,10 +824,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-trial-2026">
       <div class="card-img">
         <img src="palas%20royal/TRIAL_2026.webp" alt="Trial 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -766,10 +839,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$277.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $235.450</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-extreme-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_EXTREME_-_EUROPEA_2026.webp" alt="Whip Extreme Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -781,10 +854,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$472.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $401.880</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-light-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_LIGHT_-_EUROPEA_2026.webp" alt="Whip Light Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -796,10 +869,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$424.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $360.400</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-poly-europea-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_POLY_-_EUROPEA_2026.webp" alt="Whip Poly Europea 2026" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">EUROPEA</span>
@@ -811,10 +884,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$424.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $360.400</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-pro-2026">
       <div class="card-img">
         <img src="palas%20royal/WHIP_PRO_2026.webp" alt="Whip Pro 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -826,10 +899,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ataque" data-product-id="royal-padel-whip-pro-2026-woman">
       <div class="card-img">
         <img src="palas%20royal/WHIP_PRO_2026_-_woman.webp" alt="Whip Pro 2026 Woman" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -841,17 +914,16 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
   </div>
-</div>
 
 <div class="sec-head" style="margin-top:2rem;">
 <div><span class="sec-title">Palas Polivalentes</span><span class="sec-sub">🟡 Equilibrio potencia-control · Fibra + Carbono</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-dama">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_dama.webp" alt="Calavera MXC Dama" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -863,10 +935,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-hombre">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_hombre.webp" alt="Calavera MXC Hombre" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -878,10 +950,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-calavera-mxc-white">
       <div class="card-img">
         <img src="Palas%20royal%202/CALAVERA_MXC_WHITE.webp" alt="Calavera MXC White" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -893,10 +965,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-cross-pro">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_PRO.webp" alt="Cross Pro" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -908,10 +980,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-cross-pro-lite">
       <div class="card-img">
         <img src="Palas%20royal%202/CROSS_PRO_LITE.webp" alt="Cross Pro Lite" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -923,10 +995,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-kit-m27-lite-bolso">
       <div class="card-img">
         <img src="Palas%20royal%203/Kit_M27_lite_Bolso_paletero.webp" alt="Kit M27 Lite + Bolso" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">KIT</span>
@@ -938,10 +1010,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$350.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $297.500</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-kit-whip-pro-woman-bolso">
       <div class="card-img">
         <img src="Palas%20royal%203/Kit_Whip_pro_woman_Bolso_paletero.webp" alt="Kit Whip Pro Woman + Bolso" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="bdg bdg-n">KIT</span>
@@ -953,10 +1025,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$350.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $297.500</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="polivalente" data-product-id="royal-padel-tigra-26">
       <div class="card-img">
         <img src="palas%20royal/TIGRA_26.webp" alt="Tigra '26" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -968,7 +1040,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
 </div>
@@ -977,7 +1049,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Palas Niños y Recreativas</span><span class="sec-sub">🟢 Kids · Junior · Beach · Frontón</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-beach">
       <div class="card-img">
         <img src="Palas%20royal%202/BEACH.webp" alt="Beach" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -989,10 +1061,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$145.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $123.250</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-fronton-fibra">
       <div class="card-img">
         <img src="Palas%20royal%202/FRONTON_FIBRA.webp" alt="Frontón Fibra" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1004,10 +1076,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$130.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $110.500</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-junior-multicolor-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp" alt="Junior Multicolor 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1019,10 +1091,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$152.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $129.625</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-junior-pink-2026">
       <div class="card-img">
         <img src="Palas%20royal%203/JUNIOR_PINK_2026.webp" alt="Junior Pink 2026" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1034,10 +1106,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$152.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $129.625</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS.webp" alt="Kids" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1049,10 +1121,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids-multicolor-aqua">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS_multicolor_aqua.webp" alt="Kids Multicolor Aqua" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1064,10 +1136,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-kids-rosa">
       <div class="card-img">
         <img src="Palas%20royal%203/KIDS_ROSA.webp" alt="Kids Rosa" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1079,10 +1151,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="ninos" data-product-id="royal-padel-pickleball-ventana">
       <div class="card-img">
         <img src="Palas%20royal%203/PICKLEBALL_VENTANA.webp" alt="Pickleball Ventana" style="width:100%;height:100%;object-fit:contain;"/>
         
@@ -1094,7 +1166,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">$149.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $127.075</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
 </div>
@@ -1102,7 +1174,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Accesorios</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-cubregrip">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-10-09-at-09-22-18-2-4bf033f42e1be69f8717600125953812-480-0.webp" alt="CUBREGRIP" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1114,10 +1186,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$3.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $2.975</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-royalpadel-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7445-cdf1b847c7caf4a0ef17699334945155-480-0.webp" alt="Medias Royalpadel Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1129,10 +1201,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$5.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.675</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-protectores-importados">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/protectores-1-1-60e9419c38769aee3b17582989389055-480-0.webp" alt="Protectores Importados" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1144,10 +1216,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$14.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $12.325</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-white">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/db00d4e3-f8df-4b0a-b3ef-6a26b07226b9-086b88d85ec9cb825b17724664052398-480-0.webp" alt="Medias White" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1159,10 +1231,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$5.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.675</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-chanclas">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/chanclas-1-9f6dd3db1502b1fa7317582995797214-480-0.webp" alt="Chanclas" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1174,10 +1246,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$39.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.150</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-munequeras-royalpadel-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7446-63fbd93bbca7a58e8c17699336242554-480-0.webp" alt="Muñequeras Royalpadel Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1189,10 +1261,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$13.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $11.050</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-bolso-paletero-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/306db175-241b-400e-850a-487213c40078-4f20bcca930900727017671770974014-480-0.webp" alt="Bolso Paletero Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1204,10 +1276,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$135.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $114.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-gorra-white">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-12-02-at-2-47-17-pm-731a2642ebeb5323be17647018722712-480-0.webp" alt="Gorra White" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1219,10 +1291,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$19.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $16.575</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-media-cana-a-e-red">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1-9da2db606748afd00917587115590044-480-0.webp" alt="Medias Media Caña A/E Red" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1234,10 +1306,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$4.900</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.165</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-mangas-black">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/69bf948c-483f-4934-a3e0-77cc4fbcf161-6089e7f6d4f530870317724662219654-480-0.webp" alt="Mangas Black" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1249,10 +1321,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$8.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $7.480</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-medias-azul-wpt">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1ba19accbdc208ec2317587115004784-480-0.webp" alt="Medias Azul WPT" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1264,10 +1336,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$4.900</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.165</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="royal-padel-x-grip">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/r-grip-1-f7ea7f2b05a159e9d117582953580172-480-0.webp" alt="X GRIP" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1279,7 +1351,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$30.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $25.500</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
 </div>
@@ -1288,7 +1360,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Indumentaria Masculina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-azul">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/99e5e8e4-82b4-4839-9673-d6d9d8376984-b94fcd9c64cf6e604e17699329576623-480-0.webp" alt="Short Mallorca Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1300,10 +1372,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-lineal">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/e42bb162-a069-4c4b-b1b3-9f17e095bc51-08ba4c1c7505eda89317655388502393-480-0.webp" alt="Remera Mallorca Azul Marino Lineal" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1315,10 +1387,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-uva">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/a9b89d92-a687-4faa-8408-9e56949e12bb-0dfde500d31b8a9b0117699332254083-480-0.webp" alt="Short Mallorca Uva" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1330,10 +1402,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$46.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $39.100</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-basica">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/2e07ad32-47ec-435c-b9ae-4dd03c6f0b26-14ac5cb7ee893ff36817655390053582-480-0.webp" alt="Remera Mallorca Blanca Basica" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1345,10 +1417,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-verde">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2026-01-30-at-11-17-35-am-635229a2f35c26475c17707307379912-480-0.webp" alt="Short Mallorca Verde" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1360,10 +1432,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-moka">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/ec409cc6-9ac5-45db-ae94-db1492b994b3-b1a8b9fece9f96e08017699330981844-480-0.webp" alt="Short Mallorca Moka" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1375,10 +1447,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-basica">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/bdcd312e-8b8e-43a5-9b43-5e337e1705ef-35208faaec615d6e4b17655385865596-480-0.webp" alt="Remera Mallorca Azul Marino Basica" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1390,10 +1462,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-lineal">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/928ae1c7-947b-4203-8f1f-1e148f41daa1-f5983c73fd253ff65617655392698213-480-0.webp" alt="Remera Mallorca Blanca Lineal" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1405,10 +1477,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-padel">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/70a40a5d-6efd-4071-831a-aeda1e67bf61-389db1ddab7ff1a3d417655391965883-480-0.webp" alt="Remera Mallorca Blanca Padel" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1420,10 +1492,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-marino-padel">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/89527c81-04cf-4fc5-90df-fad817649a4d-a042c56a395f81dd0117655387049534-480-0.webp" alt="Remera Mallorca Azul Marino Padel" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1435,10 +1507,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-campera-roma-pro-negra-hombre">
 <div class="card-img">
 <img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/campera-8df6c45a4279af64c417587110842249-480-0.webp" alt="Campera Roma Pro Negra Hombre" style="width:100%;height:100%;object-fit:contain;"/>
 
@@ -1450,7 +1522,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div class="price-row"><span class="card-price">$90.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $76.500</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
 </div>
 </div>
 </div>
@@ -1459,196 +1531,187 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 <div><span class="sec-title">Indumentaria Femenina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
 </div>
 <div class="grid">
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-negra">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/16-33947bf88c2c71530417588012612802-480-0.webp" alt="Campera Inflable Mixta Beige" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-1.webp" alt="Pollera deportiva Mallorca con short – Negra" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Campera Inflable Mixta Beige</div>
-<div class="price-row"><span class="card-price">$85.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $72.250</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/1-1-06101d94b417ac6b5b17588014572414-480-0.webp" alt="Campera Inflable Negra Mixta" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Campera Inflable Negra Mixta</div>
-<div class="price-row"><span class="card-price">$85.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $72.250</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr056-1-76b24fef0ab4c1867417689277631101-480-0.webp" alt="Remera Mallorca White and Flowers Bordeaux" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca White and Flowers Bordeaux</div>
-<div class="price-row"><span class="card-price">$35.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr058-1-2b3e8dcd6f2df2b82317689276186898-480-0.webp" alt="Remera Mallorca White and Flowers Pink" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca White and Flowers Pink</div>
-<div class="price-row"><span class="card-price">$35.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_5247-13bb0d3a9bd3059f8217655383301272-480-0.webp" alt="Pollera Mallorca Black" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Pollera Mallorca Black</div>
+<div class="card-name">Pollera deportiva Mallorca con short – Negra</div>
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-rosa-mujer">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_5245-e48ff20ec58279c1ae17655382220829-480-0.webp" alt="Pollera Mallorca Pink" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/x-grip1-1.webp" alt="Remera deportiva Mallorca – Blanca y rosa" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Pollera Mallorca Pink</div>
-<div class="price-row"><span class="card-price">$63.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc067-1-7bdf3e6dd8bae1f93b17643347934891-480-0.webp" alt="Campera Deportiva Pink" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Campera Deportiva Pink</div>
-<div class="price-row"><span class="card-price">$55.000</span></div>
-<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $46.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
-</div>
-</div>
-<div class="card" data-cat="Indumentaria">
-<div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr064-1-24aba9ad5a3bff8d1e17643296277662-480-0.webp" alt="Remera Mallorca Black and Flowers Moka" style="width:100%;height:100%;object-fit:contain;"/>
-
-<span class="fav">♡</span>
-</div>
-<div class="card-body">
-<div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca Black and Flowers Moka</div>
+<div class="card-name">Remera deportiva Mallorca – Blanca y rosa</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-moka-mujer">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr060-1-a7a4d65c0d1e18710b17643293709180-480-0.webp" alt="Remera Mallorca Black and Flowers Pink" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp" alt="Remera deportiva Mallorca – Blanca y moka" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca Black and Flowers Pink</div>
+<div class="card-name">Remera deportiva Mallorca – Blanca y moka</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-multicolor-mujer">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2026-03-30-at-1-14-41-pm-2ff6ba15ee3f64b6f317748873578310-480-0.webp" alt="Remera Mallorca Lineas" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp" alt="Remera deportiva Mallorca – Blanca multicolor" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca Lineas</div>
+<div class="card-name">Remera deportiva Mallorca – Blanca multicolor</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-lineal-mujer">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc069-1-5c75698ff1053ccb6f17643385464103-480-0.webp" alt="Biker Black Mallorca" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp" alt="Remera deportiva Mallorca Líneas – Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Biker Black Mallorca</div>
+<div class="card-name">Remera deportiva Mallorca Líneas – Azul</div>
+<div class="price-row"><span class="card-price">$35.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-lineal-mujer">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp" alt="Remera deportiva Mallorca Líneas – Blanca" style="width:100%;height:100%;object-fit:contain;"/>
+
+<span class="fav">♡</span>
+</div>
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Remera deportiva Mallorca Líneas – Blanca</div>
+<div class="price-row"><span class="card-price">$35.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-negra-lineal-mujer">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-1.webp" alt="Remera deportiva Mallorca Líneas – Negra" style="width:100%;height:100%;object-fit:contain;"/>
+
+<span class="fav">♡</span>
+</div>
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Remera deportiva Mallorca Líneas – Negra</div>
+<div class="price-row"><span class="card-price">$35.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-biker-mallorca-negra">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-1.webp" alt="Calza Biker Mallorca – Negra" style="width:100%;height:100%;object-fit:contain;"/>
+
+<span class="fav">♡</span>
+</div>
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Calza Biker Mallorca – Negra</div>
 <div class="price-row"><span class="card-price">$39.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.575</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-<div class="card" data-cat="Indumentaria">
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-azul-mujer">
 <div class="card-img">
-<img src="https://acdn-us.mitiendanube.com/stores/006/725/306/products/mr062-1-b836926d0d8cc789a417643296669916-480-0.webp" alt="Remera Mallorca Blue and Flowers" style="width:100%;height:100%;object-fit:contain;"/>
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp" alt="Remera deportiva Mallorca – Azul" style="width:100%;height:100%;object-fit:contain;"/>
 
 <span class="fav">♡</span>
 </div>
 <div class="card-body">
 <div class="card-cat">Ropa Mujer · Royal Padel</div>
-<div class="card-name">Remera Mallorca Blue and Flowers</div>
+<div class="card-name">Remera deportiva Mallorca – Azul</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
 <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
-<button class="add-btn" onclick="addToCart(this)">Consultar</button>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
-</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-blanca">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-1.webp" alt="Pollera deportiva Mallorca con short – Blanca" style="width:100%;height:100%;object-fit:contain;"/>
 
+<span class="fav">♡</span>
 </div>
-<!-- ===== SECCIÓN BULL PADEL ===== -->
-<div class="main-wrap" id="seccion-bull-padel">
-  <div class="sec-head">
-    <div><span class="sec-title">Paletas Bullpadel</span><span class="sec-sub">&#127942; The Padel Specialist &middot; Carbono &middot; Todos los niveles</span></div>
-  </div>
-  <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Pollera deportiva Mallorca con short – Blanca</div>
+<div class="price-row"><span class="card-price">$63.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-remera-mallorca-blanca-multicolor-lineal-mujer">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp" alt="Remera deportiva Mallorca Líneas – Blanca multicolor" style="width:100%;height:100%;object-fit:contain;"/>
+
+<span class="fav">♡</span>
+</div>
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Remera deportiva Mallorca Líneas – Blanca multicolor</div>
+<div class="price-row"><span class="card-price">$35.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-azul">
+<div class="card-img">
+<img src="assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-1.webp" alt="Pollera deportiva Mallorca con short – Azul" style="width:100%;height:100%;object-fit:contain;"/>
+
+<span class="fav">♡</span>
+</div>
+<div class="card-body">
+<div class="card-cat">Ropa Mujer · Royal Padel</div>
+<div class="card-name">Pollera deportiva Mallorca con short – Azul</div>
+<div class="price-row"><span class="card-price">$63.000</span></div>
+<div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
+</div>
+</div>
+<div class="card" data-cat="Paletas" data-product-id="bullpadel-flow-legend">
       <div class="card-img">
         <img src="bullpadel/paleta_flow_legend_gris.jpg" alt="Flow Legend" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1659,10 +1722,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Edici&oacute;n especial 25 a&ntilde;os &middot; Alexandra Salazar</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="bullpadel-ionic-pwr">
       <div class="card-img">
         <img src="bullpadel/paleta_ionic_pwr_azul.jpg" alt="Ionic PWR" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1673,10 +1736,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Redondo &middot; 90/80 &middot; Potencia m&aacute;xima</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-mochila-delfina-blanca-azul">
       <div class="card-img">
         <img src="bullpadel/mochila_delfina_blanca_frente.jpg" alt="Mochila Delfina" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1687,10 +1750,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Edici&oacute;n Delfi &middot; Blanco y Azul</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-mochila-delfina-lateral">
       <div class="card-img">
         <img src="bullpadel/mochila_delfina_frente.jpg" alt="Mochila Delfina Lateral" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1701,10 +1764,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Edici&oacute;n Delfi &middot; Vista lateral</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="bullpadel-bolso-wonder-marron">
       <div class="card-img">
         <img src="bullpadel/bolso_wonder_marron_frente.jpg" alt="Bolso Wonder Marron" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1715,7 +1778,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Color marr&oacute;n &middot; M&uacute;ltiples vistas</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
   </div>
@@ -1725,7 +1788,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     <div><span class="sec-title">Paletas Siux</span><span class="sec-sub">&#9889; The Next Level &middot; Carbono &middot; Alto rendimiento</span></div>
   </div>
   <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-fenix-pro-5">
       <div class="card-img">
         <img src="siux/paleta_fenix_pro5_naranja.jpg" alt="Fenix Pro 5" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1736,10 +1799,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Diamante &middot; Carbono &middot; Nivel avanzado</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-trilogy-go-5">
       <div class="card-img">
         <img src="siux/paleta_trilogy_go5_verde.jpg" alt="Trilogy GO 5" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1750,10 +1813,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Redondo &middot; Control y potencia</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-diablo-pro-4">
       <div class="card-img">
         <img src="siux/paleta_diablo_pro4_roja.jpg" alt="Diablo Pro 4" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1764,10 +1827,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Diamante &middot; Carbono &middot; Pro Level</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="siux-electra-go-4">
       <div class="card-img">
         <img src="siux/paleta_electra_go4_amarilla.jpg" alt="Electra GO 4" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1778,21 +1841,21 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Redondo &middot; Carbono &middot; Nivel intermedio</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
-<div class="card" data-cat="Accesorios">
+<div class="card" data-cat="Accesorios" data-product-id="siux-mochila-blanca-azul-lateral">
       <div class="card-img">
         <img src="siux/mochila_blanca_azul_lateral.jpg" alt="Mochila Blanca Azul" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
       </div>
       <div class="card-body">
-        <div class="card-cat">Mochila &middot; Bullpadel</div>
+        <div class="card-cat">Mochila &middot; Siux</div>
         <div class="card-name">Mochila Blanca/Azul Lateral</div>
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Blanco y celeste &middot; Talle &uacute;nico</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
   </div>
@@ -1802,7 +1865,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
     <div><span class="sec-title">Paletas Adidas</span><span class="sec-sub">&#128420; Tecnolog&iacute;a de &eacute;lite &middot; Carbon &middot; Competici&oacute;n</span></div>
   </div>
   <div class="grid">
-<div class="card" data-cat="Paletas">
+<div class="card" data-cat="Paletas" data-product-id="adidas-metalbone-carbon-ctrl">
       <div class="card-img">
         <img src="adidas/paleta_metalbone_carbon_ctrl.jpg" alt="Metalbone Carbon CTRL" style="width:100%;height:100%;object-fit:contain;"/>
         <span class="fav">&#9825;</span>
@@ -1813,11 +1876,10 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
         <div class="price-row"><span class="card-price">Consultar</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:6px;">Redondo &middot; Carbon 4K &middot; Control m&aacute;ximo</div>
         <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i &middot; Env&iacute;o gratis</div>
-        <button class="add-btn" onclick="addToCart(this)">Consultar</button>
+        <button class="add-btn" onclick="openModal(this.closest('.card'))">Consultar</button>
       </div>
     </div>
   </div>
-</div>
 <footer>
   <div class="footer-inner">
     <div class="footer-top">
@@ -1853,9 +1915,15 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 </footer>
 
 <script>
-let cartCount=0;
-function addToCart(btn){cartCount++;const badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}btn.textContent='Agregado';btn.classList.add('added');setTimeout(()=>{btn.textContent='Consultar';btn.classList.remove('added');},2000);}
-
+document.addEventListener('click',function(e){
+  var t=e.target&&e.target.closest?e.target.closest('#modalBuyNowBtn'):null;
+  if(!t)return;
+  if(window.__talleGuardActive&&!window.__selectedTalle){
+    e.preventDefault();e.stopPropagation();
+    var msg=document.getElementById('modalTalleMsg');
+    if(msg)msg.textContent='Seleccioná un talle para continuar.';var row=document.getElementById('modalTalleRow');if(row)row.classList.add('talle-error');if(msg)msg.focus();
+  }
+},true);
 document.addEventListener('DOMContentLoaded',function(){
 
 document.querySelectorAll('.cat').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const f=btn.dataset.cat;document.querySelectorAll('.card').forEach(c=>{const bc=c.querySelector('.card-cat')?c.querySelector('.card-cat').textContent.trim().toLowerCase():'';const ibf=f==='bull-padel'||f==='adidas'||f==='siux';const bm=(f==='bull-padel'&&bc.includes('bullpadel'))||(f==='adidas'&&bc.includes('adidas'))||(f==='siux'&&bc.includes('siux'));c.style.display=(f==='all'||(!ibf&&c.dataset.cat===f)||bm)?'':'none';});document.querySelectorAll('.sec-head').forEach(function(sh){var next=sh.nextElementSibling;if(!next)return;if(next.classList.contains('grid')){var vis=Array.from(next.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=vis?'':'none';next.style.display=vis?'':'none';}});Array.from(document.querySelectorAll('.sec-head')).filter(function(sh){return sh.nextElementSibling&&sh.nextElementSibling.classList.contains('sec-head');}).forEach(function(sh){var hasVis=Array.from(sh.parentElement.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=hasVis?'':'none';});});});
@@ -1874,11 +1942,41 @@ var qtyMinusEl=document.getElementById('qtyMinus');
 var subtotalEl=document.getElementById('modalSubtotal');
 var buyBtn=document.getElementById('modalBuyBtn');
 var wpBtn=document.getElementById('modalWpBtn');
-var currentPrice=0,qty=1;
+var stockBadgeEl=document.getElementById('modalStockBadge');
+var shipBadgeEl=document.getElementById('modalShipBadge');
+var buyNowBtn=document.getElementById('modalBuyNowBtn');
+var qtyRowEl=document.getElementById('modalQtyRow');
+var galleryPrevBtn=document.getElementById('galleryPrev');
+var galleryNextBtn=document.getElementById('galleryNext');
+var galleryDotsEl=document.getElementById('galleryDots');
+var talleRowEl=document.getElementById('modalTalleRow');
+var talleButtonsEl=document.getElementById('modalTalleButtons');
+var talleMsgEl=document.getElementById('modalTalleMsg');
+var galleryImages=[],galleryIndex=0,currentProduct=null;
+var PURCHASABLE_PRODUCT_IDS=['royal-padel-cross-black-26'];
+// window.CATALOG lo carga lib/padel-cart.js (defer, mas abajo en este
+// documento) con el mismo fetch('products.json') que ya usaba este script:
+// una sola carga del catalogo compartida por el modal y por window.PadelCart,
+// en vez de dos fetches identicos en paralelo.
+window.CATALOG=window.CATALOG||{};
+function renderGalleryImage(){if(!galleryImages.length)return;imgEl.src=galleryImages[galleryIndex];imgEl.alt=nameEl.textContent;if(galleryDotsEl){Array.prototype.forEach.call(galleryDotsEl.children,function(dot,idx){dot.classList.toggle('active',idx===galleryIndex);});}}
+function setupGallery(product){var imagenes=(product&&Array.isArray(product.imagenes)&&product.imagenes.length)?product.imagenes.slice():((product&&product.imagen)?[product.imagen]:null);if(!imagenes||!imagenes.length){galleryImages=[];galleryIndex=0;if(galleryPrevBtn)galleryPrevBtn.hidden=true;if(galleryNextBtn)galleryNextBtn.hidden=true;if(galleryDotsEl)galleryDotsEl.innerHTML='';return;}galleryImages=imagenes;galleryIndex=0;renderGalleryImage();var multi=galleryImages.length>1;if(galleryPrevBtn)galleryPrevBtn.hidden=!multi;if(galleryNextBtn)galleryNextBtn.hidden=!multi;if(galleryDotsEl){galleryDotsEl.innerHTML='';if(multi){galleryImages.forEach(function(_,idx){var dot=document.createElement('span');dot.className='gallery-dot'+(idx===0?' active':'');dot.addEventListener('click',function(){galleryIndex=idx;renderGalleryImage();});galleryDotsEl.appendChild(dot);});}}}
+if(galleryPrevBtn)galleryPrevBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length;renderGalleryImage();});
+if(galleryNextBtn)galleryNextBtn.addEventListener('click',function(){if(!galleryImages.length)return;galleryIndex=(galleryIndex+1)%galleryImages.length;renderGalleryImage();});
+function setupTalles(product){var talles=(product&&Array.isArray(product.talles)&&product.talles.length)?product.talles:[];window.__selectedTalle=null;if(!talleRowEl)return;if(!talles.length){talleRowEl.hidden=true;window.__talleGuardActive=false;if(talleButtonsEl)talleButtonsEl.innerHTML='';if(talleMsgEl)talleMsgEl.textContent='';return;}talleRowEl.hidden=false;window.__talleGuardActive=true;talleRowEl.classList.remove('talle-error');if(talleMsgEl)talleMsgEl.textContent='';if(talleButtonsEl){talleButtonsEl.innerHTML='';talles.forEach(function(t){var b=document.createElement('button');b.type='button';b.className='talle-btn';b.textContent=t;b.addEventListener('click',function(){window.__selectedTalle=t;window.__talleGuardActive=false;if(buyNowBtn)buyNowBtn.dataset.talle=t;if(talleMsgEl)talleMsgEl.textContent='';if(talleRowEl)talleRowEl.classList.remove('talle-error');Array.prototype.forEach.call(talleButtonsEl.children,function(btn){btn.classList.toggle('selected',btn===b);});});talleButtonsEl.appendChild(b);});}}
+// El carrito real y unico (contador, drawer, agregar/quitar/cambiar
+// cantidad, persistencia) vive ahora en lib/padel-cart.js + widget/padel-cart.js
+// (window.PadelCart), cargados como <script defer> al final de este documento.
+// Este script inline ya no mantiene su propia copia del carrito: el boton
+// "Agregar al carrito" del modal (mas abajo) llama directamente a
+// window.PadelCart.addItem, y el contador/drawer/checkout por WhatsApp los
+// maneja siempre widget/padel-cart.js contra los mismos elementos
+// #cartBtn/#cartDrawer* que ya existian.
+var currentPrice=0,qty=1,isConsultar=false;
 
 function parsePrice(s){return s?parseInt(s.replace(/[^0-9]/g,''))||0:0;}
 function formatPrice(n){return '$'+n.toLocaleString('es-AR');}
-function updateSub(){if(subtotalEl)subtotalEl.textContent=formatPrice(currentPrice*qty);}
+function updateSub(){if(!subtotalEl)return;if(isConsultar){subtotalEl.textContent='PRECIO A CONSULTAR';return;}subtotalEl.textContent=formatPrice(currentPrice*qty);}
 
 function openModal(card){
 var ci=card.querySelector('.card-img img');
@@ -1894,16 +1992,54 @@ catEl.textContent=cc?cc.textContent.trim():'';
 priceEl.textContent=cp?cp.textContent.trim():'';
 transferEl.textContent=ct?ct.textContent.trim():'';
 cuotasEl.textContent=cq?cq.textContent.trim():'';
-currentPrice=parsePrice(cp?cp.textContent:'');
+var productId=card.dataset?card.dataset.productId:'';
+var product=(productId&&window.CATALOG)?window.CATALOG[productId]:null;
+currentProduct=product;
+setupGallery(product);
+setupTalles(product);
+var priceTextRaw=cp?cp.textContent.trim():'';
+isConsultar=/consultar/i.test(priceTextRaw);
+currentPrice=isConsultar?0:parsePrice(priceTextRaw);
+if(stockBadgeEl)stockBadgeEl.style.display=isConsultar?'none':'';
+if(shipBadgeEl)shipBadgeEl.style.display=isConsultar?'none':'';
+if(qtyRowEl)qtyRowEl.style.display=isConsultar?'none':'';
 qty=1;if(qtyValEl)qtyValEl.textContent=1;updateSub();
 if(buyBtn){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');}
-var pN=encodeURIComponent(nameEl.textContent);
-var pP=encodeURIComponent(priceEl.textContent);
-if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text=Hola!+Me+interesa:+'+pN+'+Precio:+'+pP,'_blank');};
+var waMsg;
+if(isConsultar){
+  waMsg='Hola! Quiero consultar el precio y el stock disponible de: '+nameEl.textContent+'.';
+}else{
+  waMsg='Hola! Me interesa: '+nameEl.textContent+'. Precio: '+priceEl.textContent+'. Quiero confirmar stock disponible.';
+}
+var pM=encodeURIComponent(waMsg);
+if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text='+pM,'_blank');};
+// Unico producto piloto comprable con "Comprar ahora": debe coincidir con
+// window.PadelCheckoutWidget.startBuyNow (widget/padel-checkout.js#BUY_NOW_PRODUCT_ID),
+// que ya rechaza cualquier otro productId. Mostrar el boton solo para ese
+// producto evita un CTA dorado que no hace nada en el resto del catalogo.
+var buyNowProductId=(product&&PURCHASABLE_PRODUCT_IDS.indexOf(product.id)>-1)?product.id:'';
+if(buyNowBtn){
+if(buyNowProductId){
+buyNowBtn.hidden=false;
+buyNowBtn.dataset.productId=buyNowProductId;
+buyNowBtn.disabled=false;
+buyNowBtn.textContent='Comprar ahora';
+buyNowBtn.dataset.mpBusy='';
+buyNowBtn.dataset.talle=window.__selectedTalle||'';
+var existingErr=buyNowBtn.nextElementSibling;
+if(existingErr&&existingErr.classList&&existingErr.classList.contains('mp-buy-error')){existingErr.textContent='';}
+}else{
+buyNowBtn.hidden=true;
+buyNowBtn.removeAttribute('data-product-id');
+}
+}
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
 
 function closeModal(){overlay.classList.remove('open');document.body.style.overflow='';}
+window.openModal = openModal;
+window.closeModal = closeModal;
+
 
 document.querySelectorAll('.card').forEach(function(card){
 var ci=card.querySelector('.card-img');
@@ -1914,8 +2050,16 @@ if(cn){cn.style.cursor='pointer';cn.addEventListener('click',function(e){e.stopP
 
 if(qtyPlusEl)qtyPlusEl.addEventListener('click',function(){qty=Math.min(qty+1,20);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
 if(qtyMinusEl)qtyMinusEl.addEventListener('click',function(){qty=Math.max(qty-1,1);if(qtyValEl)qtyValEl.textContent=qty;updateSub();});
-if(buyBtn)buyBtn.addEventListener('click',function(){cartCount++;var badge=document.querySelector('.cart-badge');if(badge){badge.style.display='inline';badge.textContent=cartCount;}buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
+if(buyBtn)buyBtn.addEventListener('click',function(){if(window.__talleGuardActive&&!window.__selectedTalle){if(talleMsgEl)talleMsgEl.textContent='Seleccioná un talle para continuar.';if(talleRowEl)talleRowEl.classList.add('talle-error');if(talleMsgEl)talleMsgEl.focus();return;}if(!currentProduct||!currentProduct.id||!window.PadelCart)return;var res=window.PadelCart.addItem(currentProduct.id,window.__selectedTalle||null,qty);if(!res||!res.ok)return;buyBtn.textContent='Agregado al carrito!';buyBtn.classList.add('added');setTimeout(function(){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');},2500);});
 if(closeBtn)closeBtn.addEventListener('click',closeModal);
+// "Comprar ahora" desde la ficha: cierra el modal ANTES de que
+// widget/mercadopago-buy.js dispare PadelCheckoutWidget.startBuyNow (que
+// abre el drawer directo en "Tus datos"). Este listener se registra una
+// sola vez y se agrega ANTES que el de mercadopago-buy.js (que recien se
+// registra al terminar de cargar ese script deferido), asi que corre
+// primero en cada click: el modal ya esta cerrado para cuando se abre el
+// paso de datos.
+if(buyNowBtn)buyNowBtn.addEventListener('click',closeModal);
 if(overlay)overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
 
@@ -1929,12 +2073,15 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-img-panel">
 <div class="modal-img-glow"></div>
 <img id="modalImg" src="" alt="">
+<button class="gallery-nav gallery-prev" id="galleryPrev" type="button" aria-label="Imagen anterior" hidden>&#8249;</button>
+<button class="gallery-nav gallery-next" id="galleryNext" type="button" aria-label="Imagen siguiente" hidden>&#8250;</button>
+<div class="gallery-dots" id="galleryDots"></div>
 </div>
 <div class="modal-info">
 <div class="modal-badge-row">
 <span class="modal-badge cat" id="modalCat"></span>
-<span class="modal-badge stock">&#10004; Stock disponible</span>
-<span class="modal-badge ship">Envio gratis</span>
+<span class="modal-badge stock" id="modalStockBadge">&#10004; Stock disponible</span>
+<span class="modal-badge ship" id="modalShipBadge">Envio gratis</span>
 </div>
 <div class="modal-name" id="modalName"></div>
 <div>
@@ -1942,8 +2089,13 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-price-transfer" id="modalTransfer"></div>
 <div class="modal-cuotas" id="modalCuotas"></div>
 </div>
+<div class="modal-talle-row" id="modalTalleRow" hidden>
+<span class="modal-qty-label">Talle</span>
+<div class="modal-talle-buttons" id="modalTalleButtons"></div>
+<div class="modal-talle-msg" id="modalTalleMsg" aria-live="polite" tabindex="-1"></div>
+</div>
 <hr class="modal-divider">
-<div class="modal-qty-row">
+<div class="modal-qty-row" id="modalQtyRow">
 <span class="modal-qty-label">Cantidad</span>
 <div class="modal-qty-ctrl">
 <button class="qty-btn" id="qtyMinus">&#8722;</button>
@@ -1953,6 +2105,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-subtotal">Total: <strong id="modalSubtotal"></strong></div>
 </div>
 <hr class="modal-divider">
+<button class="modal-buynow-btn" id="modalBuyNowBtn" data-mp-buy-button hidden>Comprar ahora</button>
 <button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
 <button class="modal-wp-btn" id="modalWpBtn">Consultar por WhatsApp</button>
 <div class="modal-trust-row">
@@ -1964,5 +2117,72 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 </div>
 </div>
 </div>
+<!-- CARRITO -->
+<div class="drw-ov" id="cartDrawerOverlay">
+<div class="drw" id="cartDrawer" role="dialog" aria-modal="true">
+<div class="drw-h">
+<span class="drw-title" id="cartDrawerTitle">Carrito</span>
+<button class="drw-close" id="cartDrawerClose" aria-label="Cerrar">&#x2715;</button>
+</div>
+<div class="drw-body" id="cartDrawerBody">
+<div class="empty" id="cartDrawerEmpty">
+<div class="empty-ico">&#128722;</div>
+<div class="empty-txt">Tu carrito esta vacio</div>
+</div>
+</div>
+<div class="drw-f" id="cartDrawerFooterCart">
+<div class="total-row">
+<span class="total-lbl">Total</span>
+<span class="total-v" id="cartDrawerTotal">$0</span>
+</div>
+<button class="chk-btn" id="cartDrawerContinueBtn">Continuar con mis datos</button>
+<button class="chk-btn" id="cartDrawerCheckoutBtn" style="margin-top:8px;background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Consultar por WhatsApp</button>
+</div>
+<div class="drw-f" id="cartDrawerFooterCheckout" hidden>
+<button class="chk-btn" id="cartDrawerBackBtn" style="background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Volver</button>
+<button class="chk-btn" id="cartDrawerNextBtn" style="margin-top:8px">Continuar</button>
+</div>
+</div>
+</div>
+</div>
+  <link rel="stylesheet" href="widget/padel-advisor.css">
+  <link rel="stylesheet" href="widget/padel-comparison.css">
+  <div id="padel-advisor-root"></div>
+  <a id="waFloatBtn" class="wa-float" href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp">
+    <svg viewBox="0 0 32 32" width="28" height="28" fill="#fff" aria-hidden="true"><path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.348.657 4.542 1.797 6.41L4 29l7.77-1.756A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.988 16.845c-.297.836-1.47 1.53-2.41 1.73-.64.136-1.475.245-4.29-.92-3.6-1.49-5.92-5.13-6.1-5.37-.177-.24-1.456-1.938-1.456-3.696 0-1.758.923-2.622 1.25-2.98.328-.358.716-.448.955-.448.24 0 .478.002.687.013.22.012.516-.084.807.616.297.716 1.01 2.474 1.098 2.653.088.18.147.39.03.63-.12.24-.178.39-.356.6-.178.21-.375.47-.535.63-.178.18-.364.375-.157.735.208.36.923 1.522 1.98 2.464 1.36 1.212 2.508 1.588 2.868 1.766.36.178.57.15.78-.09.208-.24.892-1.04 1.13-1.398.238-.36.475-.3.802-.18.328.12 2.08.98 2.437 1.158.357.18.594.27.683.42.09.15.09.87-.207 1.706z"/></svg>
+  </a>
+  <script src="lib/padel-cart.js" defer></script>
+  <script src="lib/padel-checkout-fields.js" defer></script>
+  <script src="widget/padel-cart.js" defer></script>
+  <script src="widget/padel-checkout.js" defer></script>
+  <script src="widget/mercadopago-buy.js" defer></script>
+<script src="widget/padel-advisor.js" defer></script>
+<script>
+(function(){
+  var navEl = document.querySelector('nav');
+  var toggle = document.getElementById('navToggle');
+  if(!navEl || !toggle) return;
+  function closeMenu(){
+    navEl.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded','false');
+  }
+  function openMenu(){
+    navEl.classList.add('nav-open');
+    toggle.setAttribute('aria-expanded','true');
+  }
+  toggle.addEventListener('click', function(){
+    if(navEl.classList.contains('nav-open')){ closeMenu(); } else { openMenu(); }
+  });
+  document.querySelectorAll('.nav-links a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', function(){
+    if(window.innerWidth > 860) closeMenu();
+  });
+})();
+</script>
 </body>
 </html>

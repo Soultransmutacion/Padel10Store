@@ -1,0 +1,58 @@
+name: CI Mercado Pago (Preview - asesor-ia-padel10store)
+
+on:
+  push:
+    branches:
+      - asesor-ia-padel10store
+  pull_request:
+    branches:
+      - asesor-ia-padel10store
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: npm test + node --check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias (npm install, sin package-lock.json)
+        run: npm install
+
+      - name: Ejecutar npm test
+        run: npm test
+
+      - name: node --check sobre todos los archivos .js versionados (excluye node_modules)
+        run: |
+          COUNT=0
+          STATUS=0
+          while IFS= read -r -d '' f; do
+            if [ -f "$f" ]; then
+              COUNT=$((COUNT+1))
+              echo "Verificando sintaxis: $f"
+              node --check "$f" || STATUS=1
+            fi
+          done < <(git ls-files -z -- '*.js' ':(glob)!node_modules/**' ':(glob)!**/node_modules/**')
+          echo "Total de archivos .js versionados verificados: $COUNT"
+          exit $STATUS
+
+  # NOTA: el job opcional de integracion contra Supabase (test-integration-db)
+  # se quito de este workflow porque GitHub Actions no permite referenciar
+  # secrets directamente en una condicion `if` de job (`if: ${{ secrets.X != '' }}`
+  # falla antes de evaluar los jobs). Como ademas todavia no existe un
+  # proyecto Supabase de Preview/Test dedicado (decision explicita: no crear
+  # secrets falsos ni correr esto contra la base real/productiva), el CI no
+  # corre ningun test de integracion por ahora. `npm run test:integration`
+  # sigue disponible como script manual/opt-in (ver .env.example y
+  # tests/padel-orders-store.integration.test.js) para cuando se decida
+  # provisionar ese proyecto de test.

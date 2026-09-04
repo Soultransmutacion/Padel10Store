@@ -1,0 +1,168 @@
+/* Comparador visual PRO del Asesor de Palas - Fase 2, Etapa 3. */
+/* Archivo separado a proposito de widget/padel-advisor.css: agrupa
+   unicamente el layout propio del nuevo componente (cabecera de productos +
+   filas comparativas). Reutiliza la paleta (negro #111, dorado #C9A227,
+   blanco), la tipografia ('Barlow'/'Barlow Condensed') y las clases de boton
+   ya existentes (.pa-card-btn / .pa-card-btn-primary / .pa-card-btn-secondary,
+   definidas en widget/padel-advisor.css) para que el comparador se vea como
+   parte del mismo asistente, no como un componente ajeno. */
+
+.pa-cmp {
+flex-shrink: 0;
+align-self: stretch;
+background: #111;
+border: 1px solid rgba(201, 162, 39, 0.25);
+border-radius: 10px;
+overflow: hidden;
+padding: 10px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+/* Cabecera: una columna por producto comparado (2 o 3, segun lo que haya
+   armado el servidor). El numero de columnas se fija inline en JS
+   (grid-template-columns) porque depende de la cantidad real de productos:
+   nunca se asume un numero fijo de 2 en el CSS. */
+.pa-cmp-header {
+display: grid;
+gap: 8px;
+}
+
+.pa-cmp-product {
+display: flex;
+flex-direction: column;
+min-width: 0;
+}
+
+.pa-cmp-img {
+width: 100%;
+height: 60px;
+border-radius: 8px;
+background: #fff;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+margin-bottom: 6px;
+}
+
+.pa-cmp-img img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+}
+
+/* Mismo fallback visual que .pa-card-img-empty (widget/padel-advisor.css)
+   cuando una imagen local o externa no puede cargarse. */
+.pa-cmp-img-empty {
+background: rgba(255, 255, 255, 0.06);
+}
+
+.pa-cmp-img-empty::after {
+content: '\1F3BE';
+font-size: 18px;
+opacity: 0.5;
+}
+
+.pa-cmp-brand {
+font-size: 9px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+color: rgba(201, 162, 39, 0.75);
+font-weight: 700;
+}
+
+.pa-cmp-name {
+font-family: 'Barlow Condensed', sans-serif;
+font-size: 12.5px;
+font-weight: 800;
+color: #fff;
+line-height: 1.2;
+margin: 2px 0 4px;
+word-wrap: break-word;
+}
+
+.pa-cmp-price {
+font-family: 'Barlow Condensed', sans-serif;
+font-size: 13.5px;
+font-weight: 900;
+color: #C9A227;
+margin-bottom: 6px;
+}
+
+.pa-cmp-actions {
+display: flex;
+flex-direction: column;
+gap: 5px;
+margin-top: auto;
+}
+
+/* Los botones reutilizan .pa-card-btn / .pa-card-btn-primary /
+   .pa-card-btn-secondary tal cual (mismo tipografia, radio, colores): solo
+   se ajusta el ancho para que ocupen toda la columna angosta del producto. */
+.pa-cmp-actions .pa-card-btn {
+width: 100%;
+text-align: center;
+font-size: 10px;
+padding: 6px 4px;
+white-space: normal;
+}
+
+.pa-cmp-add-btn.pa-cmp-added {
+background: rgba(37, 211, 102, 0.25);
+border: 1px solid rgba(37, 211, 102, 0.5);
+color: #fff;
+}
+
+.pa-cmp-rows {
+display: flex;
+flex-direction: column;
+gap: 8px;
+border-top: 1px solid rgba(255, 255, 255, 0.08);
+padding-top: 8px;
+}
+
+.pa-cmp-row-label {
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.4px;
+color: rgba(255, 255, 255, 0.45);
+font-weight: 700;
+margin-bottom: 3px;
+}
+
+/* Mismo criterio que .pa-cmp-header: numero de columnas fijado inline en JS
+   segun la cantidad real de productos comparados. */
+.pa-cmp-row-values {
+display: grid;
+gap: 8px;
+}
+
+.pa-cmp-value {
+font-size: 12px;
+color: #f0f0f0;
+line-height: 1.3;
+word-break: break-word;
+}
+
+/* Atributo sin dato real confirmado para ese producto ("No confirmado",
+   armado por el servidor en lib/padel-catalog.js#buildComparisonCard):
+   nunca se inventa un valor, solo se distingue visualmente para que quede
+   claro que no es un dato real. */
+.pa-cmp-value-unconfirmed {
+color: rgba(255, 255, 255, 0.35);
+font-style: italic;
+}
+
+@media (max-width: 480px) {
+.pa-cmp-name {
+font-size: 12px;
+}
+.pa-cmp-price {
+font-size: 12.5px;
+}
+.pa-cmp-actions .pa-card-btn {
+font-size: 9.5px;
+}
+}

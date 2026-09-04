@@ -1,0 +1,5 @@
+# Generado por el Supabase CLI (supabase link / supabase start). No debe
+# versionarse: no contiene secretos, pero es estado local especifico de
+# cada maquina/entorno.
+.branches
+.temp

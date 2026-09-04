@@ -1,0 +1,968 @@
+{
+  "fuente": "https://www.royalpadel.com.ar",
+  "categoria": "Indumentaria Femenina",
+  "categoria_url": "https://www.royalpadel.com.ar/indumentaria-femenina/",
+  "generado_el": "2026-08-04T04:10:32.196Z",
+  "nota": "Contenido extraido con autorizacion comercial del distribuidor de Royal Padel para su uso en Padel10Store. No incluye diseno, carrito ni codigo interno de la tienda de origen. Los talles S, M, L y XL (y XXL para la Biker Mallorca) fueron confirmados comercialmente por el distribuidor de Royal Padel y no representan necesariamente el stock momentaneo mostrado en royalpadel.com.ar.",
+  "total_productos": 12,
+  "total_imagenes": 23,
+  "carpeta_imagenes_local": "assets/productos/royal-padel/indumentaria-femenina/",
+  "productos": [
+    {
+      "id_royal_padel": 312673614,
+      "nombre": "Pollera Mallorca Black",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Pollera Mallorca Black: Elegancia y Funcionalidad en Tu Outfit Deportivo\nDescubrí la Pollera deportiva con short debajo Mallorca Black, diseñada para acompañarte en cada movimiento con comodidad y estilo. Ideal para quienes buscan una prenda que combine practicidad y una estética moderna en sus actividades deportivas.\nCaracterísticas principales:\nComodidad total: La pollera cuenta con un short integrado que brinda seguridad y libertad de movimiento, evitando molestias durante el ejercicio.\nDiseño contemporáneo: Su color negro sobrio y corte ajustado realzan la figura, aportando elegancia sin sacrificar funcionalidad.\nMateriales de alta calidad: Confeccionada con telas livianas y transpirables, que facilitan la ventilación y mantienen la frescura durante largas jornadas deportivas.\nVersatilidad: Perfecta para pádel, tenis, running o cualquier actividad donde el confort y la movilidad sean esenciales.\n¿Por qué elegir la Pollera Mallorca Black?\nSi buscás una pollera deportiva que combine un diseño atractivo con la practicidad de un short debajo, la Mallorca Black es tu mejor opción. Su confección pensada para el rendimiento y el confort te permitirá entrenar y competir con total confianza.\nElevá tu estilo deportivo y sentí la diferencia con la Pollera Mallorca Black, la prenda imprescindible para potenciar tu rendimiento y comodidad en cada entrenamiento.\n¡No esperes más y sumá esta pollera a tu guardarropa deportivo hoy mismo!",
+      "moneda": "ARS",
+      "precio": 63000,
+      "precio_anterior": null,
+      "colores": [
+        "Negro"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/pollera-mallorca-black-n08rj/",
+      "imagenes": [
+        {
+          "id": 1206458072,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/5a1f7efe-dc93-4257-9ab5-be6653e53d87-fcba41fcb9b0caa49917803091436944-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-black-n08rj-1.webp"
+        },
+        {
+          "id": 1206458073,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/91e05db7-a119-4635-aa8b-19c8b8e6a0ee-619abe58b3d46880c517803091436902-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-black-n08rj-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 334971710,
+      "nombre": "Rem. Dep Mallorca Royalpadel white and Pink",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "REM. DEPORTIVA MALLORC: La Remera Ideal para Jugar al Pádel\nDescubrí la remera deportiva femenina Mallorca, diseñada especialmente para quienes buscan comodidad y estilo en la cancha de pádel. Esta prenda combina materiales de alta calidad que permiten una óptima transpirabilidad, manteniéndote fresca y seca durante cada partido.\nCaracterísticas principales:\nTejido ligero y flexible: Facilita el movimiento y proporciona un ajuste cómodo sin restricciones.\nDiseño femenino y moderno: Líneas elegantes que realzan tu figura y te permiten lucir bien mientras jugás.\nSecado rápido: Ideal para resistir largas jornadas de entrenamiento y competencia.\n¿Por qué elegir la REM. DEPORTIVA MALLORCA LINEAS? Porque es la opción perfecta para quienes buscan una prenda funcional y con estilo para jugar al pádel. Optimiza tu rendimiento con una remera diseñada para acompañar cada movimiento en la cancha.\n¡Sentite cómoda y confiada en cada partido con Mallorca Líneas!",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Blanco",
+        "Rosa"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/x-grip1/",
+      "imagenes": [
+        {
+          "id": 1206455231,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/4d394306-5a56-4e4e-93b4-fc4b5953ec68-1c2a8110895c261a9d17803083313558-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "x-grip1-1.webp"
+        },
+        {
+          "id": 1206455294,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/e4ce465b-4dcf-41f5-bf32-66d08cffacef-0d5652c604217ccfe817803083466880-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "x-grip1-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 319626377,
+      "nombre": "Rem. dep Mallorca Royalpadel white and moka",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera deportiva Mallorca Royalpadel white and moka: comodidad y rendimiento en cada partido\nDescubrí la remera deportiva de pádel Mallorca Royalpadel, diseñada especialmente para ofrecerte la máxima comodidad y funcionalidad durante tus partidos. Con un diseño moderno en colores blanco y moka, esta prenda combina estilo y practicidad para acompañarte en cada movimiento.\nCaracterísticas principales:\nTejido técnico de alta transpirabilidad: mantiene tu piel seca y fresca en cada punto.\nCorte ergonómico: garantiza libertad de movimiento, ideal para los rápidos desplazamientos en la cancha.\nMaterial liviano y resistente: pensado para soportar el desgaste del juego frecuente.\n¿Por qué elegir la rem. dep Mallorca Royalpadel white and moka?\nPorque es la opción perfecta para jugadores que buscan rendimiento sin sacrificar estilo. Su confección cuidadosa asegura confort y durabilidad, ayudándote a dar lo mejor en cada partido.\n¡Equipate con la mejor remera deportiva y sentí la diferencia en la cancha!",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Blanco",
+        "Moka"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6/",
+      "imagenes": [
+        {
+          "id": 1206457660,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/be1a1758-af86-4c30-bda9-1bc55759decf-cfc16d99d095856b8617803090278683-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp"
+        },
+        {
+          "id": 1206457658,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/ff26ded4-b87c-4957-91f9-a26682b283a9-e8e51115f7fec61dda17803090277481-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 319625743,
+      "nombre": "Rem. Dep Mallorca white Royalpadel multicolor",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva Mallorca White Royalpadel Multicolor: Comodidad y Estilo en la Cancha\nDescubrí la Remera Deportiva Mallorca white Royalpadel multicolor, una prenda diseñada especialmente para jugadores de pádel que buscan combinar rendimiento y diseño. Confeccionada con materiales de alta calidad, esta remera ofrece una excelente transpirabilidad y libertad de movimiento, ideales para enfrentar cada partido con comodidad.\nCaracterísticas principales:\nTejido técnico y liviano, que mantiene la piel seca durante el juego.\nDiseño moderno y multicolor que aporta estilo tanto en la cancha como fuera de ella.\nCorte ergonómico para facilitar la movilidad en cada golpe y desplazamiento.\n¿Por qué elegir la Remera Deportiva Mallorca?\nPorque está pensada para acompañarte en cada entrenamiento y torneo, brindándote confort y un look profesional. Eleva tu rendimiento y destacate con una remera que une funcionalidad y estética.\n¡Sumá la Remera Deportiva Mallorca white Royalpadel a tu equipo y jugá con la mejor indumentaria de pádel!",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Multicolor",
+        "Blanco"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-white-and-flowers-pink-1keed/",
+      "imagenes": [
+        {
+          "id": 1206457418,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/e5ebb180-dd01-4752-ad67-24a6f812b6a4-728dead621dbe2fb2317803089624762-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp"
+        },
+        {
+          "id": 1206457417,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/9174046d-ffa9-4d18-be60-687bb9858651-2b4ff835acd22165cd17803089622608-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-white-and-flowers-pink-1keed-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309950152,
+      "nombre": "Rem. dep Mallorca Blue lineas",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva MallorcaCalidad y Estilo para tu Entrenamiento\n \nDescubrí la Remera Deportiva Mallorca Black and Flowers, diseñada especialmente para mujeres que buscan una prenda cómoda, funcional y de excelente calidad para pádel y otras actividades físicas.\n \nEsta remera combina un diseño moderno con materiales de alto rendimiento que permiten una óptima transpiración y libertad de movimiento. Su tejido ligero y resistente asegura durabilidad, ideal para entrenamientos intensos y prolongados.\n \nCaracterísticas destacadas:\n \nConfección de primera calidad que garantiza confort y resistencia.\nDiseño femenino y elegante con detalles en flores que la hacen única.\nPerfecta para pádel y múltiples entrenamientos, adaptándose a diferentes tipos de ejercicio.\nMateriales que favorecen la ventilación y el secado rápido, manteniéndote fresca durante toda la actividad.\nElegila para potenciar tu rendimiento con estilo y comodidad. ¡Sentí la diferencia en cada entrenamiento y destacate dentro y fuera de la cancha!\n \nLa elección ideal para quienes valoran calidad, funcionalidad y diseño en cada prenda deportiva.",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Azul"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-black-and-flowers-moka-ozcti/",
+      "imagenes": [
+        {
+          "id": 1206456321,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/8a9f158c-2cf0-43b8-87a4-5faede824a77-eb443ba48c0e3259e217803086671420-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp"
+        },
+        {
+          "id": 1206456320,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/87409a4a-e4a6-4cb0-a5b6-dde60f57c770-245759471c3cae5fa817803086671239-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-black-and-flowers-moka-ozcti-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309949442,
+      "nombre": "Rem. dep Mallorca white lineas",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva Mallorca Black and Flowers: Calidad y Estilo para tu Entrenamiento\nDescubrí la Remera Deportiva Mallorca, diseñada especialmente para mujeres que buscan una prenda cómoda, funcional y de excelente calidad para pádel y otras actividades físicas.\nEsta remera combina un diseño moderno con materiales de alto rendimiento que permiten una óptima transpiración y libertad de movimiento. Su tejido ligero y resistente asegura durabilidad, ideal para entrenamientos intensos y prolongados.\nCaracterísticas destacadas:\nConfección de primera calidad que garantiza confort y resistencia.\nDiseño femenino y elegante con detalles en flores que la hacen única.\nPerfecta para pádel y múltiples entrenamientos, adaptándose a diferentes tipos de ejercicio.\nMateriales que favorecen la ventilación y el secado rápido, manteniéndote fresca durante toda la actividad.\nElegí la Remera Deportiva Mallorca para potenciar tu rendimiento con estilo y comodidad. ¡Sentí la diferencia en cada entrenamiento y destacate dentro y fuera de la cancha!\nLa elección ideal para quienes valoran calidad, funcionalidad y diseño en cada prenda deportiva.",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Blanco"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-black-and-flowers-pink-8722w/",
+      "imagenes": [
+        {
+          "id": 1206455825,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/be1c3f23-86ff-4cc0-b0a8-496614b4bd19-f2c8e3c9e42e22893617803085061672-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp"
+        },
+        {
+          "id": 1206455828,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/2afa2607-4209-4460-beb6-d3777a258be3-85a3f4c9cfd8f3fa9617803085064721-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-black-and-flowers-pink-8722w-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 347703723,
+      "nombre": "Rem. Dep Mallorca black lineas",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva de Mujer Mallorca Black Líneas: Rendimiento y Estilo en Cada Movimiento\nDescubrí la Remera Deportiva de Mujer Mallorca Black Líneas, diseñada especialmente para quienes buscan combinar comodidad, funcionalidad y elegancia durante sus entrenamientos o actividades deportivas.\nEsta remera está confeccionada con tecnología dryfit, que garantiza una rápida absorción y evaporación del sudor, manteniéndote siempre fresca y seca. Su tejido liviano y transpirable permite una óptima circulación del aire, ideal para quienes practican deportes o entrenan al máximo.\nCaracterísticas destacadas:\nTecnología dryfit: máxima transpirabilidad y control de la humedad.\nCorte pensado para la silueta femenina, que ofrece libertad de movimiento sin perder el ajuste.\nDiseño moderno en color negro con líneas que aportan un toque de sofisticación y dinamismo.\nMaterial resistente y de alta calidad, perfecto para el uso frecuente y lavados continuos.\n¿Por qué elegir la Remera Deportiva Mallorca Black Líneas?\nSi buscás una prenda que te acompañe en cada desafío deportivo, esta remera es la opción perfecta. Su combinación de tecnología y diseño la convierte en un básico imprescindible para entrenar con comodidad y estilo en cualquier momento.\n¡Elevá tu rendimiento y sentite segura con la rem. dep Mallorca black líneas, la aliada ideal para tus actividades deportivas!",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Negro"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-dep-mallorca-black-lineas-ib1z5/",
+      "imagenes": [
+        {
+          "id": 1206459609,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/980c2072-77c8-437f-bacd-6c07665847de-62eede9c12f98640f617803095714798-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-dep-mallorca-black-lineas-ib1z5-1.webp"
+        },
+        {
+          "id": 1206459607,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/383dc9d5-2145-4415-8080-07977bdd33bd-62c33e9e280f755e1817803095714256-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-dep-mallorca-black-lineas-ib1z5-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309978307,
+      "nombre": "Biker black Mallorca",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Calza ciclista deportiva Biker Black Mallorca: comodidad y rendimiento para tu entrenamiento\nDescubrí la calza ciclista Biker Black Mallorca, diseñada especialmente para quienes buscan una prenda cómoda y funcional para sus actividades deportivas. Esta calza ciclista combina un diseño moderno con materiales de alta calidad que aseguran confort y durabilidad durante cada salida.\nCaracterísticas principales:\nComodidad superior: confeccionada con telas suaves y elásticas que se adaptan perfectamente al cuerpo, evitando rozaduras y ofreciendo libertad de movimiento.\nDiseño deportivo: corte anatómico y costuras planas que realzan la figura y proporcionan un ajuste seguro sin perder estilo.\nTranspirabilidad: tejidos que permiten una óptima ventilación, manteniéndote fresco y seco durante el ejercicio.\nVersatilidad: ideal para ciclismo, running y otras disciplinas que requieren prendas técnicas y cómodas.\n¿Por qué elegir la Biker Black Mallorca?\nEsta calza ciclista es la opción perfecta para quienes valoran la combinación entre comodidad y rendimiento deportivo. Su diseño pensado para el usuario argentino garantiza una prenda resistente y confortable, que acompaña tus entrenamientos más exigentes.\nElevá tu experiencia deportiva con la calza ciclista Biker Black Mallorca y sentí la diferencia en cada pedalada. ¡Tu mejor aliada para entrenar con estilo y confort!",
+      "moneda": "ARS",
+      "precio": 39500,
+      "precio_anterior": null,
+      "colores": [
+        "Negro"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 39500,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 39500,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 39500,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 39500,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XXL",
+          "color": null,
+          "valores": [
+            "XXL"
+          ],
+          "precio": 39500,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/biker-black-mallorca-gzm91/",
+      "imagenes": [
+        {
+          "id": 1046009585,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc069-1-5c75698ff1053ccb6f17643385464103-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "biker-black-mallorca-gzm91-1.webp"
+        },
+        {
+          "id": 1046009593,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/mc069-2-4defae267c8c48cef017643385467754-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "biker-black-mallorca-gzm91-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309950409,
+      "nombre": "Rem. Dep Mallorca Royalpadel blue",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva Mallorca Black and Flowers: Calidad y Estilo para tu Entrenamiento\n \nDescubrí la Remera Deportiva Mallorca Black and Flowers, diseñada especialmente para mujeres que buscan una prenda cómoda, funcional y de excelente calidad para pádel y otras actividades físicas.\n \nEsta remera combina un diseño moderno con materiales de alto rendimiento que permiten una óptima transpiración y libertad de movimiento. Su tejido ligero y resistente asegura durabilidad, ideal para entrenamientos intensos y prolongados.\n \nCaracterísticas destacadas:\n \nConfección de primera calidad que garantiza confort y resistencia.\nDiseño femenino y elegante con detalles en flores que la hacen única.\nPerfecta para pádel y múltiples entrenamientos, adaptándose a diferentes tipos de ejercicio.\nMateriales que favorecen la ventilación y el secado rápido, manteniéndote fresca durante toda la actividad.\nElegí la Remera Deportiva Mallorca Black and Flowers para potenciar tu rendimiento con estilo y comodidad. ¡Sentí la diferencia en cada entrenamiento y destacate dentro y fuera de la cancha!\n \nLa elección ideal para quienes valoran calidad, funcionalidad y diseño en cada prenda deportiva.",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Azul"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-blue-and-flowers-x0xdc/",
+      "imagenes": [
+        {
+          "id": 1206455602,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/0d822d27-5a92-4246-8b9e-0e4753d7394d-f0417cff864b80b10317803084419802-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp"
+        },
+        {
+          "id": 1206456530,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/bb368e4f-c03e-4433-b004-f89e7781bc9f-f78fe8700265b0c64f17803087287683-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-blue-and-flowers-x0xdc-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 319627036,
+      "nombre": "Pollera Mallorca -WHITE-",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Pollera Mallorca -WHITE-: Elegancia y Comodidad Deportiva\nDescubrí la Pollera Mallorca -WHITE-, una prenda diseñada para quienes buscan combinar estilo y funcionalidad en su indumentaria deportiva. Esta pollera con short incorporado es la opción ideal para actividades al aire libre, entrenamientos o simplemente para un look deportivo y fresco.\nCaracterísticas principales:\nDiseño 2 en 1: Pollera con short deportivo por debajo que brinda total comodidad y libertad de movimiento.\nTejido liviano y transpirable: Perfecto para mantenerte fresca durante el ejercicio o en días calurosos.\nCorte moderno y femenino: Acentúa tu figura sin perder practicidad.\nVersatilidad: Ideal para pádel, tenis, running o uso casual.\n¿Por qué elegir la Pollera Mallorca -WHITE-?\nSi buscás una prenda que te acompañe en cada entrenamiento con estilo y sin renunciar a la comodidad, esta pollera es la respuesta. Su short interior evita inconvenientes y te permite moverte con confianza, mientras que su diseño cuidado te garantiza un look impecable en todo momento.\nElevá tu vestuario deportivo con una pieza que combina funcionalidad y estética, diseñada especialmente para vos.\n¡No esperes más y sumá la Pollera Mallorca -WHITE- a tu colección deportiva!",
+      "moneda": "ARS",
+      "precio": 63000,
+      "precio_anterior": null,
+      "colores": [
+        "Blanco"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/pollera-mallorca-white-1xump/",
+      "imagenes": [
+        {
+          "id": 1206458183,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/4fe051be-6cbc-42f2-b982-a5a810ff3145-e2fb7fc5abcd8bfd5617803091765511-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-white-1xump-1.webp"
+        },
+        {
+          "id": 1206458182,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/638daef9-2391-4a78-a6e3-c853053c0e7e-1b9fc8e40c8f8a5b4e17803091762574-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-white-1xump-2.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309962366,
+      "nombre": "Rem. Dep Mallorca white colorido lineas",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Remera Deportiva Mallorca Black and Flowers: Calidad y Estilo para tu Entrenamiento\n \nDescubrí la Remera Deportiva Mallorca, diseñada especialmente para mujeres que buscan una prenda cómoda, funcional y de excelente calidad para pádel y otras actividades físicas.\n \nEsta remera combina un diseño moderno con materiales de alto rendimiento que permiten una óptima transpiración y libertad de movimiento. Su tejido ligero y resistente asegura durabilidad, ideal para entrenamientos intensos y prolongados.\n \nCaracterísticas destacadas:\n \nConfección de primera calidad que garantiza confort y resistencia.\nDiseño femenino y elegante con detalles en flores que la hacen única.\nPerfecta para pádel y múltiples entrenamientos, adaptándose a diferentes tipos de ejercicio.\nMateriales que favorecen la ventilación y el secado rápido, manteniéndote fresca durante toda la actividad.elegila para potenciar tu rendimiento con estilo y comodidad. ¡Sentí la diferencia en cada entrenamiento y destacate dentro y fuera de la cancha!\n \nLa elección ideal para quienes valoran calidad, funcionalidad y diseño en cada prenda deportiva.",
+      "moneda": "ARS",
+      "precio": 35000,
+      "precio_anterior": null,
+      "colores": [
+        "Multicolor",
+        "Blanco"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 35000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/rem-deportiva-mallorca-white-and-flowers-orange-syjkp/",
+      "imagenes": [
+        {
+          "id": 1206456703,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/ae489d30-cca9-43ba-888f-e156c54da905-e3696c3983c48d320c17803087746471-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp"
+        }
+      ]
+    },
+    {
+      "id_royal_padel": 309950927,
+      "nombre": "Pollera Mallorca -blue-",
+      "categoria": "Indumentaria Femenina",
+      "descripcion": "Pollera deportiva c/ short Mallorca -blue-: la combinación perfecta para entrenar y jugar al pádel\nDescubrí la pollera deportiva Mallorca en un elegante tono azul, diseñada especialmente para acompañarte en cada entrenamiento y partido de pádel. Esta prenda combina funcionalidad, comodidad y estilo, ideal para quienes buscan rendimiento y libertad de movimiento en la cancha.\nCaracterísticas destacadas:\nShort integrado debajo: para mayor comodidad y seguridad, evitando inconvenientes durante el juego.\nTejido transpirable y liviano: mantiene la piel fresca y seca, incluso en las sesiones más intensas.\nCorte ergonómico: garantiza total libertad de movimiento para tus desplazamientos y golpes.\nDiseño moderno y femenino: para que te sientas bien y luzcas espectacular mientras entrenás o competís.\nEsta pollera deportiva con short es la opción ideal para quienes practican pádel y desean una prenda que combine funcionalidad y estilo. Perfecta para entrenar, jugar y disfrutar del deporte sin preocupaciones.\nElevá tu nivel con la pollera Mallorca y sentí la diferencia en cada partido. ¡Entrená con comodidad y jugá con confianza!",
+      "moneda": "ARS",
+      "precio": 63000,
+      "precio_anterior": null,
+      "colores": [
+        "Azul"
+      ],
+      "colores_inferidos_del_nombre": true,
+      "talles": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "variantes": [
+        {
+          "talla": "S",
+          "color": null,
+          "valores": [
+            "S"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "M",
+          "color": null,
+          "valores": [
+            "M"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "L",
+          "color": null,
+          "valores": [
+            "L"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        },
+        {
+          "talla": "XL",
+          "color": null,
+          "valores": [
+            "XL"
+          ],
+          "precio": 63000,
+          "precio_anterior": null,
+          "disponible": true
+        }
+      ],
+      "disponibilidad": "Disponible",
+      "url_original": "https://www.royalpadel.com.ar/productos/pollera-mallorca-blue-ky8cb/",
+      "imagenes": [
+        {
+          "id": 1206457935,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/b31b7b74-eba1-43b5-9463-e67dd39f7ab1-e54cc692476891844117803091013833-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-blue-ky8cb-1.webp"
+        },
+        {
+          "id": 1206457936,
+          "url_original": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/607625d8-8c31-40ab-9073-ee833cb346d7-ef41918da61a995e5b17803091013829-1024-1024.webp",
+          "ancho": 1080,
+          "alto": 1080,
+          "nombre_archivo_local": "pollera-mallorca-blue-ky8cb-2.webp"
+        }
+      ]
+    }
+  ]
+}
