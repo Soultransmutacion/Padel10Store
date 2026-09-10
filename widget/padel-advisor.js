@@ -7,10 +7,11 @@ var MAX_MESSAGE_LENGTH = 700;
 var MAX_HISTORY_MESSAGES = 8;
 var GREETING = 'Hola! Soy el asesor de Padel10Store. Te ayudo a encontrar una pala que encaje con tu juego y presupuesto. Que nivel o categoria jugas actualmente?';
 
-// Prueba controlada de Mercado Pago Checkout Pro (SANDBOX): unicamente
-// este producto muestra el boton "Comprar ahora" en las recomendaciones
-// del asesor. No cambia el comportamiento de ningun otro producto.
-var MP_PURCHASABLE_PRODUCT_ID = 'royal-padel-cross-black-26';
+function esProductoComprable(card) {
+return Boolean(card) && card.marca === 'Royal Padel' &&
+card.precioConsultar !== true && typeof card.precio === 'number' &&
+isFinite(card.precio) && card.precio > 0;
+}
 
 var root = document.getElementById('padel-advisor-root');
 if (!root) return;
@@ -333,11 +334,11 @@ return '<li>' + escapeHtml(f.label) + ': ' + escapeHtml(f.value) + '</li>';
 var waLink = card.whatsapp && card.whatsapp.link ? card.whatsapp.link : buildWhatsappUrl('Hola! Quiero consultar por ' + card.nombre + '.');
 
 var buyNowHtml = '';
-if (card.id === MP_PURCHASABLE_PRODUCT_ID) {
+var tieneTalles = Array.isArray(card.talles) && card.talles.length > 0;
+if (esProductoComprable(card) && !tieneTalles) {
 buyNowHtml = '<button type="button" class="pa-card-btn pa-card-btn-buy" data-mp-buy-button data-product-id="' + escapeHtml(card.id) + '">Comprar ahora</button>';
 }
 
-var tieneTalles = Array.isArray(card.talles) && card.talles.length > 0;
 var accionTexto = tieneTalles ? 'Elegir talle' : 'Ver producto';
 
 wrap.innerHTML =

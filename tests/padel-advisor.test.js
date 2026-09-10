@@ -27,13 +27,14 @@ results.push({ name: name, pass: false, error: e.message });
 
 const all = catalog.loadCatalog();
 
-test('catalogo valido: 92 productos con campos base', function () {
-assert.strictEqual(all.length, 92);
+test('catalogo valido: 81 productos Royal Padel con precio y campos base', function () {
+assert.strictEqual(all.length, 81);
 all.forEach(function (p) {
 assert.ok(typeof p.id === 'string' && p.id.length > 0);
 assert.ok(typeof p.nombre === 'string' && p.nombre.length > 0);
-assert.ok(typeof p.marca === 'string' && p.marca.length > 0);
-assert.ok(typeof p.precioConsultar === 'boolean');
+assert.strictEqual(p.marca, 'Royal Padel');
+assert.strictEqual(p.precioConsultar, false);
+assert.ok(typeof p.precio === 'number' && p.precio > 0);
 });
 });
 
@@ -101,14 +102,8 @@ const out = tools.executeTool('ver_producto', { id: 'id-inventado-999' });
 assert.strictEqual(out.ok, false);
 });
 
-test('ver_producto sin precio (precioConsultar)', function () {
-const bullpadel = all.find(function (p) { return p.marca === 'Bullpadel' && p.precioConsultar === true; });
-assert.ok(bullpadel);
-const out = tools.executeTool('ver_producto', { id: bullpadel.id });
-assert.strictEqual(out.ok, true);
-assert.strictEqual(out.producto.precioConsultar, true);
-assert.strictEqual(out.producto.precio, null);
-assert.strictEqual(out.producto.precioFormateado, null);
+test('el catalogo publico no contiene productos sin precio', function () {
+assert.strictEqual(all.some(function (p) { return p.precioConsultar === true || typeof p.precio !== 'number'; }), false);
 });
 
 test('campos tecnicos null no se inventan (accesorio sin specs)', function () {
@@ -119,9 +114,9 @@ assert.strictEqual(card.caracteristicasConfirmadas.length, 0);
 });
 
 test('nivel de confianza ALTA requiere fuente + 4 campos confirmados', function () {
-const flowLegend = all.find(function (p) { return p.id === 'bullpadel-flow-legend'; });
-assert.ok(flowLegend);
-assert.strictEqual(catalog.getConfidenceLevel(flowLegend), 'alta');
+const alta = all.find(function (p) { return catalog.getConfidenceLevel(p) === 'alta'; });
+assert.ok(alta);
+assert.strictEqual(catalog.getConfidenceLevel(alta), 'alta');
 });
 
 test('nivel de confianza MEDIA o ALTA con ficha parcial y fuente', function () {
@@ -162,10 +157,11 @@ const decoded = decodeURIComponent(link.split('?text=')[1]);
 assert.strictEqual(decoded, catalog.buildWhatsappMessage(withPrice));
 });
 
-test('mensaje de WhatsApp sin precio', function () {
-const noPrice = all.find(function (p) { return p.precioConsultar === true; });
-const msg = catalog.buildWhatsappMessage(noPrice);
-assert.strictEqual(msg, 'Hola! Estuve usando el asesor de Padel10Store y quiero consultar el precio y stock de ' + noPrice.nombre + '.');
+test('todos los mensajes de WhatsApp parten de un producto con precio publicado', function () {
+all.forEach(function (product) {
+const msg = catalog.buildWhatsappMessage(product);
+assert.ok(msg.indexOf('Vi el precio publicado de $') !== -1);
+});
 });
 
 test('sanitizeMessage rechaza mensajes largos (>700)', function () {
@@ -297,28 +293,24 @@ assert.ok(nombres.indexOf('Tigra \'26') !== -1);
 
 // --- Etapa 2.1: precio a consultar sin cuotas/transferencia/stock ---------
 
-test('toCard oculta cuotas y transferencia cuando el precio esta a consultar (bug real: bullpadel-flow-legend)', function () {
-const flowLegend = all.find(function (p) { return p.id === 'bullpadel-flow-legend'; });
-assert.ok(flowLegend);
-assert.strictEqual(flowLegend.precioConsultar, true);
-assert.ok(flowLegend.cuotasTexto, 'el producto crudo si tiene cuotasTexto en products.json');
-const card = catalog.toCard(flowLegend);
-assert.strictEqual(card.precioConsultar, true);
-assert.strictEqual(card.precio, null);
-assert.strictEqual(card.precioFormateado, null);
-assert.strictEqual(card.cuotasTexto, null);
-assert.strictEqual(card.precioTransferencia, null);
-assert.strictEqual(card.precioTransferenciaFormateado, null);
+test('toCard conserva el precio publicado de todos los productos Royal', function () {
+all.forEach(function (product) {
+const card = catalog.toCard(product);
+assert.strictEqual(card.precioConsultar, false);
+assert.strictEqual(card.precio, product.precio);
+assert.ok(card.precioFormateado);
+});
 });
 
-test('toSummary y toComparisonEntry tambien ocultan precio cuando precioConsultar es true', function () {
-const flowLegend = all.find(function (p) { return p.id === 'bullpadel-flow-legend'; });
-const summary = catalog.toSummary(flowLegend);
-assert.strictEqual(summary.precio, null);
-assert.strictEqual(summary.precioConsultar, true);
-const comparison = catalog.toComparisonEntry(flowLegend);
-assert.strictEqual(comparison.precio, null);
-assert.strictEqual(comparison.precioConsultar, true);
+test('toSummary y toComparisonEntry conservan precio y marca Royal', function () {
+all.forEach(function (product) {
+const summary = catalog.toSummary(product);
+assert.strictEqual(summary.precio, product.precio);
+assert.strictEqual(summary.precioConsultar, false);
+const comparison = catalog.toComparisonEntry(product);
+assert.strictEqual(comparison.precio, product.precio);
+assert.strictEqual(comparison.precioConsultar, false);
+});
 });
 
 // --- Etapa 2.1: coincidencia determinista entre texto y tarjetas ----------

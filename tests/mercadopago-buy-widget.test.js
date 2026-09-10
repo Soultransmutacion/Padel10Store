@@ -6,7 +6,7 @@
  * criterio que tests/padel-checkout-widget.test.js).
  *
  * Cubren el fix de esta etapa: "Comprar ahora" para
- * royal-padel-cross-black-26 (unico producto piloto) ya NO llama al
+ * los productos Royal Padel con precio ya NO llaman al
  * endpoint de prueba /api/create-payment-preference (que no creaba pedido
  * real ni external_reference/notification_url). En cambio, dispara el
  * flujo real (POST /api/pedidos, y despues POST /api/pedidos-preferencia
@@ -310,14 +310,14 @@ testAsync('"Volver al carrito" desde "Comprar ahora" descarta la compra directa 
   assert.ok(!h.fetchCalls.some((u) => u.indexOf('/api/pedidos') !== -1 && u.indexOf('preferencia') === -1));
 });
 
-// --- unico producto piloto: cualquier otro productId se ignora -----------
+// --- todos los Royal con precio pueden iniciar compra directa ------------
 
-testAsync('startBuyNow ignora cualquier producto que no sea el piloto (defensa en profundidad)', async () => {
+testAsync('startBuyNow acepta otro producto Royal con precio publicado', async () => {
   const h = createHarness();
   await withReadyCatalog(h);
   h.window.PadelCheckoutWidget.startBuyNow(OTRO_PRODUCTO, null);
-  assert.strictEqual(h.view(), 'carrito', 'no deberia haber iniciado ningun checkout directo');
-  assert.strictEqual(h.mode(), 'cart');
+  assert.strictEqual(h.view(), 'formulario');
+  assert.strictEqual(h.mode(), 'buyNow');
 });
 
 // --- Validacion de host del redirectUrl (defensa en profundidad, mismo

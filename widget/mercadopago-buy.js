@@ -2,7 +2,7 @@
 'use strict';
 
 /**
- * Boton "Comprar ahora" (unico producto piloto: royal-padel-cross-black-26).
+ * Boton "Comprar ahora" para productos Royal Padel con precio publicado.
  *
  * Dispara el checkout REAL de Padel10Store (widget/padel-checkout.js:
  * POST /api/pedidos y, despues, POST /api/pedidos-preferencia) para UN

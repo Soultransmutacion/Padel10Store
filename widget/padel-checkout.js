@@ -43,16 +43,14 @@
   var CHECKOUT_PAUSED_MESSAGE =
     'La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.';
 
-  // Unico producto piloto comprable con "Comprar ahora" (ver tambien
-  // index.html#PURCHASABLE_PRODUCT_IDS y
-  // widget/padel-advisor.js#MP_PURCHASABLE_PRODUCT_ID, que gatean cuando
-  // se muestra el boton). Se vuelve a verificar aca, del lado de quien
-  // arma el pedido, para no depender unicamente de que el boton este
-  // oculto en el resto de los 91 productos.
-  var BUY_NOW_PRODUCT_ID = 'royal-padel-cross-black-26';
-
   function getCatalogProduct(id) {
     return (window.CATALOG && window.CATALOG[id]) || null;
+  }
+
+  function esProductoComprable(product) {
+    return Boolean(product) && product.marca === 'Royal Padel' &&
+      product.precioConsultar !== true && typeof product.precio === 'number' &&
+      isFinite(product.precio) && product.precio > 0;
   }
 
   var ENDPOINT = '/api/pedidos';
@@ -802,7 +800,7 @@
   // abrirlo manualmente.
   function startBuyNow(productId, talle) {
     if (!els.body) return; // el widget todavia no termino de inicializarse
-    if (productId !== BUY_NOW_PRODUCT_ID) return; // unico producto piloto
+    if (!esProductoComprable(getCatalogProduct(productId))) return;
     var summary = Core.buildCartSummary([{ productId: productId, talle: talle || null, cantidad: 1 }], getCatalogProduct);
     if (summary.lineas.length !== 1) return; // producto no resuelto contra el catalogo real
 

@@ -138,8 +138,15 @@ function validate() {
     if (expected && id !== expected) issues.push('data-product-id distinto en la posicion ' + i + ': HTML="' + id + '" JSON="' + expected + '"');
   });
   if (missingIds === 0 && dupCardIds.length === 0) {
-    console.log('✓ Las 92 tarjetas tienen data-product-id unico y coincide con products.json');
+    console.log('✓ Las ' + cards.length + ' tarjetas tienen data-product-id unico y coincide con products.json');
   }
+
+  productos.forEach((p) => {
+    if (p.marca !== 'Royal Padel') issues.push('Producto de otra marca publicado: "' + p.nombre + '" (' + p.marca + ')');
+    if (p.precioConsultar === true || typeof p.precio !== 'number' || !Number.isFinite(p.precio) || p.precio <= 0) {
+      issues.push('Producto sin precio publicado: "' + p.nombre + '"');
+    }
+  });
 
   const talleProductIds = productos.filter((p) => Array.isArray(p.talles) && p.talles.length > 0).map((p) => p.id);
   cards.forEach((c, i) => {
@@ -151,23 +158,18 @@ function validate() {
     if (!isTalleCard && c.btnText === 'ELEGIR TALLE') {
       issues.push('Tarjeta "' + expectedId + '" tiene el boton ELEGIR TALLE sin declarar talles en products.json');
     }
+    if (!isTalleCard && c.btnText !== 'Comprar ahora') {
+      issues.push('Tarjeta sin talles "' + expectedId + '" deberia mostrar Comprar ahora, tiene: "' + c.btnText + '"');
+    }
+    if (!isTalleCard && !html.includes('<button class="add-btn" data-mp-buy-button data-product-id="' + expectedId + '">Comprar ahora</button>')) {
+      issues.push('Tarjeta comprable "' + expectedId + '" no dispara el checkout directo');
+    }
   });
-  // Cross Black 26 es el unico producto piloto comprable con "Comprar
-  // ahora": su tarjeta debe mostrar ese CTA (ya no "Consultar") y disparar
-  // el checkout real directo (data-mp-buy-button), nunca abrir la ficha
-  // primero (sin onclick="openModal(...)").
-  const crossBlackCard = cards.find((c) => c.productId === 'royal-padel-cross-black-26');
-  if (!crossBlackCard || crossBlackCard.btnText !== 'Comprar ahora') {
-    issues.push('Cross Black 26 deberia mostrar el CTA principal "Comprar ahora" en su tarjeta (unico producto piloto comprable)');
-  }
-  if (!html.includes('<button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-black-26">Comprar ahora</button>')) {
-    issues.push('La tarjeta de Cross Black 26 debe disparar el checkout real directo (data-mp-buy-button), sin abrir la ficha primero');
-  }
   if (talleProductIds.length !== 12) {
     issues.push('Se esperaban 12 productos con talles en products.json, se encontraron ' + talleProductIds.length);
   }
   if (missingIds === 0 && dupCardIds.length === 0 && issues.length === 0) {
-    console.log('✓ Los 12 productos con talles muestran ELEGIR TALLE y Cross Black 26 muestra "Comprar ahora"');
+    console.log('✓ Los 12 productos con talles muestran ELEGIR TALLE y el resto muestra Comprar ahora');
   }
 
 

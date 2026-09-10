@@ -45,7 +45,7 @@ const PALA_ID = 'royal-padel-cross-black-26'; // sin talles
 const POLLERA_ID = 'royal-padel-pollera-mallorca-negra'; // talles S/M/L/XL
 const pala = catalog.getProductById(PALA_ID);
 const pollera = catalog.getProductById(POLLERA_ID);
-const productoConsultar = catalog.loadCatalog().find((p) => p.precioConsultar === true);
+const catalogoCompleto = catalog.loadCatalog();
 
 // --- agregar_al_carrito: productId directo ---
 
@@ -78,10 +78,9 @@ test('agregar_al_carrito: talle que no existe para ese producto se rechaza', fun
   assert.strictEqual(out.error, 'talle_invalido');
 });
 
-test('agregar_al_carrito: producto a consultar nunca se puede agregar', function () {
-  const out = tools.executeTool('agregar_al_carrito', { productId: productoConsultar.id });
-  assert.strictEqual(out.ok, false);
-  assert.strictEqual(out.error, 'precio_consultar');
+test('catalogo del asesor no contiene productos a consultar ni otras marcas', function () {
+  assert.strictEqual(catalogoCompleto.some((p) => p.precioConsultar === true), false);
+  assert.strictEqual(catalogoCompleto.every((p) => p.marca === 'Royal Padel'), true);
 });
 
 test('agregar_al_carrito: cantidad invalida se rechaza', function () {
