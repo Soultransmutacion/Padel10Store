@@ -360,6 +360,52 @@ nav.nav-open .nav-links{display:flex}
 .footer-bottom{flex-direction:column;align-items:flex-start;gap:.75rem}
 footer{padding:2rem 1.25rem}
 }
+
+/* Sistema visual de botones: una jerarquia consistente en toda la tienda. */
+:root{--btn-gold:#d7b33f;--btn-gold-hi:#efd66f;--btn-ink:#0c0c0c;--btn-ring:rgba(239,214,111,.42)}
+button,a[class$="-btn"],a[class*="-btn "]{-webkit-tap-highlight-color:transparent}
+button:focus-visible,a:focus-visible{outline:3px solid var(--btn-ring);outline-offset:3px}
+
+.hero-search button,.feat-btn,.add-btn,.ps-btn,.chk-btn,.sub-btn,.modal-buynow-btn{
+background:linear-gradient(135deg,var(--btn-gold-hi) 0%,var(--btn-gold) 48%,#b88c18 100%);
+color:var(--btn-ink);border:1px solid rgba(255,235,151,.34);border-radius:10px;
+min-height:44px;box-shadow:0 7px 18px rgba(201,162,39,.16),inset 0 1px 0 rgba(255,255,255,.3);
+transition:transform .16s ease,box-shadow .2s ease,filter .2s ease;
+}
+.hero-search button:hover,.feat-btn:hover,.add-btn:hover,.ps-btn:hover,.chk-btn:hover,.sub-btn:hover,.modal-buynow-btn:hover{
+filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 10px 24px rgba(201,162,39,.26),inset 0 1px 0 rgba(255,255,255,.35)
+}
+.hero-search button:active,.feat-btn:active,.add-btn:active,.ps-btn:active,.chk-btn:active,.sub-btn:active,.modal-buynow-btn:active{
+transform:translateY(0) scale(.985);box-shadow:0 3px 10px rgba(201,162,39,.15)
+}
+.add-btn{padding:11px 14px;font-size:14px;letter-spacing:.7px}
+.add-btn::after{content:'\2192';font-size:16px;margin-left:8px;transition:transform .18s ease}
+.add-btn:hover::after{transform:translateX(3px)}
+.add-btn.added{background:rgba(201,162,39,.12);color:var(--btn-gold-hi);border-color:rgba(201,162,39,.5);box-shadow:none}
+.add-btn.added::after{content:'\2713'}
+
+.cart-btn,.modal-buy-btn,.copy-btn,.fs-add,.cat,.talle-btn,.qb{
+transition:transform .16s ease,background .2s ease,border-color .2s ease,color .2s ease,box-shadow .2s ease
+}
+.cart-btn{min-height:42px;border-radius:10px;background:rgba(201,162,39,.1);border-color:rgba(215,179,63,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.cart-btn:hover{background:rgba(201,162,39,.18);box-shadow:0 5px 16px rgba(201,162,39,.14);transform:translateY(-1px)}
+.cart-btn:active,.modal-buy-btn:active,.copy-btn:active,.fs-add:active,.cat:active,.talle-btn:active,.qb:active{transform:scale(.96)}
+.cat{min-height:36px;border-radius:999px;padding:7px 15px}
+.cat.on{box-shadow:0 4px 14px rgba(201,162,39,.2)}
+.modal-buy-btn{min-height:46px;border-radius:10px;background:rgba(201,162,39,.055)}
+.modal-buy-btn:hover{background:rgba(201,162,39,.14);border-color:var(--btn-gold-hi);transform:translateY(-1px)}
+.modal-wp-btn{min-height:46px;border-radius:10px;background:rgba(37,211,102,.11);border-color:rgba(37,211,102,.42);transition:transform .16s ease,background .2s ease,border-color .2s ease,box-shadow .2s ease}
+.modal-wp-btn:hover{background:rgba(37,211,102,.2);border-color:rgba(73,230,132,.7);transform:translateY(-1px);box-shadow:0 7px 18px rgba(37,211,102,.12)}
+.modal-wp-btn:active{transform:scale(.985)}
+.modal-close,.mod-close,.drw-close,.nav-toggle,.gallery-nav,.ci-del{transition:transform .16s ease,background .2s ease,color .2s ease,border-color .2s ease}
+.modal-close:hover,.gallery-nav:hover{transform:scale(1.06)}
+.nav-toggle{border-radius:9px}
+.talle-btn{min-width:44px;min-height:40px;border-radius:9px}
+.talle-btn.selected{box-shadow:0 4px 14px rgba(201,162,39,.22)}
+.chk-btn:disabled,.sub-btn:disabled,.modal-buynow-btn:disabled,.add-btn:disabled{
+background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08);box-shadow:none;filter:none;transform:none;cursor:not-allowed
+}
+@media (prefers-reduced-motion:reduce){button,a{transition:none!important}.add-btn::after{transition:none}}
 </style>
 </head>
 <body>
