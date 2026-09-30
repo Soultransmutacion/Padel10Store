@@ -26,7 +26,7 @@
 <link rel="canonical" href="https://padel10-store.vercel.app/"/>
 <title>Padel10Store — Todo para jugar al pádel</title>
 <meta name="description" content="La tienda de pádel de confianza. Paletas, ropa, calzado y accesorios de las mejores marcas. Envíos a todo Argentina desde Rosario."/>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Graduate&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Barlow',sans-serif;background:#111;color:#f0f0f0}
@@ -406,6 +406,20 @@ transition:transform .16s ease,background .2s ease,border-color .2s ease,color .
 background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08);box-shadow:none;filter:none;transform:none;cursor:not-allowed
 }
 @media (prefers-reduced-motion:reduce){button,a{transition:none!important}.add-btn::after{transition:none}}
+/* ===== Menu superior de categorias (.nav-cat) — estilo universitario del escudo ===== */
+.nav-links a.nav-cat{font-family:'Graduate','Barlow Condensed',serif;font-size:15px;font-weight:400;text-transform:uppercase;letter-spacing:1.2px;line-height:1;color:rgba(201,162,39,.8);text-decoration:none;background:none;box-shadow:none;text-shadow:none;transition:color .15s,-webkit-text-stroke-color .15s}
+.nav-links a.nav-cat:hover{color:#C9A227}
+.nav-links a.nav-cat.is-active{color:#F2CB50;text-decoration:underline;text-decoration-color:#F2CB50;text-decoration-thickness:1px;text-underline-offset:7px}
+@supports (-webkit-text-stroke:1px #000){
+.nav-links a.nav-cat{color:#0d0d0d;-webkit-text-stroke:1.2px rgba(201,162,39,.8);paint-order:stroke fill}
+.nav-links a.nav-cat:hover{color:#0d0d0d;-webkit-text-stroke-color:#C9A227}
+.nav-links a.nav-cat.is-active{color:#0d0d0d;-webkit-text-stroke-color:#F2CB50}
+}
+.nav-links a.nav-cat:focus-visible{outline:1px solid #C9A227;outline-offset:4px;border-radius:2px}
+@media (max-width:860px){
+.nav-links a.nav-cat{font-size:17px;letter-spacing:1.4px;padding:12px 2px}
+.nav-links a.nav-cat.is-active{text-underline-offset:6px}
+}
 </style>
 </head>
 <body>
@@ -420,7 +434,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   </div>
   <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <div class="nav-links" id="navLinks">
-    <a href="#">Paletas</a><a href="#">Ropa</a><a href="#">Calzado</a><a href="#">Accesorios</a><a href="#">Ofertas</a>
+    <a href="#" class="nav-cat is-active" aria-current="page">Paletas</a><a href="#" class="nav-cat">Ropa</a><a href="#" class="nav-cat">Calzado</a><a href="#" class="nav-cat">Accesorios</a><a href="#" class="nav-cat">Ofertas</a>
   </div>
   <div class="nav-right">
     <div class="nav-search"><span style="color:rgba(255,255,255,0.2);font-size:13px">🔍</span><input placeholder="Buscar productos..."/></div>
