@@ -3,7 +3,7 @@ Tienda online de artículos de pádel - Padel10Store
 
 ## Catalogo estructurado (products.json)
 
-El archivo `products.json` es la fuente de datos estructurada del catalogo (92 productos), generada a partir de `index.html`. Es la unica fuente que debe usar el futuro asistente de IA: nunca debe inventar productos, precios, stock ni caracteristicas tecnicas que no figuren alli.
+El archivo `products.json` contiene los datos estructurados que usa el asesor de productos. El catálogo visible está en `index.html`; al cambiar un producto, hay que actualizar ambos archivos y validar que coincidan. No inventes precio, stock ni características técnicas: un valor `null` significa “no confirmado”. El catálogo actual tiene 81 productos.
 
 Campos relevantes por producto:
 - `especificaciones`: datos tecnicos verificados en fuentes oficiales (forma, balance, peso, materiales, nucleo, etc.). Un valor `null` significa "no confirmado" y no debe completarse con informacion inventada.
@@ -21,3 +21,7 @@ node validate-catalog.js
 ```
 
 El script termina con codigo de salida 1 y detalla cada diferencia encontrada si el catalogo no esta sincronizado, o con codigo 0 si todo coincide.
+
+## Actualizar el catálogo paso a paso
+
+Seguí la [guía para mantener el catálogo](GUIA_CATALOGO.md). Explica qué archivo editar para cada cambio y cómo comprobar que las fichas sigan sincronizadas.
