@@ -4,7 +4,7 @@
     "generadoEl": "2026-08-01T05:57:54.348Z",
     "fuente": "index.html + fichas oficiales de fabricantes/distribuidores (Etapa 1.5)",
     "nota": "Los valores null en especificaciones significan dato no confirmado por una fuente oficial; nunca deben ser inventados por el asistente de IA. El campo 'fuentes' contiene las URLs oficiales usadas para verificar cada pala. Cuando 'nivelRecomendadoEsInferencia' o 'estiloJuegoEsInferencia' es true, el valor es una inferencia razonada a partir de datos tecnicos y no una afirmacion oficial del fabricante.",
-    "totalProductos": 92,
+    "totalProductos": 81,
     "etapa": "1.5",
     "cambiosEtapa1_5": [
       "Correccion de codificacion de caracteres (mojibake) en todo el archivo",
@@ -24,7 +24,7 @@
       "precio": 256500,
       "precioConsultar": false,
       "precioTransferencia": 218025,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/ANIVERSARIO_36.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -60,7 +60,7 @@
       "precio": 256500,
       "precioConsultar": false,
       "precioTransferencia": 218025,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -96,7 +96,7 @@
       "precio": 206000,
       "precioConsultar": false,
       "precioTransferencia": 175100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CROSS_BLACK_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -132,7 +132,7 @@
       "precio": 206000,
       "precioConsultar": false,
       "precioTransferencia": 175100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CROSS_EVA_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -168,7 +168,7 @@
       "precio": 206000,
       "precioConsultar": false,
       "precioTransferencia": 175100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CROSS_WOMAN_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -204,7 +204,7 @@
       "precio": 244800,
       "precioConsultar": false,
       "precioTransferencia": 208080,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/EUROPE_FIBER_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -240,7 +240,7 @@
       "precio": 244800,
       "precioConsultar": false,
       "precioTransferencia": 208080,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/EUROPE_LITE.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -276,7 +276,7 @@
       "precio": 206000,
       "precioConsultar": false,
       "precioTransferencia": 175100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/EVOLUTION.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -312,7 +312,7 @@
       "precio": 244900,
       "precioConsultar": false,
       "precioTransferencia": 208165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/M27_-_GRIS.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -348,7 +348,7 @@
       "precio": 365700,
       "precioConsultar": false,
       "precioTransferencia": 310845,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/M27_CARBONO.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -384,7 +384,7 @@
       "precio": 244900,
       "precioConsultar": false,
       "precioTransferencia": 208165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/M27_LIGHT.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -420,7 +420,7 @@
       "precio": 164000,
       "precioConsultar": false,
       "precioTransferencia": 139400,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/P38.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -454,7 +454,7 @@
       "precio": 244900,
       "precioConsultar": false,
       "precioTransferencia": 208165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/TORINO_WOMAN.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -488,7 +488,7 @@
       "precio": 206700,
       "precioConsultar": false,
       "precioTransferencia": 175695,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/TORO_BLACK.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -524,7 +524,7 @@
       "precio": 206700,
       "precioConsultar": false,
       "precioTransferencia": 175695,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/TORO_WHITE.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -560,7 +560,7 @@
       "precio": 520000,
       "precioConsultar": false,
       "precioTransferencia": 442000,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/ANIV36_PINK_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -596,7 +596,7 @@
       "precio": 520000,
       "precioConsultar": false,
       "precioTransferencia": 442000,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/ANIVERSARIO36_POLY_ESPAOLA.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -630,7 +630,7 @@
       "precio": 365700,
       "precioConsultar": false,
       "precioTransferencia": 310845,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/EUROPE_CARBONO.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -666,7 +666,7 @@
       "precio": 520000,
       "precioConsultar": false,
       "precioTransferencia": 442000,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -702,7 +702,7 @@
       "precio": 277000,
       "precioConsultar": false,
       "precioTransferencia": 235450,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/GRAN_TORINO_FIBER_-_Bronce_-.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -736,7 +736,7 @@
       "precio": 271300,
       "precioConsultar": false,
       "precioTransferencia": 230605,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/JAPAN_R_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -772,7 +772,7 @@
       "precio": 520000,
       "precioConsultar": false,
       "precioTransferencia": 442000,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/JAPAN_RPRO_BORDEAUS_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -808,7 +808,7 @@
       "precio": 310000,
       "precioConsultar": false,
       "precioTransferencia": 263500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/R30_BLACK.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -844,7 +844,7 @@
       "precio": 520000,
       "precioConsultar": false,
       "precioTransferencia": 442000,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -878,7 +878,7 @@
       "precio": 277000,
       "precioConsultar": false,
       "precioTransferencia": 235450,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/TRIAL_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -914,7 +914,7 @@
       "precio": 472800,
       "precioConsultar": false,
       "precioTransferencia": 401880,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/WHIP_EXTREME_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -950,7 +950,7 @@
       "precio": 424000,
       "precioConsultar": false,
       "precioTransferencia": 360400,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/WHIP_LIGHT_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -986,7 +986,7 @@
       "precio": 424000,
       "precioConsultar": false,
       "precioTransferencia": 360400,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/WHIP_POLY_-_EUROPEA_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1022,7 +1022,7 @@
       "precio": 244900,
       "precioConsultar": false,
       "precioTransferencia": 208165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/WHIP_PRO_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1058,7 +1058,7 @@
       "precio": 244900,
       "precioConsultar": false,
       "precioTransferencia": 208165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/WHIP_PRO_2026_-_woman.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1094,7 +1094,7 @@
       "precio": 287000,
       "precioConsultar": false,
       "precioTransferencia": 243950,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CALAVERA_MXC_dama.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1130,7 +1130,7 @@
       "precio": 287000,
       "precioConsultar": false,
       "precioTransferencia": 243950,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CALAVERA_MXC_hombre.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1166,7 +1166,7 @@
       "precio": 287000,
       "precioConsultar": false,
       "precioTransferencia": 243950,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CALAVERA_MXC_WHITE.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1202,7 +1202,7 @@
       "precio": 228900,
       "precioConsultar": false,
       "precioTransferencia": 194565,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CROSS_PRO.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1238,7 +1238,7 @@
       "precio": 228900,
       "precioConsultar": false,
       "precioTransferencia": 194565,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/CROSS_PRO_LITE.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1274,7 +1274,7 @@
       "precio": 350000,
       "precioConsultar": false,
       "precioTransferencia": 297500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/Kit_M27_lite_Bolso_paletero.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1310,7 +1310,7 @@
       "precio": 350000,
       "precioConsultar": false,
       "precioTransferencia": 297500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/Kit_Whip_pro_woman_Bolso_paletero.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1346,7 +1346,7 @@
       "precio": 228900,
       "precioConsultar": false,
       "precioTransferencia": 194565,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "palas%20royal/TIGRA_26.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1382,7 +1382,7 @@
       "precio": 145000,
       "precioConsultar": false,
       "precioTransferencia": 123250,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/BEACH.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1418,7 +1418,7 @@
       "precio": 130000,
       "precioConsultar": false,
       "precioTransferencia": 110500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%202/FRONTON_FIBRA.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1454,7 +1454,7 @@
       "precio": 152500,
       "precioConsultar": false,
       "precioTransferencia": 129625,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1490,7 +1490,7 @@
       "precio": 152500,
       "precioConsultar": false,
       "precioTransferencia": 129625,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/JUNIOR_PINK_2026.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1526,7 +1526,7 @@
       "precio": 106000,
       "precioConsultar": false,
       "precioTransferencia": 90100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/KIDS.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1562,7 +1562,7 @@
       "precio": 106000,
       "precioConsultar": false,
       "precioTransferencia": 90100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/KIDS_multicolor_aqua.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1598,7 +1598,7 @@
       "precio": 106000,
       "precioConsultar": false,
       "precioTransferencia": 90100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/KIDS_ROSA.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1634,7 +1634,7 @@
       "precio": 149500,
       "precioConsultar": false,
       "precioTransferencia": 127075,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "Palas%20royal%203/PICKLEBALL_VENTANA.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1670,7 +1670,7 @@
       "precio": 3500,
       "precioConsultar": false,
       "precioTransferencia": 2975,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-10-09-at-09-22-18-2-4bf033f42e1be69f8717600125953812-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1696,7 +1696,7 @@
       "precio": 5500,
       "precioConsultar": false,
       "precioTransferencia": 4675,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7445-cdf1b847c7caf4a0ef17699334945155-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1722,7 +1722,7 @@
       "precio": 14500,
       "precioConsultar": false,
       "precioTransferencia": 12325,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/protectores-1-1-60e9419c38769aee3b17582989389055-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1748,7 +1748,7 @@
       "precio": 5500,
       "precioConsultar": false,
       "precioTransferencia": 4675,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/db00d4e3-f8df-4b0a-b3ef-6a26b07226b9-086b88d85ec9cb825b17724664052398-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1774,7 +1774,7 @@
       "precio": 39000,
       "precioConsultar": false,
       "precioTransferencia": 33150,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/chanclas-1-9f6dd3db1502b1fa7317582995797214-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1800,7 +1800,7 @@
       "precio": 13000,
       "precioConsultar": false,
       "precioTransferencia": 11050,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/img_7446-63fbd93bbca7a58e8c17699336242554-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1826,7 +1826,7 @@
       "precio": 135000,
       "precioConsultar": false,
       "precioTransferencia": 114750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/306db175-241b-400e-850a-487213c40078-4f20bcca930900727017671770974014-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1852,7 +1852,7 @@
       "precio": 19500,
       "precioConsultar": false,
       "precioTransferencia": 16575,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-12-02-at-2-47-17-pm-731a2642ebeb5323be17647018722712-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1878,7 +1878,7 @@
       "precio": 4900,
       "precioConsultar": false,
       "precioTransferencia": 4165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1-9da2db606748afd00917587115590044-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1904,7 +1904,7 @@
       "precio": 8800,
       "precioConsultar": false,
       "precioTransferencia": 7480,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/69bf948c-483f-4934-a3e0-77cc4fbcf161-6089e7f6d4f530870317724662219654-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1930,7 +1930,7 @@
       "precio": 4900,
       "precioConsultar": false,
       "precioTransferencia": 4165,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2025-09-24-at-07-57-48-1ba19accbdc208ec2317587115004784-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1956,7 +1956,7 @@
       "precio": 30000,
       "precioConsultar": false,
       "precioTransferencia": 25500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/r-grip-1-f7ea7f2b05a159e9d117582953580172-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -1982,7 +1982,7 @@
       "precio": 39800,
       "precioConsultar": false,
       "precioTransferencia": 33830,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/99e5e8e4-82b4-4839-9673-d6d9d8376984-b94fcd9c64cf6e604e17699329576623-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2008,7 +2008,7 @@
       "precio": 42000,
       "precioConsultar": false,
       "precioTransferencia": 35700,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/e42bb162-a069-4c4b-b1b3-9f17e095bc51-08ba4c1c7505eda89317655388502393-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2034,7 +2034,7 @@
       "precio": 46000,
       "precioConsultar": false,
       "precioTransferencia": 39100,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/a9b89d92-a687-4faa-8408-9e56949e12bb-0dfde500d31b8a9b0117699332254083-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2060,7 +2060,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/2e07ad32-47ec-435c-b9ae-4dd03c6f0b26-14ac5cb7ee893ff36817655390053582-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2086,7 +2086,7 @@
       "precio": 39800,
       "precioConsultar": false,
       "precioTransferencia": 33830,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/whatsapp-image-2026-01-30-at-11-17-35-am-635229a2f35c26475c17707307379912-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2112,7 +2112,7 @@
       "precio": 39800,
       "precioConsultar": false,
       "precioTransferencia": 33830,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/ec409cc6-9ac5-45db-ae94-db1492b994b3-b1a8b9fece9f96e08017699330981844-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2138,7 +2138,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/bdcd312e-8b8e-43a5-9b43-5e337e1705ef-35208faaec615d6e4b17655385865596-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2164,7 +2164,7 @@
       "precio": 42000,
       "precioConsultar": false,
       "precioTransferencia": 35700,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/928ae1c7-947b-4203-8f1f-1e148f41daa1-f5983c73fd253ff65617655392698213-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2190,7 +2190,7 @@
       "precio": 42000,
       "precioConsultar": false,
       "precioTransferencia": 35700,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/70a40a5d-6efd-4071-831a-aeda1e67bf61-389db1ddab7ff1a3d417655391965883-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2216,7 +2216,7 @@
       "precio": 42000,
       "precioConsultar": false,
       "precioTransferencia": 35700,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/89527c81-04cf-4fc5-90df-fad817649a4d-a042c56a395f81dd0117655387049534-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2242,7 +2242,7 @@
       "precio": 90000,
       "precioConsultar": false,
       "precioTransferencia": 76500,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "https://acdn-us.mitiendanube.com/stores/006/725/306/products/campera-8df6c45a4279af64c417587110842249-480-0.webp",
       "tieneImagen": true,
       "especificaciones": {
@@ -2268,7 +2268,7 @@
       "precio": 63000,
       "precioConsultar": false,
       "precioTransferencia": 53550,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-black-n08rj-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2304,7 +2304,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/x-grip1-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2340,7 +2340,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-bordeau-16kx6-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2376,7 +2376,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-pink-1keed-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2412,7 +2412,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-moka-ozcti-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2448,7 +2448,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-black-and-flowers-pink-8722w-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2484,7 +2484,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-dep-mallorca-black-lineas-ib1z5-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2520,7 +2520,7 @@
       "precio": 39500,
       "precioConsultar": false,
       "precioTransferencia": 33575,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/biker-black-mallorca-gzm91-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2557,7 +2557,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-blue-and-flowers-x0xdc-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2593,7 +2593,7 @@
       "precio": 63000,
       "precioConsultar": false,
       "precioTransferencia": 53550,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-white-1xump-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2629,7 +2629,7 @@
       "precio": 35000,
       "precioConsultar": false,
       "precioTransferencia": 29750,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/rem-deportiva-mallorca-white-and-flowers-orange-syjkp-1.webp",
       "tieneImagen": true,
       "talles": [
@@ -2664,7 +2664,7 @@
       "precio": 63000,
       "precioConsultar": false,
       "precioTransferencia": 53550,
-      "cuotasTexto": "6 cuotas s/i · Envío gratis",
+      "cuotasTexto": null,
       "imagen": "assets/productos/royal-padel/indumentaria-femenina/pollera-mallorca-blue-ky8cb-1.webp",
       "tieneImagen": true,
       "talles": [

@@ -37,6 +37,16 @@
  * de defensa, nunca la unica-.
  */
 
+function updateCardActionLabels(checkoutEnabled){
+var text=checkoutEnabled?'Comprar ahora':'Ver producto';
+document.querySelectorAll('.card .add-btn[data-mp-buy-button]').forEach(function(button){
+button.textContent=text;
+var card=button.closest('.card');
+var name=card&&card.querySelector('.card-name');
+if(name)button.setAttribute('aria-label',text+': '+name.textContent.trim());
+});
+}
+
 function checkoutEstaHabilitado() {
   return window.PadelCheckoutAvailability ? window.PadelCheckoutAvailability.isEnabled() : false;
 }
@@ -56,6 +66,12 @@ function handleBuyClick(button) {
   var talle = button.dataset.talle || null;
   if (!window.PadelCheckoutWidget || typeof window.PadelCheckoutWidget.startBuyNow !== 'function') return;
   window.PadelCheckoutWidget.startBuyNow(productId, talle);
+}
+
+if (window.PadelCheckoutAvailability && typeof window.PadelCheckoutAvailability.subscribe === 'function') {
+  window.PadelCheckoutAvailability.subscribe(updateCardActionLabels);
+} else {
+  updateCardActionLabels(false);
 }
 
 function initButton(button) {

@@ -25,7 +25,7 @@
 </script>
 <link rel="canonical" href="https://padel10-store.vercel.app/"/>
 <title>Padel10Store — Todo para jugar al pádel</title>
-<meta name="description" content="La tienda de pádel de confianza. Paletas, ropa, calzado y accesorios de las mejores marcas. Envíos a todo Argentina desde Rosario."/>
+<meta name="description" content="Catálogo de productos Royal Padel: paletas, indumentaria y accesorios. Consultá disponibilidad, medios de pago y envío antes de comprar."/>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Graduate&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -93,7 +93,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem
 .main-wrap{max-width:960px;margin:0 auto;padding:2rem}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1.25rem}
 .sec-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:#fff;letter-spacing:0.3px}
-.sec-sub{font-size:12px;color:rgba(255,255,255,0.22);margin-left:10px}
+.sec-sub{font-size:12px;color:rgba(255,255,255,0.58);margin-left:10px}
 .sec-link{font-size:13px;color:#C9A227;text-decoration:none;font-weight:500}
 .featured{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:2rem}
 .feat-main{background:#1a1a1a;border:1px solid rgba(201,162,39,0.18);border-radius:12px;padding:2rem;position:relative;min-height:210px;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden}
@@ -117,16 +117,16 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem
 .fs-add:hover{background:#C9A227;color:#111}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:2rem}
 @media(max-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
-.card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.06);border-radius:12px;overflow:hidden;cursor:pointer;transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s}
-.card:hover{transform:translateY(-6px);border-color:rgba(201,162,39,0.8);box-shadow:0 0 18px 4px rgba(201,162,39,0.45),0 8px 32px rgba(0,0,0,0.5)}
-.card-img{width:100%;height:190px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:50px;position:relative;border-bottom:2px solid rgba(201,162,39,0.5);background:radial-gradient(ellipse at center,#fff 20%,#1a1a1a 100%);overflow:hidden}
-.card-img img{width:100%;height:100%;object-fit:contain;transition:transform 0.3s ease;border-radius:12px 12px 0 0;mix-blend-mode:multiply}.card:hover .card-img{border-bottom-color:rgba(201,162,39,0.9)}.card:hover .card-img img{transform:scale(1.04)}
+.card{background:#1a1a1a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;transition:transform 0.2s ease,border-color 0.2s ease,box-shadow 0.2s ease}
+.card:hover{transform:translateY(-3px);border-color:rgba(201,162,39,0.55);box-shadow:0 8px 24px rgba(0,0,0,0.35)}
+.card-img{width:100%;height:190px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:50px;position:relative;border-bottom:2px solid rgba(201,162,39,0.5);background:linear-gradient(145deg,#f2f2f2 0%,#dedede 100%);overflow:hidden}
+.card-img img{width:100%;height:100%;object-fit:contain;transition:transform 0.25s ease;border-radius:12px 12px 0 0;mix-blend-mode:multiply}.card:hover .card-img{border-bottom-color:rgba(201,162,39,0.85)}.card:hover .card-img img{transform:scale(1.025)}
 .bdg{position:absolute;top:10px;left:10px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:3px 9px;border-radius:4px}
 .bdg-n{background:#C9A227;color:#111}
 .bdg-s{background:rgba(40,160,80,0.15);color:#4cd68a;border:1px solid rgba(40,160,80,0.25)}
 .fav{position:absolute;top:10px;right:10px;font-size:15px;color:rgba(255,255,255,0.2);cursor:pointer;background:rgba(0,0,0,0.4);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
 .fav:hover{color:#e05555}
-.card-body{padding:14px}
+.card-body{padding:14px;display:flex;flex-direction:column;flex:1}
 .card-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(201,162,39,0.6);margin-bottom:4px}
 .card-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#fff;line-height:1.2;margin-bottom:10px}
 .price-row{display:flex;align-items:baseline;gap:8px;margin-bottom:10px}
@@ -272,7 +272,7 @@ footer{background:#0a0a0a;padding:2.5rem 2rem;border-top:2px solid #C9A227;margi
 .modal-badge-row{display:flex;gap:6px;flex-wrap:wrap}
 .modal-badge{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:4px}
 .modal-badge.cat{background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.25);color:#C9A227}
-.modal-badge.stock{background:rgba(40,160,80,0.12);border:1px solid rgba(40,160,80,0.25);color:#4cd68a}
+.modal-badge.stock{background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.28);color:#F2CB50}
 .modal-badge.ship{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4)}
 .modal-name{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:900;color:#fff;line-height:1;text-transform:uppercase}
 .modal-price-main{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:#C9A227;line-height:1}
@@ -378,7 +378,7 @@ filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 10px 24px rgba(2
 .hero-search button:active,.feat-btn:active,.add-btn:active,.ps-btn:active,.chk-btn:active,.sub-btn:active,.modal-buynow-btn:active{
 transform:translateY(0) scale(.985);box-shadow:0 3px 10px rgba(201,162,39,.15)
 }
-.add-btn{padding:11px 14px;font-size:14px;letter-spacing:.7px}
+.add-btn{padding:11px 14px;font-size:14px;letter-spacing:.7px;min-height:42px;margin-top:auto}
 .add-btn::after{content:'\2192';font-size:16px;margin-left:8px;transition:transform .18s ease}
 .add-btn:hover::after{transform:translateX(3px)}
 .add-btn.added{background:rgba(201,162,39,.12);color:var(--btn-gold-hi);border-color:rgba(201,162,39,.5);box-shadow:none}
@@ -420,6 +420,15 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 .nav-links a.nav-cat{font-size:17px;letter-spacing:1.4px;padding:12px 2px}
 .nav-links a.nav-cat.is-active{text-underline-offset:6px}
 }
+.catalog-empty{max-width:1100px;margin:18px auto 30px;padding:24px;border:1px solid rgba(201,162,39,.28);border-radius:12px;background:#151515;color:#eee;text-align:center}
+.catalog-empty[hidden]{display:none}
+.catalog-empty strong{display:block;color:#F2CB50;font-family:'Barlow Condensed',sans-serif;font-size:21px;text-transform:uppercase;letter-spacing:.5px}
+.catalog-empty p{margin:7px 0 15px;color:rgba(255,255,255,.68);font-size:14px}
+.catalog-empty a{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(201,162,39,.55);border-radius:6px;padding:9px 15px;color:#F2CB50;text-decoration:none;font-size:13px;font-weight:700}
+.modal-trust-row{margin-top:4px}.modal-trust-note{font-size:11px;line-height:1.55;color:rgba(255,255,255,.68);text-align:center;width:100%;padding:10px 12px;background:rgba(201,162,39,.06);border:1px solid rgba(201,162,39,.18);border-radius:8px}
+@media(max-width:860px){.hero-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}.hero-escudo-col{display:none}.stats-col{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.sbox{min-width:0;text-align:center;padding:10px 6px}.sbox .sn{font-size:clamp(16px,4vw,24px)}.hero h1{font-size:clamp(42px,10vw,58px)}.hero-c{padding-left:1.25rem;padding-right:1.25rem}.hero-search{margin-left:-1.25rem;margin-right:-1.25rem}}
+@media(max-width:420px){.hero-layout{grid-template-columns:1fr}.stats-col{grid-column:auto}.sbox .sn{font-size:18px}.hero h1{font-size:46px}.hero-sub{font-size:14px}}
+#catalogo{scroll-margin-top:78px}
 </style>
 </head>
 <body>
@@ -434,7 +443,11 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   </div>
   <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <div class="nav-links" id="navLinks">
-    <a href="#" class="nav-cat is-active" aria-current="page">Paletas</a><a href="#" class="nav-cat">Ropa</a><a href="#" class="nav-cat">Calzado</a><a href="#" class="nav-cat">Accesorios</a><a href="#" class="nav-cat">Ofertas</a>
+    <a href="#catalogo" class="nav-cat" data-filter="paletas">Paletas</a>
+    <a href="#catalogo" class="nav-cat" data-filter="ropa">Ropa</a>
+    <a href="#catalogo" class="nav-cat" data-filter="calzado">Calzado</a>
+    <a href="#catalogo" class="nav-cat" data-filter="Accesorios">Accesorios</a>
+    <a href="#catalogo" class="nav-cat" data-filter="ofertas">Ofertas</a>
   </div>
   <div class="nav-right">
     <div class="nav-search"><span style="color:rgba(255,255,255,0.2);font-size:13px">🔍</span><input placeholder="Buscar productos..."/></div>
@@ -447,19 +460,19 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   
   <div class="hero-ov"></div>
   <div class="hero-c">
-    <div class="hero-pill"><div class="pill-dot"></div><div class="pill-txt">Envíos a todo el país · Rosario, Argentina</div></div>
+    <div class="hero-pill"><div class="pill-dot"></div><div class="pill-txt">Catálogo Royal Padel · Atención por WhatsApp</div></div>
     <div class="hero-layout">
       <div>
         <h1>Lo que<br>necesitás<br>para <span class="gold">jugar</span><br><span class="dim">al pádel.</span></h1>
-        <p class="hero-sub" style="margin-top:0.75rem">Paletas, ropa, calzado y accesorios de las <strong>mejores marcas</strong>. Envío rápido a todo Argentina.</p>
+        <p class="hero-sub" style="margin-top:0.75rem">Encontrá paletas, indumentaria y accesorios Royal Padel. Consultá disponibilidad, medios de pago y envío antes de comprar.</p>
       </div>
       <div class="hero-escudo-col">
                   <img class="hero-escudo-img" src="escudo.png" alt="Padel10Store"/>
       </div>
       <div class="stats-col">
-        <div class="sbox main"><div class="sn">+500</div><div class="sl">productos</div></div>
-        <div class="sbox sec"><div class="sn">24hs</div><div class="sl">despacho</div></div>
-        <div class="sbox sec"><div class="sn">4.9&#9733;</div><div class="sl">calificación</div></div>
+        <div class="sbox main"><div class="sn" id="catalogProductCount">81</div><div class="sl">productos</div></div>
+        <div class="sbox sec"><div class="sn">Precios</div><div class="sl">publicados por ficha</div></div>
+        <div class="sbox sec"><div class="sn">Stock</div><div class="sl">a confirmar</div></div>
       </div>
     </div>
     </div>
@@ -472,10 +485,10 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 
 <div class="trust-bar">
   <div class="trust-bar-inner">
-    <div class="tb-item">🚚 <span>Envío gratis <strong>+60.000</strong></span></div>
-    <div class="tb-item">🔒 <span>Pago seguro con <strong>MercadoPago</strong></span></div>
-    <div class="tb-item">↩️ <span><strong>30 días</strong> de devolución</span></div>
-    <div class="tb-item">📦 <span>Despacho en <strong>24 horas</strong></span></div>
+    <div class="tb-item">🎾 <span>Catálogo <strong>Royal Padel</strong></span></div>
+    <div class="tb-item">🏷️ <span>Precios <strong>visibles por producto</strong></span></div>
+    <div class="tb-item">📦 <span>Envío: <strong>consultá costo y plazo</strong></span></div>
+    <div class="tb-item">💬 <span>Disponibilidad: <strong>confirmá por WhatsApp</strong></span></div>
   </div>
 </div>
 
@@ -498,9 +511,10 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   </div>
 </div>
 
-<div class="cats-wrap">
+<div class="cats-wrap" id="catalogo">
 <div class="cats">
 <div class="cat on" data-cat="all">Todo</div>
+<div class="cat" data-cat="paletas">Paletas</div>
 <div class="cat" data-cat="control">🎯 Control</div>
 <div class="cat" data-cat="ataque">⚡ Ataque</div>
 <div class="cat" data-cat="polivalente">⚖️ Polivalente</div>
@@ -509,10 +523,15 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="cat" data-cat="Indumentaria">Indumentaria</div>
 </div>
 </div>
+<div id="catalogEmptyState" class="catalog-empty" role="status" aria-live="polite" hidden>
+  <strong id="catalogEmptyTitle"></strong>
+  <p id="catalogEmptyText"></p>
+  <a href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20consultar%20por%20esta%20categoria">Consultar por WhatsApp</a>
+</div>
 
 <div class="main-wrap">
 <div class="sec-head">
-<div><span class="sec-title">Paletas Royal Padel</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
+<div><span class="sec-title">Paletas Royal Padel</span><span class="sec-sub">Consultá medios de pago y envío antes de comprar</span></div>
 </div>
 
 <div class="sec-head" style="margin-top:2rem;">
@@ -530,7 +549,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Aniversario 36</div>
         <div class="price-row"><span class="card-price">$256.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $218.025</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-aniversario-36">Comprar ahora</button>
       </div>
     </div>
@@ -545,7 +564,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Aniversario 36 Light</div>
         <div class="price-row"><span class="card-price">$256.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $218.025</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-aniversario-36-light">Comprar ahora</button>
       </div>
     </div>
@@ -560,7 +579,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Cross Black '26</div>
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-black-26">Comprar ahora</button>
       </div>
     </div>
@@ -575,7 +594,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Cross Eva '26</div>
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-eva-26">Comprar ahora</button>
       </div>
     </div>
@@ -590,7 +609,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Cross Woman '26</div>
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-woman-26">Comprar ahora</button>
       </div>
     </div>
@@ -605,7 +624,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Europe Fiber '26</div>
         <div class="price-row"><span class="card-price">$244.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.080</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-europe-fiber-26">Comprar ahora</button>
       </div>
     </div>
@@ -620,7 +639,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Europe Lite</div>
         <div class="price-row"><span class="card-price">$244.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.080</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-europe-lite">Comprar ahora</button>
       </div>
     </div>
@@ -635,7 +654,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Evolution</div>
         <div class="price-row"><span class="card-price">$206.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-evolution">Comprar ahora</button>
       </div>
     </div>
@@ -650,7 +669,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">M27 Gris</div>
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-m27-gris">Comprar ahora</button>
       </div>
     </div>
@@ -665,7 +684,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">M27 Carbono</div>
         <div class="price-row"><span class="card-price">$365.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $310.845</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-m27-carbono">Comprar ahora</button>
       </div>
     </div>
@@ -680,7 +699,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">M27 Light</div>
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-m27-light">Comprar ahora</button>
       </div>
     </div>
@@ -695,7 +714,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">P38</div>
         <div class="price-row"><span class="card-price">$164.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $139.400</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-p38">Comprar ahora</button>
       </div>
     </div>
@@ -710,7 +729,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Torino Woman</div>
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-torino-woman">Comprar ahora</button>
       </div>
     </div>
@@ -725,7 +744,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Toro Black</div>
         <div class="price-row"><span class="card-price">$206.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.695</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-toro-black">Comprar ahora</button>
       </div>
     </div>
@@ -740,7 +759,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Toro White</div>
         <div class="price-row"><span class="card-price">$206.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $175.695</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-toro-white">Comprar ahora</button>
       </div>
     </div>
@@ -761,7 +780,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Aniv36 Pink 2026</div>
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-aniv36-pink-2026">Comprar ahora</button>
       </div>
     </div>
@@ -776,7 +795,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Aniversario 36 Poly Española</div>
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-aniversario-36-poly-espanola">Comprar ahora</button>
       </div>
     </div>
@@ -791,7 +810,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Europe Carbono</div>
         <div class="price-row"><span class="card-price">$365.700</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $310.845</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-europe-carbono">Comprar ahora</button>
       </div>
     </div>
@@ -806,7 +825,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Europe Lite Europea 2026</div>
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-europe-lite-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -821,7 +840,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Gran Torino Fiber - Bronce</div>
         <div class="price-row"><span class="card-price">$277.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $235.450</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-gran-torino-fiber-bronce">Comprar ahora</button>
       </div>
     </div>
@@ -836,7 +855,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Japan R '26</div>
         <div class="price-row"><span class="card-price">$271.300</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $230.605</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-japan-r-26">Comprar ahora</button>
       </div>
     </div>
@@ -851,7 +870,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Japan RPro Bordeaux Europea 2026</div>
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-japan-rpro-bordeaux-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -866,7 +885,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">R30 Black</div>
         <div class="price-row"><span class="card-price">$310.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $263.500</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-r30-black">Comprar ahora</button>
       </div>
     </div>
@@ -881,7 +900,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">R30 White Europea 2026</div>
         <div class="price-row"><span class="card-price">$520.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $442.000</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-r30-white-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -896,7 +915,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Trial 2026</div>
         <div class="price-row"><span class="card-price">$277.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $235.450</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-trial-2026">Comprar ahora</button>
       </div>
     </div>
@@ -911,7 +930,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Whip Extreme Europea 2026</div>
         <div class="price-row"><span class="card-price">$472.800</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $401.880</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-whip-extreme-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -926,7 +945,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Whip Light Europea 2026</div>
         <div class="price-row"><span class="card-price">$424.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $360.400</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-whip-light-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -941,7 +960,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Whip Poly Europea 2026</div>
         <div class="price-row"><span class="card-price">$424.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $360.400</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-whip-poly-europea-2026">Comprar ahora</button>
       </div>
     </div>
@@ -956,7 +975,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Whip Pro 2026</div>
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-whip-pro-2026">Comprar ahora</button>
       </div>
     </div>
@@ -971,7 +990,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Whip Pro 2026 Woman</div>
         <div class="price-row"><span class="card-price">$244.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $208.165</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-whip-pro-2026-woman">Comprar ahora</button>
       </div>
     </div>
@@ -992,7 +1011,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Calavera MXC Dama</div>
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-calavera-mxc-dama">Comprar ahora</button>
       </div>
     </div>
@@ -1007,7 +1026,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Calavera MXC Hombre</div>
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-calavera-mxc-hombre">Comprar ahora</button>
       </div>
     </div>
@@ -1022,7 +1041,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Calavera MXC White</div>
         <div class="price-row"><span class="card-price">$287.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $243.950</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-calavera-mxc-white">Comprar ahora</button>
       </div>
     </div>
@@ -1037,7 +1056,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Cross Pro</div>
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-pro">Comprar ahora</button>
       </div>
     </div>
@@ -1052,7 +1071,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Cross Pro Lite</div>
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cross-pro-lite">Comprar ahora</button>
       </div>
     </div>
@@ -1067,7 +1086,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Kit M27 Lite + Bolso</div>
         <div class="price-row"><span class="card-price">$350.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $297.500</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-kit-m27-lite-bolso">Comprar ahora</button>
       </div>
     </div>
@@ -1082,7 +1101,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Kit Whip Pro Woman + Bolso</div>
         <div class="price-row"><span class="card-price">$350.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $297.500</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-kit-whip-pro-woman-bolso">Comprar ahora</button>
       </div>
     </div>
@@ -1097,7 +1116,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Tigra '26</div>
         <div class="price-row"><span class="card-price">$228.900</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $194.565</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-tigra-26">Comprar ahora</button>
       </div>
     </div>
@@ -1118,7 +1137,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Beach</div>
         <div class="price-row"><span class="card-price">$145.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $123.250</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-beach">Comprar ahora</button>
       </div>
     </div>
@@ -1133,7 +1152,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Frontón Fibra</div>
         <div class="price-row"><span class="card-price">$130.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $110.500</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-fronton-fibra">Comprar ahora</button>
       </div>
     </div>
@@ -1148,7 +1167,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Junior Multicolor 2026</div>
         <div class="price-row"><span class="card-price">$152.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $129.625</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-junior-multicolor-2026">Comprar ahora</button>
       </div>
     </div>
@@ -1163,7 +1182,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Junior Pink 2026</div>
         <div class="price-row"><span class="card-price">$152.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $129.625</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-junior-pink-2026">Comprar ahora</button>
       </div>
     </div>
@@ -1178,7 +1197,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Kids</div>
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-kids">Comprar ahora</button>
       </div>
     </div>
@@ -1193,7 +1212,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Kids Multicolor Aqua</div>
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-kids-multicolor-aqua">Comprar ahora</button>
       </div>
     </div>
@@ -1208,7 +1227,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Kids Rosa</div>
         <div class="price-row"><span class="card-price">$106.000</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $90.100</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-kids-rosa">Comprar ahora</button>
       </div>
     </div>
@@ -1223,13 +1242,13 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <div class="card-name">Pickleball Ventana</div>
         <div class="price-row"><span class="card-price">$149.500</span></div>
         <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $127.075</div>
-        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
         <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-pickleball-ventana">Comprar ahora</button>
       </div>
     </div>
 </div>
 <div class="sec-head" style="margin-top:2rem;">
-<div><span class="sec-title">Accesorios</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
+<div><span class="sec-title">Accesorios</span><span class="sec-sub">Consultá medios de pago y envío antes de comprar</span></div>
 </div>
 <div class="grid">
 <div class="card" data-cat="Accesorios" data-product-id="royal-padel-cubregrip">
@@ -1243,7 +1262,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">CUBREGRIP</div>
 <div class="price-row"><span class="card-price">$3.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $2.975</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-cubregrip">Comprar ahora</button>
 </div>
 </div>
@@ -1258,7 +1277,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Medias Royalpadel Black</div>
 <div class="price-row"><span class="card-price">$5.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.675</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-medias-royalpadel-black">Comprar ahora</button>
 </div>
 </div>
@@ -1273,7 +1292,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Protectores Importados</div>
 <div class="price-row"><span class="card-price">$14.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $12.325</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-protectores-importados">Comprar ahora</button>
 </div>
 </div>
@@ -1288,7 +1307,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Medias White</div>
 <div class="price-row"><span class="card-price">$5.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.675</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-medias-white">Comprar ahora</button>
 </div>
 </div>
@@ -1303,7 +1322,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Chanclas</div>
 <div class="price-row"><span class="card-price">$39.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.150</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-chanclas">Comprar ahora</button>
 </div>
 </div>
@@ -1318,7 +1337,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Muñequeras Royalpadel Black</div>
 <div class="price-row"><span class="card-price">$13.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $11.050</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-munequeras-royalpadel-black">Comprar ahora</button>
 </div>
 </div>
@@ -1333,7 +1352,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Bolso Paletero Black</div>
 <div class="price-row"><span class="card-price">$135.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $114.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-bolso-paletero-black">Comprar ahora</button>
 </div>
 </div>
@@ -1348,7 +1367,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Gorra White</div>
 <div class="price-row"><span class="card-price">$19.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $16.575</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-gorra-white">Comprar ahora</button>
 </div>
 </div>
@@ -1363,7 +1382,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Medias Media Caña A/E Red</div>
 <div class="price-row"><span class="card-price">$4.900</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.165</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-medias-media-cana-a-e-red">Comprar ahora</button>
 </div>
 </div>
@@ -1378,7 +1397,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Mangas Black</div>
 <div class="price-row"><span class="card-price">$8.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $7.480</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-mangas-black">Comprar ahora</button>
 </div>
 </div>
@@ -1393,7 +1412,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Medias Azul WPT</div>
 <div class="price-row"><span class="card-price">$4.900</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $4.165</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-medias-azul-wpt">Comprar ahora</button>
 </div>
 </div>
@@ -1408,14 +1427,14 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">X GRIP</div>
 <div class="price-row"><span class="card-price">$30.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $25.500</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-x-grip">Comprar ahora</button>
 </div>
 </div>
 </div>
 
 <div class="sec-head" style="margin-top:2rem;">
-<div><span class="sec-title">Indumentaria Masculina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
+<div><span class="sec-title">Indumentaria Masculina</span><span class="sec-sub">Consultá medios de pago y envío antes de comprar</span></div>
 </div>
 <div class="grid">
 <div class="card" data-cat="Indumentaria" data-product-id="royal-padel-short-mallorca-azul">
@@ -1429,7 +1448,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Short Mallorca Azul</div>
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-short-mallorca-azul">Comprar ahora</button>
 </div>
 </div>
@@ -1444,7 +1463,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Azul Marino Lineal</div>
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-azul-marino-lineal">Comprar ahora</button>
 </div>
 </div>
@@ -1459,7 +1478,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Short Mallorca Uva</div>
 <div class="price-row"><span class="card-price">$46.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $39.100</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-short-mallorca-uva">Comprar ahora</button>
 </div>
 </div>
@@ -1474,7 +1493,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Blanca Basica</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-blanca-basica">Comprar ahora</button>
 </div>
 </div>
@@ -1489,7 +1508,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Short Mallorca Verde</div>
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-short-mallorca-verde">Comprar ahora</button>
 </div>
 </div>
@@ -1504,7 +1523,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Short Mallorca Moka</div>
 <div class="price-row"><span class="card-price">$39.800</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.830</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-short-mallorca-moka">Comprar ahora</button>
 </div>
 </div>
@@ -1519,7 +1538,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Azul Marino Basica</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-azul-marino-basica">Comprar ahora</button>
 </div>
 </div>
@@ -1534,7 +1553,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Blanca Lineal</div>
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-blanca-lineal">Comprar ahora</button>
 </div>
 </div>
@@ -1549,7 +1568,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Blanca Padel</div>
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-blanca-padel">Comprar ahora</button>
 </div>
 </div>
@@ -1564,7 +1583,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera Mallorca Azul Marino Padel</div>
 <div class="price-row"><span class="card-price">$42.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $35.700</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-remera-mallorca-azul-marino-padel">Comprar ahora</button>
 </div>
 </div>
@@ -1579,14 +1598,14 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Campera Roma Pro Negra Hombre</div>
 <div class="price-row"><span class="card-price">$90.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $76.500</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" data-mp-buy-button data-product-id="royal-padel-campera-roma-pro-negra-hombre">Comprar ahora</button>
 </div>
 </div>
 </div>
 
 <div class="sec-head" style="margin-top:2rem;">
-<div><span class="sec-title">Indumentaria Femenina</span><span class="sec-sub">6 cuotas sin interés · Envío gratis</span></div>
+<div><span class="sec-title">Indumentaria Femenina</span><span class="sec-sub">Consultá medios de pago y envío antes de comprar</span></div>
 </div>
 <div class="grid">
 <div class="card" data-cat="Indumentaria" data-product-id="royal-padel-pollera-mallorca-negra">
@@ -1600,7 +1619,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Pollera deportiva Mallorca con short – Negra</div>
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1615,7 +1634,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca – Blanca y rosa</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1630,7 +1649,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca – Blanca y moka</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1645,7 +1664,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca – Blanca multicolor</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1660,7 +1679,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca Líneas – Azul</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1675,7 +1694,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca Líneas – Blanca</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1690,7 +1709,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca Líneas – Negra</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1705,7 +1724,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Calza Biker Mallorca – Negra</div>
 <div class="price-row"><span class="card-price">$39.500</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $33.575</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1720,7 +1739,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca – Azul</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1735,7 +1754,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Pollera deportiva Mallorca con short – Blanca</div>
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1750,7 +1769,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Remera deportiva Mallorca Líneas – Blanca multicolor</div>
 <div class="price-row"><span class="card-price">$35.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $29.750</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1765,7 +1784,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="card-name">Pollera deportiva Mallorca con short – Azul</div>
 <div class="price-row"><span class="card-price">$63.000</span></div>
 <div style="font-size:11px;color:rgba(201,162,39,0.8);margin-bottom:8px;">💳 Transferencia: $53.550</div>
-<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">6 cuotas s/i · Envío gratis</div>
+<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:10px;">Consultá pago y envío</div>
 <button class="add-btn" onclick="openModal(this.closest('.card'))">ELEGIR TALLE</button>
 </div>
 </div>
@@ -1781,7 +1800,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;line-height:1;letter-spacing:1px;">PADEL<span style="color:#C9A227">10</span>STORE</div>
           </div>
         </div>
-        <p class="footer-desc">Tu tienda de pádel de confianza.<br/>Envíos a todo Argentina desde Rosario.</p>
+        <p class="footer-desc">Catálogo de productos Royal Padel.<br/>Consultá disponibilidad y condiciones de compra.</p>
       </div>
       <div class="footer-col">
         <h4>Productos</h4>
@@ -1797,9 +1816,8 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
     <div class="footer-bottom">
       <span class="footer-copy">© 2026 Padel10Store — Todos los derechos reservados</span>
       <div class="footer-badges">
-        <span class="fbadge">6 Cuotas S/I</span>
-        <span class="fbadge">Envío Gratis</span>
-        <span class="fbadge">Royal Padel Oficial</span>
+        <span class="fbadge">Catálogo Royal Padel</span>
+        <span class="fbadge">Disponibilidad a confirmar</span>
       </div>
     </div>
   </div>
@@ -1817,7 +1835,75 @@ document.addEventListener('click',function(e){
 },true);
 document.addEventListener('DOMContentLoaded',function(){
 
-document.querySelectorAll('.cat').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const f=btn.dataset.cat;document.querySelectorAll('.card').forEach(c=>{const bc=c.querySelector('.card-cat')?c.querySelector('.card-cat').textContent.trim().toLowerCase():'';const ibf=f==='bull-padel'||f==='adidas'||f==='siux';const bm=(f==='bull-padel'&&bc.includes('bullpadel'))||(f==='adidas'&&bc.includes('adidas'))||(f==='siux'&&bc.includes('siux'));c.style.display=(f==='all'||(!ibf&&c.dataset.cat===f)||bm)?'':'none';});document.querySelectorAll('.sec-head').forEach(function(sh){var next=sh.nextElementSibling;if(!next)return;if(next.classList.contains('grid')){var vis=Array.from(next.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=vis?'':'none';next.style.display=vis?'':'none';}});Array.from(document.querySelectorAll('.sec-head')).filter(function(sh){return sh.nextElementSibling&&sh.nextElementSibling.classList.contains('sec-head');}).forEach(function(sh){var hasVis=Array.from(sh.parentElement.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=hasVis?'':'none';});});});
+function setActiveNavigation(filter){
+var topFilter=filter;
+if(filter==='all')topFilter='';
+if(['control','ataque','polivalente','ninos'].indexOf(filter)>-1)topFilter='paletas';
+if(filter==='Indumentaria')topFilter='ropa';
+if(filter==='Accesorios')topFilter='Accesorios';
+document.querySelectorAll('.nav-cat').forEach(function(link){
+var active=link.dataset.filter===topFilter;
+link.classList.toggle('is-active',active);
+if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+});
+}
+function applyCatalogFilter(filter){
+var emptyState=document.getElementById('catalogEmptyState');
+var emptyTitle=document.getElementById('catalogEmptyTitle');
+var emptyText=document.getElementById('catalogEmptyText');
+var noProducts=filter==='calzado'||filter==='ofertas';
+document.querySelectorAll('.cat').forEach(function(button){
+var selected=button.dataset.cat===filter;
+button.classList.toggle('on',selected);
+});
+document.querySelectorAll('.card').forEach(function(card){
+var category=card.dataset.cat||'';
+var cardLabel=card.querySelector('.card-cat')?card.querySelector('.card-cat').textContent.trim().toLowerCase():'';
+var brandFilter=filter==='bull-padel'||filter==='adidas'||filter==='siux';
+var brandMatch=(filter==='bull-padel'&&cardLabel.includes('bullpadel'))||(filter==='adidas'&&cardLabel.includes('adidas'))||(filter==='siux'&&cardLabel.includes('siux'));
+var match=filter==='all'||(filter==='paletas'&&['control','ataque','polivalente','ninos'].indexOf(category)>-1)||(filter==='ropa'&&category==='Indumentaria')||(filter==='Accesorios'&&category==='Accesorios')||(!brandFilter&&category===filter)||brandMatch;
+card.style.display=match?'':'none';
+});
+document.querySelectorAll('.sec-head').forEach(function(heading){
+var next=heading.nextElementSibling;
+if(!next||!next.classList.contains('grid'))return;
+var visible=Array.from(next.querySelectorAll('.card')).some(function(card){return card.style.display!=='none';});
+heading.style.display=visible?'':'none';
+next.style.display=visible?'':'none';
+});
+Array.from(document.querySelectorAll('.sec-head')).filter(function(heading){
+return heading.nextElementSibling&&heading.nextElementSibling.classList.contains('sec-head');
+}).forEach(function(heading){
+var hasVisible=Array.from(heading.parentElement.querySelectorAll('.card')).some(function(card){return card.style.display!=='none';});
+heading.style.display=hasVisible?'':'none';
+});
+if(emptyState){
+emptyState.hidden=!noProducts;
+if(filter==='calzado'){
+emptyTitle.textContent='Todavía no hay calzado publicado';
+emptyText.textContent='Consultanos por WhatsApp y te ayudamos con tu búsqueda.';
+}else if(filter==='ofertas'){
+emptyTitle.textContent='No hay productos marcados en oferta';
+emptyText.textContent='Consultanos por WhatsApp si buscás una promoción vigente.';
+}else{
+emptyTitle.textContent='';
+emptyText.textContent='';
+}
+}
+setActiveNavigation(filter);
+}
+window.PadelCatalogFilter={apply:applyCatalogFilter};
+document.querySelectorAll('.cat').forEach(function(button){
+button.addEventListener('click',function(){applyCatalogFilter(button.dataset.cat);});
+});
+document.querySelectorAll('.nav-cat').forEach(function(link){
+link.addEventListener('click',function(event){
+event.preventDefault();
+applyCatalogFilter(link.dataset.filter);
+var catalog=document.getElementById('catalogo');
+if(catalog)catalog.scrollIntoView({behavior:'smooth',block:'start'});
+});
+});
 
 var overlay=document.getElementById('productModal');
 var closeBtn=document.getElementById('modalClose');
@@ -1928,8 +2014,14 @@ setupTalles(product);
 var priceTextRaw=cp?cp.textContent.trim():'';
 isConsultar=/consultar/i.test(priceTextRaw);
 currentPrice=isConsultar?0:parsePrice(priceTextRaw);
-if(stockBadgeEl)stockBadgeEl.style.display=isConsultar?'none':'';
-if(shipBadgeEl)shipBadgeEl.style.display=isConsultar?'none':'';
+if(stockBadgeEl){
+  stockBadgeEl.style.display=isConsultar?'none':'';
+  stockBadgeEl.textContent=currentProduct&&currentProduct.stockConfirmado===true?'\u2714 Stock confirmado':'Disponibilidad a confirmar';
+}
+if(shipBadgeEl){
+  shipBadgeEl.style.display=isConsultar?'none':'';
+  shipBadgeEl.textContent='Consultar envío';
+}
 if(qtyRowEl)qtyRowEl.style.display=isConsultar?'none':'';
 qty=1;if(qtyValEl)qtyValEl.textContent=1;updateSub();
 if(buyBtn){buyBtn.textContent='Agregar al carrito';buyBtn.classList.remove('added');}
@@ -1984,7 +2076,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 
 });
 
-(function(){var c=document.getElementById('hCanvas');if(!c)return;var ctx=c.getContext('2d');var W,H,pts=[];function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;pts=[];for(var i=0;i<60;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});}function draw(){ctx.clearRect(0,0,W,H);for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,162,39,0.35)';ctx.fill();}for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(201,162,39,'+(0.12*(1-d/120))+')';ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}resize();draw();window.addEventListener('resize',resize);})();</script>
+(function(){var c=document.getElementById('hCanvas');if(!c)return;var ctx=c.getContext('2d');var W,H,pts=[];function resize(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;pts=[];for(var i=0;i<60;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5});}function draw(){ctx.clearRect(0,0,W,H);for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle='rgba(201,162,39,0.35)';ctx.fill();}for(var i=0;i<pts.length;i++)for(var j=i+1;j<pts.length;j++){var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(201,162,39,'+(0.12*(1-d/120))+')';ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}resize();draw();window.addEventListener('resize',resize);})();if(document.getElementById('catalogProductCount'))document.getElementById('catalogProductCount').textContent=document.querySelectorAll('.main-wrap .card').length;
+</script>
 <!-- MODAL PRODUCTO -->
 <div class="modal-overlay" id="productModal" role="dialog" aria-modal="true">
 <div class="modal-box">
@@ -1999,8 +2092,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="modal-info">
 <div class="modal-badge-row">
 <span class="modal-badge cat" id="modalCat"></span>
-<span class="modal-badge stock" id="modalStockBadge">&#10004; Stock disponible</span>
-<span class="modal-badge ship" id="modalShipBadge">Envio gratis</span>
+<span class="modal-badge stock" id="modalStockBadge">Disponibilidad a confirmar</span>
+<span class="modal-badge ship" id="modalShipBadge">Consultar envío</span>
 </div>
 <div class="modal-name" id="modalName"></div>
 <div>
@@ -2028,12 +2121,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 <div class="checkout-paused-msg" id="modalCheckoutPausedMsg" role="status" hidden>La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.</div>
 <button class="modal-buy-btn" id="modalBuyBtn">Agregar al carrito</button>
 <button class="modal-wp-btn" id="modalWpBtn">Consultar por WhatsApp</button>
-<div class="modal-trust-row">
-<div class="modal-trust-item"><span class="modal-trust-icon">&#128274;</span><span class="modal-trust-text">Pago seguro</span></div>
-<div class="modal-trust-item"><span class="modal-trust-icon">&#128260;</span><span class="modal-trust-text">30 dias dev.</span></div>
-<div class="modal-trust-item"><span class="modal-trust-icon">&#9889;</span><span class="modal-trust-text">Despacho 24hs</span></div>
-<div class="modal-trust-item"><span class="modal-trust-icon">&#11088;</span><span class="modal-trust-text">4.9 calificacion</span></div>
-</div>
+<div class="modal-trust-row"><span class="modal-trust-note">Antes de comprar, confirmá disponibilidad, medios de pago y envío por WhatsApp.</span></div>
 </div>
 </div>
 </div>
