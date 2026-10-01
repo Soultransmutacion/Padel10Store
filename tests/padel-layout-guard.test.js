@@ -45,12 +45,11 @@ test('.nav-links{display:flex;gap:24px} existe y no esta precedido por texto sue
 });
 
 // --- 2. no debe existir un </div> sobrante inmediatamente antes de <footer> ---
-// Estructuralmente, justo antes de <footer> deben cerrarse exactamente 3
-// contenedores anidados y legitimos (la card del ultimo producto, el grid
-// de la seccion y el .main-wrap). El bug de la regresion agregaba un
-// </div> extra (4 en vez de 3).
+// Estructuralmente, justo antes de <footer> deben cerrarse exactamente 4
+// contenedores anidados y legitimos: .card-body, .card, el grid y
+// .main-wrap. Esto evita dejar el contenido principal abierto sobre el footer.
 
-test('antes de <footer> se cierran exactamente los 3 </div> legitimos (card, grid, main-wrap), sin uno sobrante', () => {
+test('antes de <footer> se cierran card-body, card, grid y main-wrap', () => {
   const html = leerArchivo('index.html');
   const footerIdx = html.indexOf('<footer>');
   assert.ok(footerIdx !== -1, 'debe existir <footer>');
@@ -60,8 +59,8 @@ test('antes de <footer> se cierran exactamente los 3 </div> legitimos (card, gri
   const divCloseCount = (runMatch[0].match(/<\/div>/g) || []).length;
   assert.strictEqual(
     divCloseCount,
-    3,
-    'se esperaban exactamente 3 </div> consecutivos antes de <footer> (cierre de card, grid y main-wrap); ' +
+    4,
+    'se esperaban exactamente 4 </div> consecutivos antes de <footer> (card-body, card, grid y main-wrap); ' +
       `se encontraron ${divCloseCount}`
   );
 });

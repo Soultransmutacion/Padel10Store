@@ -132,31 +132,10 @@ test('getPurchasableProduct rechaza un productId inexistente', () => {
   assert.strictEqual(result.reason, 'not_found');
 });
 
-test('getPurchasableProduct rechaza un producto marcado como "a consultar"', () => {
-  const consultarProduct = catalogo.find((p) => p.precioConsultar === true);
-  assert.ok(consultarProduct, 'el catalogo debe tener al menos un producto a consultar');
-  const result = getPurchasableProduct(consultarProduct.id);
-  assert.strictEqual(result.ok, false);
-  assert.strictEqual(result.reason, 'precio_consultar');
-});
-
-test('getPurchasableProduct rechaza un producto sin precio numerico valido', () => {
-  const sinPrecio = catalogo.find((p) => p.precioConsultar !== true && typeof p.precio !== 'number');
-  if (sinPrecio) {
-    const result = getPurchasableProduct(sinPrecio.id);
-    assert.strictEqual(result.ok, false);
-    assert.strictEqual(result.reason, 'invalid_price');
-  }
-});
-
-test('getPurchasableProduct rechaza un producto valido pero no habilitado para esta prueba', () => {
-  const otro = catalogo.find(
-    (p) => p.precioConsultar !== true && typeof p.precio === 'number' && p.precio > 0 && p.id !== PURCHASABLE_ID
-  );
-  assert.ok(otro, 'debe existir otro producto valido distinto del habilitado');
-  const result = getPurchasableProduct(otro.id);
-  assert.strictEqual(result.ok, false);
-  assert.strictEqual(result.reason, 'not_enabled');
+test('el catalogo no contiene productos a consultar, sin precio ni de otras marcas', () => {
+  assert.strictEqual(catalogo.some((p) => p.precioConsultar === true), false);
+  assert.strictEqual(catalogo.some((p) => typeof p.precio !== 'number' || p.precio <= 0), false);
+  assert.strictEqual(catalogo.every((p) => p.marca === 'Royal Padel'), true);
 });
 
 test('getPurchasableProduct acepta el producto habilitado con el precio exacto del catalogo', () => {
@@ -314,11 +293,9 @@ test('notification_url es estable entre deployments: no cambia aunque VERCEL_URL
 // api/create-payment-preference.js (con req/res simulados, sin red real)
 // ---------------------------------------------------------------------
 
-test('PURCHASABLE_PRODUCT_IDS incluye Cross Black 26 y los productos con talles del catalogo', () => {
-  const talleIds = catalogo.filter((p) => Array.isArray(p.talles) && p.talles.length > 0).map((p) => p.id);
-  assert.ok(talleIds.length > 0, 'debe existir al menos un producto con talles en el catalogo');
-  assert.ok(PURCHASABLE_PRODUCT_IDS.includes('royal-padel-cross-black-26'));
-  talleIds.forEach((id) => assert.ok(PURCHASABLE_PRODUCT_IDS.includes(id), 'falta ' + id + ' en PURCHASABLE_PRODUCT_IDS'));
+test('PURCHASABLE_PRODUCT_IDS incluye los 81 Royal Padel con precio publicado', () => {
+  assert.strictEqual(PURCHASABLE_PRODUCT_IDS.length, 81);
+  catalogo.forEach((p) => assert.ok(PURCHASABLE_PRODUCT_IDS.includes(p.id), 'falta ' + p.id + ' en PURCHASABLE_PRODUCT_IDS'));
 });
 
 test('validateRequestBody acepta productId y talle juntos', () => {

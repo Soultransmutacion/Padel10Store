@@ -347,6 +347,62 @@ opacity: 0.6;
 cursor: not-allowed;
 }
 
+/* Botones alineados con la nueva jerarquia visual de Padel10Store. */
+.pa-card-btn,
+.pa-input-row button {
+  min-height: 42px;
+  border-radius: 10px;
+  transition: transform .16s ease, box-shadow .2s ease, background .2s ease,
+    border-color .2s ease, color .2s ease, filter .2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pa-card-btn:focus-visible,
+.pa-input-row button:focus-visible {
+  outline: 3px solid rgba(239, 214, 111, .42);
+  outline-offset: 3px;
+}
+
+.pa-card-btn-primary,
+.pa-card-btn-buy,
+.pa-input-row button {
+  background: linear-gradient(135deg, #efd66f 0%, #d7b33f 48%, #b88c18 100%);
+  color: #0c0c0c;
+  border-color: rgba(255, 235, 151, .34);
+  box-shadow: 0 7px 18px rgba(201, 162, 39, .16), inset 0 1px 0 rgba(255, 255, 255, .3);
+}
+
+.pa-card-btn-primary:hover,
+.pa-card-btn-buy:hover,
+.pa-input-row button:hover {
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(201, 162, 39, .24), inset 0 1px 0 rgba(255, 255, 255, .34);
+}
+
+.pa-card-btn-secondary:hover {
+  transform: translateY(-1px);
+  border-color: #d7b33f;
+  box-shadow: 0 6px 16px rgba(201, 162, 39, .11);
+}
+
+.pa-card-btn:active,
+.pa-input-row button:active {
+  transform: scale(.985);
+}
+
+.pa-card-btn:disabled,
+.pa-input-row button:disabled {
+  box-shadow: none;
+  filter: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-card-btn,
+  .pa-input-row button { transition: none; }
+}
+
 .mp-buy-error {
 width: 100%;
 font-size: 11px;
@@ -446,4 +502,25 @@ height: min(70vh, 560px);
 left: 12px;
 bottom: 12px;
 }
+}
+
+/* Debe quedar despues de los estilos base del formulario para conservar la
+   misma terminacion premium del resto de los CTA. */
+.pa-input-row button {
+background: linear-gradient(135deg, #efd66f 0%, #d7b33f 48%, #b88c18 100%);
+color: #0c0c0c;
+border: 1px solid rgba(255, 235, 151, .34);
+border-radius: 10px;
+box-shadow: 0 7px 18px rgba(201, 162, 39, .16), inset 0 1px 0 rgba(255, 255, 255, .3);
+transition: transform .16s ease, box-shadow .2s ease, filter .2s ease;
+}
+.pa-input-row button:hover {
+filter: brightness(1.06);
+transform: translateY(-2px);
+box-shadow: 0 10px 24px rgba(201, 162, 39, .24), inset 0 1px 0 rgba(255, 255, 255, .34);
+}
+.pa-input-row button:disabled {
+box-shadow: none;
+filter: none;
+transform: none;
 }
