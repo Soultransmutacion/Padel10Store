@@ -420,6 +420,12 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 .nav-links a.nav-cat{font-size:17px;letter-spacing:1.4px;padding:12px 2px}
 .nav-links a.nav-cat.is-active{text-underline-offset:6px}
 }
+.catalog-empty{max-width:1100px;margin:18px auto 30px;padding:24px;border:1px solid rgba(201,162,39,.28);border-radius:12px;background:#151515;color:#eee;text-align:center}
+.catalog-empty[hidden]{display:none}
+.catalog-empty strong{display:block;color:#F2CB50;font-family:'Barlow Condensed',sans-serif;font-size:21px;text-transform:uppercase;letter-spacing:.5px}
+.catalog-empty p{margin:7px 0 15px;color:rgba(255,255,255,.68);font-size:14px}
+.catalog-empty a{display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(201,162,39,.55);border-radius:6px;padding:9px 15px;color:#F2CB50;text-decoration:none;font-size:13px;font-weight:700}
+#catalogo{scroll-margin-top:78px}
 </style>
 </head>
 <body>
@@ -434,7 +440,11 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   </div>
   <button class="nav-toggle" id="navToggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
   <div class="nav-links" id="navLinks">
-    <a href="#" class="nav-cat is-active" aria-current="page">Paletas</a><a href="#" class="nav-cat">Ropa</a><a href="#" class="nav-cat">Calzado</a><a href="#" class="nav-cat">Accesorios</a><a href="#" class="nav-cat">Ofertas</a>
+    <a href="#catalogo" class="nav-cat" data-filter="paletas">Paletas</a>
+    <a href="#catalogo" class="nav-cat" data-filter="ropa">Ropa</a>
+    <a href="#catalogo" class="nav-cat" data-filter="calzado">Calzado</a>
+    <a href="#catalogo" class="nav-cat" data-filter="Accesorios">Accesorios</a>
+    <a href="#catalogo" class="nav-cat" data-filter="ofertas">Ofertas</a>
   </div>
   <div class="nav-right">
     <div class="nav-search"><span style="color:rgba(255,255,255,0.2);font-size:13px">🔍</span><input placeholder="Buscar productos..."/></div>
@@ -498,9 +508,10 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
   </div>
 </div>
 
-<div class="cats-wrap">
+<div class="cats-wrap" id="catalogo">
 <div class="cats">
 <div class="cat on" data-cat="all">Todo</div>
+<div class="cat" data-cat="paletas">Paletas</div>
 <div class="cat" data-cat="control">🎯 Control</div>
 <div class="cat" data-cat="ataque">⚡ Ataque</div>
 <div class="cat" data-cat="polivalente">⚖️ Polivalente</div>
@@ -508,6 +519,11 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 <div class="cat" data-cat="Accesorios">Accesorios</div>
 <div class="cat" data-cat="Indumentaria">Indumentaria</div>
 </div>
+</div>
+<div id="catalogEmptyState" class="catalog-empty" role="status" aria-live="polite" hidden>
+  <strong id="catalogEmptyTitle"></strong>
+  <p id="catalogEmptyText"></p>
+  <a href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20consultar%20por%20esta%20categoria">Consultar por WhatsApp</a>
 </div>
 
 <div class="main-wrap">
@@ -1817,7 +1833,75 @@ document.addEventListener('click',function(e){
 },true);
 document.addEventListener('DOMContentLoaded',function(){
 
-document.querySelectorAll('.cat').forEach(btn=>{btn.addEventListener('click',()=>{document.querySelectorAll('.cat').forEach(b=>b.classList.remove('on'));btn.classList.add('on');const f=btn.dataset.cat;document.querySelectorAll('.card').forEach(c=>{const bc=c.querySelector('.card-cat')?c.querySelector('.card-cat').textContent.trim().toLowerCase():'';const ibf=f==='bull-padel'||f==='adidas'||f==='siux';const bm=(f==='bull-padel'&&bc.includes('bullpadel'))||(f==='adidas'&&bc.includes('adidas'))||(f==='siux'&&bc.includes('siux'));c.style.display=(f==='all'||(!ibf&&c.dataset.cat===f)||bm)?'':'none';});document.querySelectorAll('.sec-head').forEach(function(sh){var next=sh.nextElementSibling;if(!next)return;if(next.classList.contains('grid')){var vis=Array.from(next.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=vis?'':'none';next.style.display=vis?'':'none';}});Array.from(document.querySelectorAll('.sec-head')).filter(function(sh){return sh.nextElementSibling&&sh.nextElementSibling.classList.contains('sec-head');}).forEach(function(sh){var hasVis=Array.from(sh.parentElement.querySelectorAll('.card')).some(function(c){return c.style.display!=='none';});sh.style.display=hasVis?'':'none';});});});
+function setActiveNavigation(filter){
+var topFilter=filter;
+if(filter==='all')topFilter='';
+if(['control','ataque','polivalente','ninos'].indexOf(filter)>-1)topFilter='paletas';
+if(filter==='Indumentaria')topFilter='ropa';
+if(filter==='Accesorios')topFilter='Accesorios';
+document.querySelectorAll('.nav-cat').forEach(function(link){
+var active=link.dataset.filter===topFilter;
+link.classList.toggle('is-active',active);
+if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+});
+}
+function applyCatalogFilter(filter){
+var emptyState=document.getElementById('catalogEmptyState');
+var emptyTitle=document.getElementById('catalogEmptyTitle');
+var emptyText=document.getElementById('catalogEmptyText');
+var noProducts=filter==='calzado'||filter==='ofertas';
+document.querySelectorAll('.cat').forEach(function(button){
+var selected=button.dataset.cat===filter;
+button.classList.toggle('on',selected);
+});
+document.querySelectorAll('.card').forEach(function(card){
+var category=card.dataset.cat||'';
+var cardLabel=card.querySelector('.card-cat')?card.querySelector('.card-cat').textContent.trim().toLowerCase():'';
+var brandFilter=filter==='bull-padel'||filter==='adidas'||filter==='siux';
+var brandMatch=(filter==='bull-padel'&&cardLabel.includes('bullpadel'))||(filter==='adidas'&&cardLabel.includes('adidas'))||(filter==='siux'&&cardLabel.includes('siux'));
+var match=filter==='all'||(filter==='paletas'&&['control','ataque','polivalente','ninos'].indexOf(category)>-1)||(filter==='ropa'&&category==='Indumentaria')||(filter==='Accesorios'&&category==='Accesorios')||(!brandFilter&&category===filter)||brandMatch;
+card.style.display=match?'':'none';
+});
+document.querySelectorAll('.sec-head').forEach(function(heading){
+var next=heading.nextElementSibling;
+if(!next||!next.classList.contains('grid'))return;
+var visible=Array.from(next.querySelectorAll('.card')).some(function(card){return card.style.display!=='none';});
+heading.style.display=visible?'':'none';
+next.style.display=visible?'':'none';
+});
+Array.from(document.querySelectorAll('.sec-head')).filter(function(heading){
+return heading.nextElementSibling&&heading.nextElementSibling.classList.contains('sec-head');
+}).forEach(function(heading){
+var hasVisible=Array.from(heading.parentElement.querySelectorAll('.card')).some(function(card){return card.style.display!=='none';});
+heading.style.display=hasVisible?'':'none';
+});
+if(emptyState){
+emptyState.hidden=!noProducts;
+if(filter==='calzado'){
+emptyTitle.textContent='Todavía no hay calzado publicado';
+emptyText.textContent='Consultanos por WhatsApp y te ayudamos con tu búsqueda.';
+}else if(filter==='ofertas'){
+emptyTitle.textContent='No hay productos marcados en oferta';
+emptyText.textContent='Consultanos por WhatsApp si buscás una promoción vigente.';
+}else{
+emptyTitle.textContent='';
+emptyText.textContent='';
+}
+}
+setActiveNavigation(filter);
+}
+window.PadelCatalogFilter={apply:applyCatalogFilter};
+document.querySelectorAll('.cat').forEach(function(button){
+button.addEventListener('click',function(){applyCatalogFilter(button.dataset.cat);});
+});
+document.querySelectorAll('.nav-cat').forEach(function(link){
+link.addEventListener('click',function(event){
+event.preventDefault();
+applyCatalogFilter(link.dataset.filter);
+var catalog=document.getElementById('catalogo');
+if(catalog)catalog.scrollIntoView({behavior:'smooth',block:'start'});
+});
+});
 
 var overlay=document.getElementById('productModal');
 var closeBtn=document.getElementById('modalClose');
