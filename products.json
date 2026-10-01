@@ -133,7 +133,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_EVA_26.webp",
+      "imagen": "Palas%20royal%202/CROSS_EVA_26_PORTADA.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -156,6 +156,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-eva/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_EVA_26_PORTADA.webp",
+        "Palas%20royal%202/CROSS_EVA_26.webp"
       ]
     },
     {
