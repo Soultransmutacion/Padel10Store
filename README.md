@@ -25,3 +25,7 @@ El script termina con codigo de salida 1 y detalla cada diferencia encontrada si
 ## Actualizar el catálogo paso a paso
 
 Seguí la [guía para mantener el catálogo](GUIA_CATALOGO.md). Explica qué archivo editar para cada cambio y cómo comprobar que las fichas sigan sincronizadas.
+
+## Lanzamiento público
+
+Los datos que faltan para vender (vendedor, envíos, medición y variables de producción) y dónde se completa cada uno están en [docs/LANZAMIENTO.md](docs/LANZAMIENTO.md).

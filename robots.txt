@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /mercadopago/
+
+Sitemap: https://padel10-store.vercel.app/sitemap.xml

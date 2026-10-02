@@ -40,6 +40,20 @@
     isEnabled: function () { return false; },
     subscribe: function (cb) { cb(false); return function () {}; },
   };
+  // Envio (lib/padel-shipping.js). Si ese archivo no cargo, se asume
+  // "a confirmar" (fail closed: nunca se muestra un total como final si no
+  // se sabe el costo de envio). El servidor vuelve a cotizarlo siempre.
+  var Shipping = window.PadelShipping || {
+    ESTADO_CONFIRMADO: 'confirmado',
+    cotizarEnvio: function () { return { estado: 'a_confirmar', costo: null, plazoTexto: null }; },
+    envioConfigurado: function () { return false; },
+  };
+  var WHATSAPP_NUMERO = '5493413637355';
+  var ENVIO_A_CONFIRMAR_TEXTO =
+    'El costo de envío todavía no está confirmado y no está incluido en este total. ' +
+    'La disponibilidad de los productos también la confirma el vendedor. ' +
+    'Al registrar el pedido no se cobra nada: te contactamos para confirmar envío y disponibilidad, ' +
+    'y recién después coordinamos el pago.';
   var CHECKOUT_PAUSED_MESSAGE =
     'La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.';
 
@@ -145,6 +159,9 @@
   var submitError = null; // string | null
   var submitting = false;
   var pedidoConfirmadoNumero = null;
+  // true cuando el servidor registro el pedido con el envio "a confirmar"
+  // (respuesta { envioAConfirmar: true }): no se inicio ningun pago.
+  var pedidoConEnvioAConfirmar = false;
   // paymentRetryToken: SOLO vive en memoria (nunca localStorage, nunca se
   // loguea). Autoriza unicamente un intento de reiniciar el pago de ESTE
   // pedido puntual; no reemplaza ningun otro identificador. Se recibe de
@@ -288,6 +305,37 @@
     return nuevaKey;
   }
 
+  // Avisa a la medicion (widget/padel-analytics.js) sin depender de ella:
+  // si no esta cargada o no tiene IDs configurados, no pasa nada.
+  function notificarEvento(tipo, datos) {
+    try {
+      document.dispatchEvent(new CustomEvent('padel10:evento', { detail: { tipo: tipo, datos: datos || {} } }));
+    } catch (e) {}
+  }
+
+  // Antes de ir a Mercado Pago se guarda (solo en esta pestaña) el numero
+  // de pedido y un resumen sin datos personales, para que las paginas de
+  // retorno (mercadopago/*.html) puedan mostrar el numero de pedido y medir
+  // la compra confirmada.
+  var PEDIDO_EN_PAGO_KEY = 'padel10store:pedidoEnPago';
+  function guardarPedidoEnPago(numero, resumen) {
+    try {
+      var envio = cotizacionActual();
+      var lineas = resumen && Array.isArray(resumen.lineas) ? resumen.lineas : [];
+      var subtotal = resumen && typeof resumen.total === 'number' ? resumen.total : 0;
+      window.sessionStorage.setItem(PEDIDO_EN_PAGO_KEY, JSON.stringify({
+        numero: numero,
+        subtotal: subtotal,
+        envio: envio.confirmado ? envio.costo : 0,
+        total: subtotal + (envio.confirmado ? envio.costo : 0),
+        items: lineas.map(function (l) {
+          return { productId: l.productId, nombre: l.nombre, talle: l.talle || null, cantidad: l.cantidad, precio: l.precio };
+        }),
+        ts: Date.now(),
+      }));
+    } catch (e) {}
+  }
+
   function escapeHtml(value) {
     return String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
@@ -423,6 +471,16 @@
       '</div>';
   }
 
+  function cotizacionActual() {
+    var cot = Shipping.cotizarEnvio({ provincia: formState.provincia }) || {};
+    var confirmado = cot.estado === Shipping.ESTADO_CONFIRMADO && typeof cot.costo === 'number' && isFinite(cot.costo);
+    return { confirmado: confirmado, costo: confirmado ? cot.costo : null, plazoTexto: confirmado ? cot.plazoTexto : null };
+  }
+
+  function formatearPesos(n) {
+    return Core.formatPrice ? Core.formatPrice(n) : '$' + Number(n).toLocaleString('es-AR');
+  }
+
   function renderRevisionView(summary) {
     if (els.title) els.title.textContent = 'Revisá tu pedido';
     var itemsHtml = summary.lineas
@@ -435,6 +493,7 @@
         );
       })
       .join('');
+    var envio = cotizacionActual();
     var direccionLinea2 = [formState.pisoDepto].filter(Boolean).map(escapeHtml).join(', ');
     els.body.innerHTML =
       avisoSesionRestauradaHtml() +
@@ -451,10 +510,20 @@
       '</div>' +
       '<div class="ord-sum"><div class="os-t">PEDIDO</div>' +
       itemsHtml +
-      '<div class="os-total"><span class="os-tl">Total</span><span class="os-tv">' + escapeHtml(summary.totalFormateado) + '</span></div>' +
+      '<div class="os-item" data-checkout-line="subtotal"><span>Productos</span><span>' + escapeHtml(summary.totalFormateado) + '</span></div>' +
+      '<div class="os-item" data-checkout-line="envio"><span>Envío</span><span>' +
+      (envio.confirmado ? escapeHtml(envio.costo > 0 ? formatearPesos(envio.costo) : 'Sin cargo') : '<strong style="color:#ffd166">A confirmar</strong>') +
+      '</span></div>' +
+      (envio.plazoTexto ? '<div class="os-item"><span>Plazo de envío</span><span>' + escapeHtml(envio.plazoTexto) + '</span></div>' : '') +
+      '<div class="os-total" data-checkout-line="total"><span class="os-tl">' +
+      (envio.confirmado ? 'Total a pagar' : 'Total sin envío') +
+      '</span><span class="os-tv">' + escapeHtml(envio.confirmado ? formatearPesos(summary.total + envio.costo) : summary.totalFormateado) + '</span></div>' +
       '</div>' +
       (submitError ? '<div class="mp-buy-error" role="alert" style="text-align:left;margin-bottom:8px">' + escapeHtml(submitError) + '</div>' : '') +
-      '<div style="font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5">Al confirmar, todavía no se realiza ningún cobro: solo se registra tu pedido.</div>';
+      (envio.confirmado
+        ? '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5">Al confirmar, registramos tu pedido y te llevamos a Mercado Pago para pagar el total indicado (productos + envío). La disponibilidad la confirma el vendedor. Podés ver las <a href="legal/condiciones-de-compra.html" target="_blank" rel="noopener" style="color:#C9A227">condiciones de compra</a> y cómo <a href="legal/arrepentimiento.html" target="_blank" rel="noopener" style="color:#C9A227">arrepentirte de la compra</a>.</div>'
+        : '<div class="checkout-shipping-note" role="note" style="font-size:12px;color:#ffd166;background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.3);border-radius:8px;padding:10px;line-height:1.5">' + escapeHtml(ENVIO_A_CONFIRMAR_TEXTO) + '</div>' +
+          '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;margin-top:8px">Ver <a href="legal/envios.html" target="_blank" rel="noopener" style="color:#C9A227">envíos</a>, <a href="legal/condiciones-de-compra.html" target="_blank" rel="noopener" style="color:#C9A227">condiciones de compra</a> y <a href="legal/arrepentimiento.html" target="_blank" rel="noopener" style="color:#C9A227">botón de arrepentimiento</a>.</div>');
   }
 
   function renderConfirmacionView() {
@@ -476,11 +545,22 @@
         (retrying ? 'Iniciando pago…' : 'Pagar ahora') +
         '</button>';
     }
+    var envioHtml = '';
+    if (pedidoConEnvioAConfirmar) {
+      var waTexto = 'Hola Padel10Store, registré el pedido ' + pedidoConfirmadoNumero +
+        ' y quiero confirmar el costo de envío y la disponibilidad.';
+      envioHtml =
+        '<div class="succ-s" style="font-size:13px">Próximo paso: te contactamos al email o teléfono que ingresaste para confirmar <strong>costo de envío y disponibilidad</strong>. Recién después coordinamos el pago.</div>' +
+        '<a class="chk-btn" style="display:block;text-decoration:none;text-align:center" target="_blank" rel="noopener" href="https://wa.me/' +
+        WHATSAPP_NUMERO + '?text=' + encodeURIComponent(waTexto) + '">Escribirnos por WhatsApp</a>';
+    }
     els.body.innerHTML =
       '<div class="success">' +
       '<div class="succ-ico">&#9989;</div>' +
       '<div class="succ-t">Pedido ' + escapeHtml(pedidoConfirmadoNumero) + '</div>' +
-      '<div class="succ-s">Tu pedido quedó registrado correctamente.<br><strong>Todavía no se realizó ningún cobro.</strong><br>Nos vamos a comunicar para coordinar el pago.</div>' +
+      '<div class="succ-s">Tu pedido quedó registrado correctamente.<br><strong>Todavía no se realizó ningún cobro.</strong>' +
+      (pedidoConEnvioAConfirmar ? '' : '<br>Nos vamos a comunicar para coordinar el pago.') + '</div>' +
+      envioHtml +
       retryHtml +
       '</div>';
   }
@@ -520,7 +600,9 @@
       els.backBtn.disabled = submitting;
       els.backBtn.textContent = 'Volver a editar mis datos';
       els.nextBtn.disabled = submitting;
-      els.nextBtn.textContent = submitting ? 'Creando pedido…' : 'Confirmar y crear pedido';
+      els.nextBtn.textContent = submitting
+        ? 'Creando pedido…'
+        : (cotizacionActual().confirmado ? 'Confirmar e ir a pagar' : 'Registrar pedido sin pagar');
     } else if (view === 'confirmacion') {
       els.backBtn.hidden = true;
       els.nextBtn.disabled = false;
@@ -582,6 +664,9 @@
     updateFooter();
 
     var contenido = contenidoDelIntentoActual();
+    // Resumen tomado ANTES de enviar: si el pedido sale bien, el carrito se
+    // vacia y ya no se podria reconstruir (lo usa solo la medicion).
+    var resumenEnviado = getActiveSummary();
     var idempotencyKey = obtenerIdempotencyKeyParaIntento(contenido);
 
     var body = {
@@ -660,6 +745,7 @@
         sesionConIntentoPrevioSinConfirmar = false;
 
         pedidoConfirmadoNumero = result.data.numero;
+        pedidoConEnvioAConfirmar = result.data.envioAConfirmar === true;
         paymentRetryToken = typeof result.data.paymentRetryToken === 'string' ? result.data.paymentRetryToken : null;
         retryError = null;
         // El carrito se vacia UNICAMENTE aca, despues de una confirmacion
@@ -671,7 +757,14 @@
         if (mode !== 'buyNow') {
           window.PadelCart.clear();
         }
+        notificarEvento('pedido_registrado', {
+          numero: pedidoConfirmadoNumero,
+          resumen: resumenEnviado,
+          envioAConfirmar: pedidoConEnvioAConfirmar,
+          vaAPagar: isValidCheckoutRedirectUrl(result.data.redirectUrl),
+        });
         if (isValidCheckoutRedirectUrl(result.data.redirectUrl)) {
+          guardarPedidoEnPago(pedidoConfirmadoNumero, resumenEnviado);
           // El pago ya se puede iniciar: se navega directo al checkout de
           // Mercado Pago sandbox. No hace falta mostrar la vista de
           // confirmacion (el comprador la va a ver al volver del pago).
@@ -815,6 +908,7 @@
     retryError = null;
     retrying = false;
     if (window.PadelCart && typeof window.PadelCart.open === 'function') window.PadelCart.open();
+    notificarEvento('inicio_checkout', { resumen: summary });
     goto('formulario');
   }
 
@@ -828,6 +922,11 @@
     // para mostrar el aviso correspondiente: nunca se borra ni se genera
     // una nueva aca.
     sesionConIntentoPrevioSinConfirmar = Boolean(leerIdempotenciaAlmacenada());
+
+    var notaEnvioCarrito = document.getElementById('cartShippingNote');
+    if (notaEnvioCarrito && Shipping.envioConfigurado()) {
+      notaEnvioCarrito.textContent = 'Envío: se calcula según tu provincia antes de confirmar el pedido.';
+    }
 
     if (els.body) els.body.addEventListener('input', onBodyInput);
     if (els.body) els.body.addEventListener('change', onBodyInput);
@@ -844,6 +943,7 @@
         resetBuyNow();
         currentError = null;
         submitError = null;
+        notificarEvento('inicio_checkout', { resumen: summary });
         goto('formulario');
       });
     }

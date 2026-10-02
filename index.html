@@ -24,8 +24,27 @@
 })();
 </script>
 <link rel="canonical" href="https://padel10-store.vercel.app/"/>
-<title>Padel10Store — Todo para jugar al pádel</title>
-<meta name="description" content="Catálogo de productos Royal Padel: paletas, indumentaria y accesorios. Consultá disponibilidad, medios de pago y envío antes de comprar."/>
+<title>Padel10Store — Paletas, indumentaria y accesorios Royal Padel</title>
+<meta name="description" content="Catálogo de productos Royal Padel: paletas, indumentaria y accesorios con precios publicados. Consultá disponibilidad, medios de pago y envío antes de comprar."/>
+<meta name="robots" content="index,follow"/>
+<meta name="theme-color" content="#111111"/>
+<link rel="icon" href="escudo-192.png" type="image/png"/>
+<link rel="apple-touch-icon" href="escudo-192.png"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Padel10Store"/>
+<meta property="og:locale" content="es_AR"/>
+<meta property="og:title" content="Padel10Store — Paletas, indumentaria y accesorios Royal Padel"/>
+<meta property="og:description" content="Paletas, indumentaria y accesorios Royal Padel con precios publicados. Consultá disponibilidad y envío por WhatsApp."/>
+<meta property="og:url" content="https://padel10-store.vercel.app/"/>
+<meta property="og:image" content="https://padel10-store.vercel.app/og-padel10store.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="Escudo de Padel10Store"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Padel10Store — Paletas, indumentaria y accesorios Royal Padel"/>
+<meta name="twitter:description" content="Paletas, indumentaria y accesorios Royal Padel con precios publicados."/>
+<meta name="twitter:image" content="https://padel10-store.vercel.app/og-padel10store.png"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"OnlineStore","name":"Padel10Store","url":"https://padel10-store.vercel.app/","logo":"https://padel10-store.vercel.app/escudo-192.png","image":"https://padel10-store.vercel.app/og-padel10store.png","description":"Catálogo de productos Royal Padel: paletas, indumentaria y accesorios.","areaServed":"AR","currenciesAccepted":"ARS","contactPoint":{"@type":"ContactPoint","contactType":"customer service","telephone":"+54 9 341 363-7355","availableLanguage":"es"}}</script>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Graduate&display=swap" rel="stylesheet"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -124,7 +143,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:0 2rem
 .bdg{position:absolute;top:10px;left:10px;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;padding:3px 9px;border-radius:4px}
 .bdg-n{background:#C9A227;color:#111}
 .bdg-s{background:rgba(40,160,80,0.15);color:#4cd68a;border:1px solid rgba(40,160,80,0.25)}
-.fav{position:absolute;top:10px;right:10px;font-size:15px;color:rgba(255,255,255,0.2);cursor:pointer;background:rgba(0,0,0,0.4);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
+.fav{display:none!important;position:absolute;top:10px;right:10px;font-size:15px;color:rgba(255,255,255,0.2);cursor:pointer;background:rgba(0,0,0,0.4);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center}
 .fav:hover{color:#e05555}
 .card-body{padding:14px;display:flex;flex-direction:column;flex:1}
 .card-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(201,162,39,0.6);margin-bottom:4px}
@@ -429,13 +448,34 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
 @media(max-width:860px){.hero-layout{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1rem}.hero-escudo-col{display:none}.stats-col{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.sbox{min-width:0;text-align:center;padding:10px 6px}.sbox .sn{font-size:clamp(16px,4vw,24px)}.hero h1{font-size:clamp(42px,10vw,58px)}.hero-c{padding-left:1.25rem;padding-right:1.25rem}.hero-search{margin-left:-1.25rem;margin-right:-1.25rem}}
 @media(max-width:420px){.hero-layout{grid-template-columns:1fr}.stats-col{grid-column:auto}.sbox .sn{font-size:18px}.hero h1{font-size:46px}.hero-sub{font-size:14px}}
 #catalogo{scroll-margin-top:78px}
+.footer-top{grid-template-columns:1.6fr 1fr 1fr 1fr}
+.footer-seller{margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid rgba(255,255,255,.05)}
+.footer-seller h4{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.45);margin-bottom:10px}
+.footer-seller dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 1.5rem;font-size:12px}
+.footer-seller dt{color:rgba(255,255,255,.45)}
+.footer-seller dd{color:rgba(255,255,255,.78);overflow-wrap:anywhere}
+.store-pending{color:#ffd166!important;font-style:italic}
+.footer-consumer{margin-top:12px;font-size:12px}
+.footer-col a[hidden]{display:none}
+.footer-consumer a,.footer-col a.footer-arrepentimiento{color:#F2CB50}
+.footer-desc,.footer-col a{color:rgba(255,255,255,.62)}
+.footer-copy,.fbadge{color:rgba(255,255,255,.5)}
+.footer-col h4{color:rgba(255,255,255,.45)}
+@media(max-width:860px){.footer-top{grid-template-columns:1fr 1fr}.footer-seller dl{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.footer-top{grid-template-columns:1fr}.footer-seller dl{grid-template-columns:1fr}}
+.hero-sub{color:rgba(255,255,255,.72)}
+.hero-search input{min-width:0}
+@media(max-width:600px){.hero-search{margin:0 16px 16px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}.hero-search input{padding:14px 12px;font-size:15px}.hero-search button{padding:12px 18px;border-radius:0}}
+footer{padding-bottom:6rem}
+.footer-logo img{mix-blend-mode:normal!important}
+.cart-shipping-note{font-size:12px;line-height:1.5;color:rgba(255,255,255,.7);margin:-.5rem 0 .9rem}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="logo">
-    <img class="logo-escudo" src="escudo.png" alt="Padel10Store"/>
+    <img class="logo-escudo" src="escudo-192.png" alt="Padel10Store" width="38" height="38"/>
     <div class="logo-text">
       <span class="l1">PADEL</span>
       <span class="l2">10STORE</span>
@@ -450,7 +490,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
     <a href="#catalogo" class="nav-cat" data-filter="ofertas">Ofertas</a>
   </div>
   <div class="nav-right">
-    <div class="nav-search"><span style="color:rgba(255,255,255,0.2);font-size:13px">🔍</span><input placeholder="Buscar productos..."/></div>
+    <form class="nav-search" role="search" id="navSearchForm"><span style="color:rgba(255,255,255,0.45);font-size:13px" aria-hidden="true">🔍</span><input type="search" id="navSearchInput" placeholder="Buscar productos..." aria-label="Buscar productos" autocomplete="off"/></form>
     <button class="cart-btn" id="cartBtn">🛒 Carrito <span class="cart-badge" id="cartBadge">0</span></button>
   </div>
 </nav>
@@ -467,7 +507,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
         <p class="hero-sub" style="margin-top:0.75rem">Encontrá paletas, indumentaria y accesorios Royal Padel. Consultá disponibilidad, medios de pago y envío antes de comprar.</p>
       </div>
       <div class="hero-escudo-col">
-                  <img class="hero-escudo-img" src="escudo.png" alt="Padel10Store"/>
+                  <img class="hero-escudo-img" src="escudo.png" alt="" loading="lazy" decoding="async"/>
       </div>
       <div class="stats-col">
         <div class="sbox main"><div class="sn" id="catalogProductCount">81</div><div class="sl">productos</div></div>
@@ -476,10 +516,10 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
       </div>
     </div>
     </div>
-    <div class="hero-search">
-      <input placeholder="¿Qué estás buscando? Ej: Royal Padel, M27, Calavera..."/>
-      <button>Buscar</button>
-    </div>
+    <form class="hero-search" role="search" id="heroSearchForm">
+      <input type="search" id="heroSearchInput" placeholder="¿Qué estás buscando? Ej: M27, Calavera, remera..." aria-label="Buscar productos" autocomplete="off"/>
+      <button type="submit">Buscar</button>
+    </form>
   </div>
 </section>
 
@@ -1795,7 +1835,7 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
     <div class="footer-top">
       <div>
         <div class="footer-logo">
-          <img src="escudo.png" alt="Padel10Store" style="width:52px;height:52px;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 0 15px rgba(201,162,39,0.5))"/>
+          <img src="escudo-192.png" alt="Padel10Store" loading="lazy" style="width:52px;height:52px;object-fit:contain;mix-blend-mode:multiply;filter:drop-shadow(0 0 15px rgba(201,162,39,0.5))"/>
           <div>
             <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:#fff;line-height:1;letter-spacing:1px;">PADEL<span style="color:#C9A227">10</span>STORE</div>
           </div>
@@ -1804,14 +1844,37 @@ background:#4a4536;color:rgba(255,255,255,.5);border-color:rgba(255,255,255,.08)
       </div>
       <div class="footer-col">
         <h4>Productos</h4>
-        <a href="#">Paletas Royal Padel</a>
-        <a href="#">Accesorios</a>
+        <a href="#catalogo" data-footer-filter="paletas">Paletas Royal Padel</a>
+        <a href="#catalogo" data-footer-filter="ropa">Indumentaria</a>
+        <a href="#catalogo" data-footer-filter="Accesorios">Accesorios</a>
+      </div>
+      <div class="footer-col">
+        <h4>Ayuda y legales</h4>
+        <a href="legal/condiciones-de-compra.html">Condiciones de compra</a>
+        <a href="legal/envios.html">Envíos</a>
+        <a href="legal/cambios-y-devoluciones.html">Cambios y devoluciones</a>
+        <a href="legal/garantia.html">Garantía</a>
+        <a href="legal/privacidad.html">Privacidad</a>
+        <a href="legal/arrepentimiento.html" class="footer-arrepentimiento">Botón de arrepentimiento</a>
       </div>
       <div class="footer-col">
         <h4>Contacto</h4>
-        <a href="#">WhatsApp</a>
-        <a href="#">Instagram</a>
+        <a data-store-href="whatsapp" data-wa-text="Hola Padel10Store, quiero hacer una consulta" href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener">WhatsApp</a>
+        <a data-store-href="email" hidden>Email</a>
+        <a data-store-href="instagram" target="_blank" rel="noopener" hidden>Instagram</a>
       </div>
+    </div>
+    <div class="footer-seller" aria-label="Datos del vendedor">
+      <h4>Datos del vendedor</h4>
+      <dl>
+        <div><dt>Nombre comercial</dt><dd data-store="nombreComercial">Padel10Store</dd></div>
+        <div><dt>Titular / razón social</dt><dd data-store="razonSocial">Pendiente de completar</dd></div>
+        <div><dt>CUIT</dt><dd data-store="cuit">Pendiente de completar</dd></div>
+        <div><dt>Domicilio</dt><dd data-store="domicilio">Pendiente de completar</dd></div>
+        <div><dt>Email</dt><dd data-store="email">Pendiente de completar</dd></div>
+        <div><dt>WhatsApp</dt><dd data-store="whatsappVisible">+54 9 341 363-7355</dd></div>
+      </dl>
+      <p class="footer-consumer"><a href="https://www.argentina.gob.ar/produccion/defensadelconsumidor/formulario" target="_blank" rel="noopener">Defensa de las y los Consumidores. Para reclamos ingrese aquí</a></p>
     </div>
     <div class="footer-bottom">
       <span class="footer-copy">© 2026 Padel10Store — Todos los derechos reservados</span>
@@ -1847,23 +1910,44 @@ link.classList.toggle('is-active',active);
 if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
 });
 }
-function applyCatalogFilter(filter){
-var emptyState=document.getElementById('catalogEmptyState');
-var emptyTitle=document.getElementById('catalogEmptyTitle');
-var emptyText=document.getElementById('catalogEmptyText');
-var noProducts=filter==='calzado'||filter==='ofertas';
-document.querySelectorAll('.cat').forEach(function(button){
-var selected=button.dataset.cat===filter;
-button.classList.toggle('on',selected);
-});
-document.querySelectorAll('.card').forEach(function(card){
+function cardMatchesFilter(card,filter){
 var category=card.dataset.cat||'';
 var cardLabel=card.querySelector('.card-cat')?card.querySelector('.card-cat').textContent.trim().toLowerCase():'';
 var brandFilter=filter==='bull-padel'||filter==='adidas'||filter==='siux';
 var brandMatch=(filter==='bull-padel'&&cardLabel.includes('bullpadel'))||(filter==='adidas'&&cardLabel.includes('adidas'))||(filter==='siux'&&cardLabel.includes('siux'));
-var match=filter==='all'||(filter==='paletas'&&['control','ataque','polivalente','ninos'].indexOf(category)>-1)||(filter==='ropa'&&category==='Indumentaria')||(filter==='Accesorios'&&category==='Accesorios')||(!brandFilter&&category===filter)||brandMatch;
+return filter==='all'||(filter==='paletas'&&['control','ataque','polivalente','ninos'].indexOf(category)>-1)||(filter==='ropa'&&category==='Indumentaria')||(filter==='Accesorios'&&category==='Accesorios')||(!brandFilter&&category===filter)||brandMatch;
+}
+function normalizeSearch(text){return String(text||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/['’´`]/g,'').replace(/\s+/g,' ').trim();}
+function cardMatchesSearch(card,query){
+if(!query)return true;
+var img=card.querySelector('.card-img img');
+var haystack=normalizeSearch([card.querySelector('.card-name')?card.querySelector('.card-name').textContent:'',card.querySelector('.card-cat')?card.querySelector('.card-cat').textContent:'',img?img.alt:'',card.dataset.cat||''].join(' '));
+return query.split(' ').every(function(word){return haystack.indexOf(word)>-1;});
+}
+// Categorias sin productos reales publicados (por ejemplo Calzado u
+// Ofertas): se ocultan del menu y de los filtros hasta que tengan al menos
+// una tarjeta. Vuelven a aparecer solas cuando se publique un producto.
+var allCards=Array.prototype.slice.call(document.querySelectorAll('.main-wrap .card'));
+function filterHasProducts(filter){return allCards.some(function(card){return cardMatchesFilter(card,filter);});}
+document.querySelectorAll('.nav-cat').forEach(function(link){if(!filterHasProducts(link.dataset.filter))link.hidden=true;});
+document.querySelectorAll('.cats .cat').forEach(function(button){if(button.dataset.cat!=='all'&&!filterHasProducts(button.dataset.cat))button.hidden=true;});
+var currentSearch='';
+function applyCatalogFilter(filter,searchText){
+var emptyState=document.getElementById('catalogEmptyState');
+var emptyTitle=document.getElementById('catalogEmptyTitle');
+var emptyText=document.getElementById('catalogEmptyText');
+currentSearch=normalizeSearch(searchText||'');
+document.querySelectorAll('.cat').forEach(function(button){
+var selected=button.dataset.cat===filter;
+button.classList.toggle('on',selected);
+});
+var visibleCount=0;
+allCards.forEach(function(card){
+var match=cardMatchesFilter(card,filter)&&cardMatchesSearch(card,currentSearch);
+if(match)visibleCount++;
 card.style.display=match?'':'none';
 });
+var noProducts=visibleCount===0;
 document.querySelectorAll('.sec-head').forEach(function(heading){
 var next=heading.nextElementSibling;
 if(!next||!next.classList.contains('grid'))return;
@@ -1879,12 +1963,12 @@ heading.style.display=hasVisible?'':'none';
 });
 if(emptyState){
 emptyState.hidden=!noProducts;
-if(filter==='calzado'){
-emptyTitle.textContent='Todavía no hay calzado publicado';
+if(noProducts&&currentSearch){
+emptyTitle.textContent='No encontramos productos para "'+(searchText||'').trim()+'"';
+emptyText.textContent='Probá con otra palabra (por ejemplo, el modelo o "remera") o consultanos por WhatsApp.';
+}else if(noProducts){
+emptyTitle.textContent='Todavía no hay productos publicados en esta categoría';
 emptyText.textContent='Consultanos por WhatsApp y te ayudamos con tu búsqueda.';
-}else if(filter==='ofertas'){
-emptyTitle.textContent='No hay productos marcados en oferta';
-emptyText.textContent='Consultanos por WhatsApp si buscás una promoción vigente.';
 }else{
 emptyTitle.textContent='';
 emptyText.textContent='';
@@ -1894,11 +1978,36 @@ setActiveNavigation(filter);
 }
 window.PadelCatalogFilter={apply:applyCatalogFilter};
 document.querySelectorAll('.cat').forEach(function(button){
-button.addEventListener('click',function(){applyCatalogFilter(button.dataset.cat);});
+button.addEventListener('click',function(){if(navSearchInput)navSearchInput.value='';if(heroSearchInput)heroSearchInput.value='';applyCatalogFilter(button.dataset.cat);});
 });
+document.querySelectorAll('[data-footer-filter]').forEach(function(link){
+link.addEventListener('click',function(event){
+event.preventDefault();
+applyCatalogFilter(link.getAttribute('data-footer-filter'));
+var catalog=document.getElementById('catalogo');
+if(catalog)catalog.scrollIntoView({behavior:'smooth',block:'start'});
+});
+});
+var navSearchInput=document.getElementById('navSearchInput');
+var heroSearchInput=document.getElementById('heroSearchInput');
+function runSearch(text,scroll){
+if(navSearchInput&&navSearchInput.value!==text)navSearchInput.value=text;
+if(heroSearchInput&&heroSearchInput.value!==text)heroSearchInput.value=text;
+applyCatalogFilter('all',text);
+if(scroll){var catalog=document.getElementById('catalogo');if(catalog)catalog.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+window.PadelCatalogFilter.search=runSearch;
+[['navSearchForm',navSearchInput],['heroSearchForm',heroSearchInput]].forEach(function(pair){
+var form=document.getElementById(pair[0]);var input=pair[1];
+if(!form||!input)return;
+form.addEventListener('submit',function(event){event.preventDefault();runSearch(input.value,true);});
+input.addEventListener('input',function(){if(!input.value.trim())runSearch('',false);});
+});
+if(navSearchInput){var searchTimer=null;navSearchInput.addEventListener('input',function(){clearTimeout(searchTimer);searchTimer=setTimeout(function(){runSearch(navSearchInput.value,false);},200);});}
 document.querySelectorAll('.nav-cat').forEach(function(link){
 link.addEventListener('click',function(event){
 event.preventDefault();
+if(navSearchInput)navSearchInput.value='';if(heroSearchInput)heroSearchInput.value='';
 applyCatalogFilter(link.dataset.filter);
 var catalog=document.getElementById('catalogo');
 if(catalog)catalog.scrollIntoView({behavior:'smooth',block:'start'});
@@ -2044,6 +2153,7 @@ if(wpBtn)wpBtn.onclick=function(){window.open('https://wa.me/5493413637355?text=
 // se muestra #modalCheckoutPausedMsg (con el boton "Consultar por
 // WhatsApp" ya disponible debajo, sin cambios).
 actualizarBotonComprarAhora();
+if(product){try{document.dispatchEvent(new CustomEvent('padel10:evento',{detail:{tipo:'ver_producto',datos:{producto:product}}}));}catch(e){}}
 overlay.classList.add('open');document.body.style.overflow='hidden';
 }
 
@@ -2140,9 +2250,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
 </div>
 <div class="drw-f" id="cartDrawerFooterCart">
 <div class="total-row">
-<span class="total-lbl">Total</span>
+<span class="total-lbl">Subtotal productos</span>
 <span class="total-v" id="cartDrawerTotal">$0</span>
 </div>
+<p class="cart-shipping-note" id="cartShippingNote">Envío: se confirma antes del pago. No está incluido en este subtotal.</p>
 <button class="chk-btn" id="cartDrawerContinueBtn">Continuar con mis datos</button>
 <div class="checkout-paused-msg" id="cartCheckoutPausedMsg" role="status" hidden>La compra online está temporalmente pausada. Consultanos por WhatsApp para confirmar precio y disponibilidad.</div>
 <button class="chk-btn" id="cartDrawerCheckoutBtn" style="margin-top:8px;background:rgba(255,255,255,0.05);color:#C9A227;border:1px solid rgba(201,162,39,0.35)">Consultar por WhatsApp</button>
@@ -2160,13 +2271,17 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()
   <a id="waFloatBtn" class="wa-float" href="https://wa.me/5493413637355?text=Hola%20Padel10Store%2C%20quiero%20hacer%20una%20consulta" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp" title="Contactar por WhatsApp">
     <svg viewBox="0 0 32 32" width="28" height="28" fill="#fff" aria-hidden="true"><path d="M16.004 3C9.376 3 4 8.373 4 15c0 2.348.657 4.542 1.797 6.41L4 29l7.77-1.756A11.94 11.94 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3zm6.988 16.845c-.297.836-1.47 1.53-2.41 1.73-.64.136-1.475.245-4.29-.92-3.6-1.49-5.92-5.13-6.1-5.37-.177-.24-1.456-1.938-1.456-3.696 0-1.758.923-2.622 1.25-2.98.328-.358.716-.448.955-.448.24 0 .478.002.687.013.22.012.516-.084.807.616.297.716 1.01 2.474 1.098 2.653.088.18.147.39.03.63-.12.24-.178.39-.356.6-.178.21-.375.47-.535.63-.178.18-.364.375-.157.735.208.36.923 1.522 1.98 2.464 1.36 1.212 2.508 1.588 2.868 1.766.36.178.57.15.78-.09.208-.24.892-1.04 1.13-1.398.238-.36.475-.3.802-.18.328.12 2.08.98 2.437 1.158.357.18.594.27.683.42.09.15.09.87-.207 1.706z"/></svg>
   </a>
+  <script src="lib/store-info.js" defer></script>
   <script src="lib/padel-cart.js" defer></script>
   <script src="lib/padel-checkout-fields.js" defer></script>
+  <script src="lib/padel-shipping.js" defer></script>
   <script src="widget/padel-cart.js" defer></script>
   <script src="widget/checkout-availability.js" defer></script>
   <script src="widget/padel-checkout.js" defer></script>
   <script src="widget/mercadopago-buy.js" defer></script>
 <script src="widget/padel-advisor.js" defer></script>
+  <script src="lib/analytics-config.js" defer></script>
+  <script src="widget/padel-analytics.js" defer></script>
 <script>
 (function(){
   var navEl = document.querySelector('nav');
