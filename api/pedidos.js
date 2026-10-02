@@ -7,9 +7,11 @@
  * carrito) usando la infraestructura ya migrada y verificada en la Etapa 1
  * (lib/padel-orders-store.js + la RPC padel_crear_pedido de Supabase).
  *
- * Esta etapa TODAVIA NO integra Mercado Pago: el pedido se crea con
- * estado_pago = 'pendiente' (el default del esquema) y sin ningun
- * mp_preference_id asociado. No se cobra nada en este endpoint.
+ * El pedido se crea con estado_pago = 'pendiente'. Si el envio tiene una
+ * tarifa confirmada (lib/padel-shipping.js), el total incluye el envio y se
+ * intenta crear la preferencia de Mercado Pago en el mismo request; si el
+ * envio queda "a confirmar", el pedido se registra sin iniciar el pago.
+ * Este endpoint nunca cobra nada por si mismo.
  *
  * Reglas de seguridad (mismo criterio que api/create-payment-preference.js):
  * - Interruptor de seguridad (lib/checkout-config.js): si el checkout esta
@@ -50,6 +52,7 @@ const {
 const { getProductById } = require('../lib/padel-catalog');
 const PadelCartCore = require('../lib/padel-cart');
 const checkoutFields = require('../lib/padel-checkout-fields');
+const { cotizarEnvio: cotizarEnvioReal, ESTADO_CONFIRMADO: ENVIO_CONFIRMADO } = require('../lib/padel-shipping');
 const {
   crearOReutilizarPreferenciaParaPedido,
 } = require('../lib/pedido-preferencia');
@@ -186,6 +189,7 @@ function createPedidosHandler(deps) {
   const crearPreferenciaParaPedido =
     (deps && deps.crearPreferenciaParaPedido) || crearOReutilizarPreferenciaParaPedido;
   const esCheckoutHabilitado = (deps && deps.esCheckoutHabilitado) || esCheckoutHabilitadoReal;
+  const cotizarEnvio = (deps && deps.cotizarEnvio) || ((direccion) => cotizarEnvioReal(direccion));
 
   return async function handler(req, res) {
     try {
@@ -258,6 +262,17 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, 400);
       }
 
+      // 7b) Envio (lib/padel-shipping.js): se cotiza SIEMPRE del lado
+      // servidor. Si hay una tarifa confirmada, se suma al total del pedido
+      // (y por lo tanto al importe de Mercado Pago, ver
+      // lib/mercadopago-preference.js#buildOrderItems). Si el envio queda
+      // "a confirmar", el pedido se registra con el total de productos y
+      // NO se inicia el pago (paso 9): nunca se cobra un importe que no
+      // incluya el envio.
+      const envio = cotizarEnvio(direccionEnvio) || {};
+      const envioConfirmado = envio.estado === ENVIO_CONFIRMADO &&
+        typeof envio.costo === 'number' && Number.isFinite(envio.costo) && envio.costo >= 0;
+
       // 8) Arma el input real de crearPedido(): precios/nombres salen
       // exclusivamente de resumenCarrito.lineas (catalogo real), nunca del
       // body original.
@@ -278,6 +293,9 @@ function createPedidosHandler(deps) {
           precioUnitario: l.precio,
         })),
       };
+      if (envioConfirmado && envio.costo > 0) {
+        input.total = resumenCarrito.total + envio.costo;
+      }
 
       let pedido;
       try {
@@ -296,6 +314,13 @@ function createPedidosHandler(deps) {
     // El mecanismo de reintento de pago es DISEÑO PENDIENTE: no se
     // improvisa reutilizando access_token (ver docs/CONTINUAR-FASE3.md).
     let redirectUrl = null;
+    if (!envioConfirmado) {
+      // Envio a confirmar: el pedido queda registrado (pendiente_pago) y el
+      // vendedor confirma costo de envio y disponibilidad antes de cobrar.
+      // Tampoco se devuelve paymentRetryToken: el comprador no puede
+      // iniciar desde el navegador un pago que no incluya el envio.
+      return res.status(201).json({ numero: pedido.numero, redirectUrl: null, envioAConfirmar: true });
+    }
     try {
       const items = await obtenerItemsPorPedido(pedido.id);
       const resultado = await crearPreferenciaParaPedido({ pedido, items });

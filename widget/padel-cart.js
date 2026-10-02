@@ -119,6 +119,13 @@
       lines.push(result.line);
     }
     notify();
+    // Medicion (widget/padel-analytics.js): solo un aviso, nunca afecta al
+    // carrito si nadie lo escucha.
+    try {
+      document.dispatchEvent(new CustomEvent('padel10:evento', {
+        detail: { tipo: 'agregar_carrito', datos: { producto: product, talle: result.line.talle, cantidad: result.line.cantidad } },
+      }));
+    } catch (e) {}
     return { ok: true, line: result.line };
   }
 

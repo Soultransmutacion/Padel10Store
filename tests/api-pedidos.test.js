@@ -174,6 +174,11 @@ function crearHandlerDePrueba(crearPedidoOverrides, extra) {
     crearPreferenciaParaPedido: fakeCrearPreferenciaParaPedido,
     obtenerItemsPorPedido: fakeObtenerItemsPorPedido,
     esCheckoutHabilitado,
+    // Por defecto, las pruebas existentes simulan un envio con tarifa
+    // confirmada y costo 0 (el mismo comportamiento previo: el total es el
+    // de los productos y se intenta iniciar el pago). Los casos de envio
+    // "a confirmar" o con costo se prueban explicitamente al final.
+    cotizarEnvio: ex.cotizarEnvio || (() => ({ estado: 'confirmado', costo: 0, plazoTexto: null })),
   });
   return { handler, fakeCrearPedido, fakeCrearPreferenciaParaPedido, fakeObtenerItemsPorPedido };
 }
@@ -772,6 +777,57 @@ testAsync('checkout habilitado explicitamente (default de esta suite): el camino
   const { handler } = crearHandlerDePrueba(undefined, { checkoutHabilitado: true });
   const res = await ejecutar(handler, { body: bodyValido() });
   assert.strictEqual(res.statusCode, 201);
+});
+
+// --- Envio (lib/padel-shipping.js) ---------------------------------------
+
+testAsync('envio a confirmar: registra el pedido pero NO inicia el pago ni devuelve paymentRetryToken', async () => {
+  const { handler, fakeCrearPedido, fakeCrearPreferenciaParaPedido } = crearHandlerDePrueba(undefined, {
+    cotizarEnvio: () => ({ estado: 'a_confirmar', costo: null, plazoTexto: null }),
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.deepStrictEqual(res.body, { numero: 'P10-000123', redirectUrl: null, envioAConfirmar: true });
+  assert.strictEqual(fakeCrearPedido.llamadas.length, 1);
+  assert.strictEqual(fakeCrearPedido.llamadas[0].total, undefined, 'sin envio confirmado el total es el de productos');
+  assert.strictEqual(fakeCrearPreferenciaParaPedido.llamadas.length, 0, 'nunca se crea una preferencia sin envio confirmado');
+});
+
+testAsync('la configuracion real de envio (sin tarifas cargadas) deja el envio a confirmar', async () => {
+  const fakeCrearPedido = createFakeCrearPedido();
+  const fakePref = createFakeCrearPreferenciaParaPedido();
+  const handler = createPedidosHandler({
+    crearPedido: fakeCrearPedido,
+    getProductById,
+    crearPreferenciaParaPedido: fakePref,
+    obtenerItemsPorPedido: createFakeObtenerItemsPorPedido(),
+    esCheckoutHabilitado: () => true,
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.envioAConfirmar, true);
+  assert.strictEqual(fakePref.llamadas.length, 0);
+});
+
+testAsync('envio con tarifa confirmada: el total del pedido suma productos + envio', async () => {
+  const { handler, fakeCrearPedido, fakeCrearPreferenciaParaPedido } = crearHandlerDePrueba(undefined, {
+    cotizarEnvio: () => ({ estado: 'confirmado', costo: 9000, plazoTexto: null }),
+  });
+  const res = await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(res.statusCode, 201);
+  const precio = getProductById(PRODUCT_SIN_TALLE).precio;
+  assert.strictEqual(fakeCrearPedido.llamadas[0].total, precio + 9000);
+  assert.strictEqual(fakeCrearPreferenciaParaPedido.llamadas.length, 1);
+  assert.strictEqual('envioAConfirmar' in res.body, false);
+});
+
+testAsync('la cotizacion de envio usa la direccion que mando el comprador', async () => {
+  let recibida = null;
+  const { handler } = crearHandlerDePrueba(undefined, {
+    cotizarEnvio: (direccion) => { recibida = direccion; return { estado: 'a_confirmar', costo: null }; },
+  });
+  await ejecutar(handler, { body: bodyValido() });
+  assert.strictEqual(recibida.provincia, 'Santa Fe');
 });
 
 // --- Runner --------------------------------------------------------------
