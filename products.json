@@ -25,7 +25,7 @@
       "precioConsultar": false,
       "precioTransferencia": 218025,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/ANIVERSARIO_36.webp",
+      "imagen": "Palas%20royal%202/ANIVERSARIO_36_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -48,6 +48,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/japan-fiber-blue-zncec1/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/ANIVERSARIO_36_FOTO_01.webp",
+        "Palas%20royal%202/ANIVERSARIO_36_FOTO_02.webp",
+        "Palas%20royal%202/ANIVERSARIO_36_FOTO_03.webp",
+        "Palas%20royal%202/ANIVERSARIO_36.webp"
       ]
     },
     {
@@ -61,7 +67,7 @@
       "precioConsultar": false,
       "precioTransferencia": 218025,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp",
+      "imagen": "Palas%20royal%202/ANIVERSARIO_36_LIGHT_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -84,6 +90,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/aniversario-36-light-dpowd/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/ANIVERSARIO_36_LIGHT_FOTO_01.webp",
+        "Palas%20royal%202/ANIVERSARIO_36_LIGHT_FOTO_02.webp",
+        "Palas%20royal%202/ANIVERSARIO_36_LIGHT_FOTO_03.webp",
+        "Palas%20royal%202/ANIVERSARIO_36_LIGHT.webp"
       ]
     },
     {
@@ -97,7 +109,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_BLACK_26.webp",
+      "imagen": "Palas%20royal%202/CROSS_BLACK_26_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -120,6 +132,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-black/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_BLACK_26_FOTO_01.webp",
+        "Palas%20royal%202/CROSS_BLACK_26_FOTO_02.webp",
+        "Palas%20royal%202/CROSS_BLACK_26.webp"
       ]
     },
     {
@@ -133,7 +150,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_EVA_26.webp",
+      "imagen": "Palas%20royal%202/CROSS_EVA_26_PORTADA.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -156,6 +173,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-eva/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_EVA_26_PORTADA.webp",
+        "Palas%20royal%202/CROSS_EVA_26.webp",
+        "Palas%20royal%202/CROSS_EVA_26_FOTO_01.webp",
+        "Palas%20royal%202/CROSS_EVA_26_FOTO_02.webp"
       ]
     },
     {
@@ -169,7 +192,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_WOMAN_26.webp",
+      "imagen": "Palas%20royal%202/CROSS_WOMAN_26_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -192,6 +215,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-woman/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_WOMAN_26_FOTO_01.webp",
+        "Palas%20royal%202/CROSS_WOMAN_26_FOTO_02.webp",
+        "Palas%20royal%202/CROSS_WOMAN_26.webp"
       ]
     },
     {
@@ -205,7 +233,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208080,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/EUROPE_FIBER_26.webp",
+      "imagen": "Palas%20royal%202/EUROPE_FIBER_26_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -228,6 +256,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/europe-fiber-negra-1oj3h/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/EUROPE_FIBER_26_FOTO_01.webp",
+        "Palas%20royal%202/EUROPE_FIBER_26_FOTO_02.webp",
+        "Palas%20royal%202/EUROPE_FIBER_26.webp"
       ]
     },
     {
@@ -241,7 +274,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208080,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/EUROPE_LITE.webp",
+      "imagen": "Palas%20royal%202/EUROPE_LITE_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -264,6 +297,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/europe-lite/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/EUROPE_LITE_FOTO_01.webp",
+        "Palas%20royal%202/EUROPE_LITE_FOTO_02.webp",
+        "Palas%20royal%202/EUROPE_LITE_FOTO_03.webp",
+        "Palas%20royal%202/EUROPE_LITE.webp"
       ]
     },
     {
@@ -277,7 +316,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/EVOLUTION.webp",
+      "imagen": "Palas%20royal%202/EVOLUTION_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -300,6 +339,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/evolution/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/EVOLUTION_FOTO_01.webp",
+        "Palas%20royal%202/EVOLUTION.webp"
       ]
     },
     {
@@ -313,7 +356,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208165,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/M27_-_GRIS.webp",
+      "imagen": "Palas%20royal%203/M27_GRIS_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -336,6 +379,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/m27-gris-uu4ni/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/M27_GRIS_FOTO_01.webp",
+        "Palas%20royal%203/M27_-_GRIS.webp"
       ]
     },
     {
@@ -349,7 +396,7 @@
       "precioConsultar": false,
       "precioTransferencia": 310845,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/M27_CARBONO.webp",
+      "imagen": "Palas%20royal%203/M27_CARBONO_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "redondo",
@@ -372,6 +419,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/m27-carbono-q2trd/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/M27_CARBONO_FOTO_01.webp",
+        "Palas%20royal%203/M27_CARBONO_FOTO_02.webp",
+        "Palas%20royal%203/M27_CARBONO.webp"
       ]
     },
     {
@@ -385,7 +437,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208165,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/M27_LIGHT.webp",
+      "imagen": "Palas%20royal%203/M27_LIGHT_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -408,6 +460,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/m27-light-9vt07/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/M27_LIGHT_FOTO_01.webp",
+        "Palas%20royal%203/M27_LIGHT.webp"
       ]
     },
     {
@@ -489,7 +545,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175695,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/TORO_BLACK.webp",
+      "imagen": "palas%20royal/TORO_BLACK_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "lagrima",
@@ -512,6 +568,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/toro-black/"
+      ],
+      "imagenes": [
+        "palas%20royal/TORO_BLACK_FOTO_01.webp",
+        "palas%20royal/TORO_BLACK.webp"
       ]
     },
     {
@@ -525,7 +585,7 @@
       "precioConsultar": false,
       "precioTransferencia": 175695,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/TORO_WHITE.webp",
+      "imagen": "palas%20royal/TORO_WHITE_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -548,6 +608,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/toro-white/"
+      ],
+      "imagenes": [
+        "palas%20royal/TORO_WHITE_FOTO_01.webp",
+        "palas%20royal/TORO_WHITE.webp"
       ]
     },
     {
@@ -631,7 +695,7 @@
       "precioConsultar": false,
       "precioTransferencia": 310845,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/EUROPE_CARBONO.webp",
+      "imagen": "Palas%20royal%202/EUROPE_CARBONO_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -654,6 +718,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/europe-carbono/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/EUROPE_CARBONO_FOTO_01.webp",
+        "Palas%20royal%202/EUROPE_CARBONO.webp"
       ]
     },
     {
@@ -667,7 +735,7 @@
       "precioConsultar": false,
       "precioTransferencia": 442000,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp",
+      "imagen": "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -690,6 +758,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/europe-lite-europea-2026-xlf0e/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026_FOTO_01.webp",
+        "Palas%20royal%202/EUROPE_LITE_EUROPEA_2026.webp"
       ]
     },
     {
@@ -737,7 +809,7 @@
       "precioConsultar": false,
       "precioTransferencia": 230605,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/JAPAN_R_26.webp",
+      "imagen": "Palas%20royal%203/JAPAN_R_26_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -760,6 +832,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/japan-r-26-1vn33/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/JAPAN_R_26_FOTO_01.webp",
+        "Palas%20royal%203/JAPAN_R_26_FOTO_02.webp",
+        "Palas%20royal%203/JAPAN_R_26.webp"
       ]
     },
     {
@@ -845,7 +922,7 @@
       "precioConsultar": false,
       "precioTransferencia": 442000,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp",
+      "imagen": "Palas%20royal%203/R30_WHITE_EUROPEA_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -866,7 +943,12 @@
       },
       "stockConfirmado": false,
       "fuente": "index.html",
-      "fuentes": []
+      "fuentes": [],
+      "imagenes": [
+        "Palas%20royal%203/R30_WHITE_EUROPEA_2026_FOTO_01.webp",
+        "Palas%20royal%203/R30_WHITE_EUROPEA_2026_FOTO_02.webp",
+        "Palas%20royal%203/R30_WHITE_-_EUROPEA_2026.webp"
+      ]
     },
     {
       "id": "royal-padel-trial-2026",
@@ -879,7 +961,7 @@
       "precioConsultar": false,
       "precioTransferencia": 235450,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/TRIAL_2026.webp",
+      "imagen": "palas%20royal/TRIAL_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -902,6 +984,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/trial-2026-4o0je/"
+      ],
+      "imagenes": [
+        "palas%20royal/TRIAL_2026_FOTO_01.webp",
+        "palas%20royal/TRIAL_2026.webp"
       ]
     },
     {
@@ -1023,7 +1109,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208165,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/WHIP_PRO_2026.webp",
+      "imagen": "palas%20royal/WHIP_PRO_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -1046,6 +1132,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/whip-pro-2026-6dcdp/"
+      ],
+      "imagenes": [
+        "palas%20royal/WHIP_PRO_2026_FOTO_01.webp",
+        "palas%20royal/WHIP_PRO_2026.webp"
       ]
     },
     {
@@ -1059,7 +1149,7 @@
       "precioConsultar": false,
       "precioTransferencia": 208165,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/WHIP_PRO_2026_-_woman.webp",
+      "imagen": "palas%20royal/WHIP_PRO_2026_WOMAN_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1082,6 +1172,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/whip-pro-2026-woman-enhe8/"
+      ],
+      "imagenes": [
+        "palas%20royal/WHIP_PRO_2026_WOMAN_FOTO_01.webp",
+        "palas%20royal/WHIP_PRO_2026_-_woman.webp"
       ]
     },
     {
@@ -1095,7 +1189,7 @@
       "precioConsultar": false,
       "precioTransferencia": 243950,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CALAVERA_MXC_dama.webp",
+      "imagen": "Palas%20royal%202/CALAVERA_MXC_DAMA_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -1118,6 +1212,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/calavera-mxc-dama-boab0/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CALAVERA_MXC_DAMA_FOTO_01.webp",
+        "Palas%20royal%202/CALAVERA_MXC_DAMA_FOTO_02.webp",
+        "Palas%20royal%202/CALAVERA_MXC_dama.webp"
       ]
     },
     {
@@ -1131,7 +1230,7 @@
       "precioConsultar": false,
       "precioTransferencia": 243950,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CALAVERA_MXC_hombre.webp",
+      "imagen": "Palas%20royal%202/CALAVERA_MXC_HOMBRE_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1154,6 +1253,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/calavera-mxc-hombre-1mwra/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CALAVERA_MXC_HOMBRE_FOTO_01.webp",
+        "Palas%20royal%202/CALAVERA_MXC_HOMBRE_FOTO_02.webp",
+        "Palas%20royal%202/CALAVERA_MXC_HOMBRE_FOTO_03.webp",
+        "Palas%20royal%202/CALAVERA_MXC_hombre.webp"
       ]
     },
     {
@@ -1167,7 +1272,7 @@
       "precioConsultar": false,
       "precioTransferencia": 243950,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CALAVERA_MXC_WHITE.webp",
+      "imagen": "Palas%20royal%202/CALAVERA_MXC_WHITE_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1190,6 +1295,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/calavera-mxc-white-twwvv/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CALAVERA_MXC_WHITE_FOTO_01.webp",
+        "Palas%20royal%202/CALAVERA_MXC_WHITE_FOTO_02.webp",
+        "Palas%20royal%202/CALAVERA_MXC_WHITE_FOTO_03.webp",
+        "Palas%20royal%202/CALAVERA_MXC_WHITE.webp"
       ]
     },
     {
@@ -1203,7 +1314,7 @@
       "precioConsultar": false,
       "precioTransferencia": 194565,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_PRO.webp",
+      "imagen": "Palas%20royal%202/CROSS_PRO_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": "diamante",
@@ -1226,6 +1337,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-pro/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_PRO_FOTO_01.webp",
+        "Palas%20royal%202/CROSS_PRO.webp"
       ]
     },
     {
@@ -1239,7 +1354,7 @@
       "precioConsultar": false,
       "precioTransferencia": 194565,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%202/CROSS_PRO_LITE.webp",
+      "imagen": "Palas%20royal%202/CROSS_PRO_LITE_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1262,6 +1377,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/cross-pro-lite/"
+      ],
+      "imagenes": [
+        "Palas%20royal%202/CROSS_PRO_LITE_FOTO_01.webp",
+        "Palas%20royal%202/CROSS_PRO_LITE_FOTO_02.webp",
+        "Palas%20royal%202/CROSS_PRO_LITE.webp"
       ]
     },
     {
@@ -1347,7 +1467,7 @@
       "precioConsultar": false,
       "precioTransferencia": 194565,
       "cuotasTexto": null,
-      "imagen": "palas%20royal/TIGRA_26.webp",
+      "imagen": "palas%20royal/TIGRA_26_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1370,6 +1490,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/tigra-kdk4m/"
+      ],
+      "imagenes": [
+        "palas%20royal/TIGRA_26_FOTO_01.webp",
+        "palas%20royal/TIGRA_26_FOTO_02.webp",
+        "palas%20royal/TIGRA_26_FOTO_03.webp",
+        "palas%20royal/TIGRA_26.webp"
       ]
     },
     {
@@ -1455,7 +1581,7 @@
       "precioConsultar": false,
       "precioTransferencia": 129625,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp",
+      "imagen": "Palas%20royal%203/JUNIOR_MULTICOLOR_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1478,6 +1604,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/junior-multicolor-2026-l917x/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/JUNIOR_MULTICOLOR_2026_FOTO_01.webp",
+        "Palas%20royal%203/JUNIOR_MULTICOLOR_2026_FOTO_02.webp",
+        "Palas%20royal%203/JUNIOR_MULTICOLOR_2026.webp"
       ]
     },
     {
@@ -1491,7 +1622,7 @@
       "precioConsultar": false,
       "precioTransferencia": 129625,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/JUNIOR_PINK_2026.webp",
+      "imagen": "Palas%20royal%203/JUNIOR_PINK_2026_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1514,6 +1645,11 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/junior-pink-2026-sx0ga/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/JUNIOR_PINK_2026_FOTO_01.webp",
+        "Palas%20royal%203/JUNIOR_PINK_2026_FOTO_02.webp",
+        "Palas%20royal%203/JUNIOR_PINK_2026.webp"
       ]
     },
     {
@@ -1563,7 +1699,7 @@
       "precioConsultar": false,
       "precioTransferencia": 90100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/KIDS_multicolor_aqua.webp",
+      "imagen": "Palas%20royal%203/KIDS_MULTICOLOR_AQUA_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1586,6 +1722,10 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/kids-multicolor-aqua-ntb5x/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/KIDS_MULTICOLOR_AQUA_FOTO_01.webp",
+        "Palas%20royal%203/KIDS_multicolor_aqua.webp"
       ]
     },
     {
@@ -1599,7 +1739,7 @@
       "precioConsultar": false,
       "precioTransferencia": 90100,
       "cuotasTexto": null,
-      "imagen": "Palas%20royal%203/KIDS_ROSA.webp",
+      "imagen": "Palas%20royal%203/KIDS_ROSA_FOTO_01.webp",
       "tieneImagen": true,
       "especificaciones": {
         "forma": null,
@@ -1622,6 +1762,12 @@
       "fuente": "index.html",
       "fuentes": [
         "https://www.royalpadel.com.ar/productos/kids-rosa/"
+      ],
+      "imagenes": [
+        "Palas%20royal%203/KIDS_ROSA_FOTO_01.webp",
+        "Palas%20royal%203/KIDS_ROSA_FOTO_02.webp",
+        "Palas%20royal%203/KIDS_ROSA_FOTO_03.webp",
+        "Palas%20royal%203/KIDS_ROSA.webp"
       ]
     },
     {
