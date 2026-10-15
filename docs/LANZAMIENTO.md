@@ -8,9 +8,9 @@ Este documento indica qué falta para empezar a vender y en qué lugar exacto se
 | --- | --- | --- |
 | Titular o razón social, CUIT, condición frente al IVA, domicilio, email, Instagram, horario | `lib/store-info.js` | `razonSocial`, `cuit`, `condicionIva`, `domicilio`, `email`, `instagramUrl`, `horarioAtencion` |
 | Tarifas de envío por provincia y plazo | `lib/padel-shipping.js` | `CONFIG_ENVIO` (cambiar `modo` a `'tarifas'`) |
-| ID de medición de Google Analytics 4 (`G-…`) | `lib/analytics-config.js` | `ga4MeasurementId` |
-| ID del píxel de Meta (solo números) | `lib/analytics-config.js` | `metaPixelId` |
 | Políticas propias de cambios, garantía del fabricante, envíos y plazo de conservación de datos | `legal/*.html` (recuadros "Pendiente") | texto |
+
+Los IDs de Google Analytics 4 y Meta ya fueron recibidos y están configurados en `lib/analytics-config.js`.
 
 Mientras un dato del vendedor esté en `null`, el sitio muestra "Pendiente de completar" en amarillo, así se ve que falta.
 
@@ -32,6 +32,7 @@ Los nombres de las variables están documentados en `.env.example`. Sus valores 
 
 ## 4. Medición
 
+- Los IDs de GA4 y Meta ya están configurados en `lib/analytics-config.js`; las etiquetas se activan únicamente cuando cada ID tiene un formato válido.
 - **GA4**: analytics.google.com → Administrar → Flujos de datos → flujo web → "ID de medición".
 - **Meta**: business.facebook.com → Administrador de eventos → Orígenes de datos → píxel → Configuración → ID.
 - Eventos que se envían: `view_item`/`ViewContent` (ficha), `add_to_cart`/`AddToCart`, `begin_checkout`/`InitiateCheckout`, `purchase`/`Purchase` (al volver de Mercado Pago con el pago aprobado) y `pedido_registrado` (solo GA4, para pedidos con envío a confirmar).
