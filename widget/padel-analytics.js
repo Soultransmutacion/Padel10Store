@@ -4,9 +4,8 @@
   /**
    * Medicion de visitas y compras: Google Analytics 4 y pixel de Meta.
    *
-   * - Las etiquetas se cargan SOLO si lib/analytics-config.js tiene IDs con
-   *   formato valido. Con los IDs en null (estado actual), este archivo no
-   *   carga nada de terceros: solo conserva los parametros de campaña.
+   * - Cada etiqueta se carga solo si su ID de lib/analytics-config.js tiene
+   *   formato valido. Si un ID queda en null, esa plataforma no recibe datos.
    * - Escucha los eventos 'padel10:evento' que emiten la ficha de producto
    *   (index.html), el carrito (widget/padel-cart.js) y el checkout
    *   (widget/padel-checkout.js), y los traduce a:
