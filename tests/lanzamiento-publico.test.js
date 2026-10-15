@@ -224,7 +224,7 @@ test('checkout con envio a confirmar: la confirmacion explica el proximo paso y 
 // --- medicion -------------------------------------------------------------
 
 test('sin IDs configurados no se carga ninguna etiqueta de Google ni de Meta', async () => {
-  const { w, d } = await crearIndex();
+  const { w, d } = await crearIndex({ analyticsConfig: { ga4MeasurementId: null, metaPixelId: null } });
   await flushAll();
   assert.strictEqual(w.PadelAnalytics.activo, false);
   assert.strictEqual(typeof w.gtag, 'undefined');
@@ -233,8 +233,11 @@ test('sin IDs configurados no se carga ninguna etiqueta de Google ni de Meta', a
   assert.deepStrictEqual(externos, []);
 });
 
-test('la configuracion publicada no trae IDs inventados', () => {
-  assert.deepStrictEqual(require('../lib/analytics-config'), { ga4MeasurementId: null, metaPixelId: null });
+test('la configuracion publicada usa los IDs recibidos', () => {
+  assert.deepStrictEqual(require('../lib/analytics-config'), {
+    ga4MeasurementId: 'G-7B2EDE6S02',
+    metaPixelId: '1430891971795565',
+  });
 });
 
 test('IDs con formato invalido no activan las etiquetas', async () => {
