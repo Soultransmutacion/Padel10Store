@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Botón de arrepentimiento — Padel10Store</title>
+<meta name="description" content="Solicitá la revocación (arrepentimiento) de tu compra en Padel10Store dentro de los 10 días corridos."/>
+<link rel="canonical" href="https://padel10-store.vercel.app/legal/arrepentimiento.html"/>
+<meta name="robots" content="index,follow"/>
+<link rel="icon" href="../escudo-192.png" type="image/png"/>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@400;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="legal.css"/>
+<script src="../lib/store-info.js" defer></script>
+<script src="../lib/analytics-config.js" defer></script>
+<script src="../widget/padel-analytics.js" defer></script>
+</head>
+<body>
+<header class="top"><div class="top-inner">
+<a class="brand" href="../">PADEL<span>10</span>STORE</a>
+<a class="back" href="../">&larr; Volver a la tienda</a>
+</div></header>
+<main>
+<h1>Botón de arrepentimiento</h1>
+<p class="updated">Última actualización: 2 de octubre de 2026</p>
+
+<p>Si hiciste una compra en Padel10Store, podés <strong>revocarla dentro de los 10 días corridos</strong> desde que recibiste el producto o desde que hiciste la compra, lo último que ocurra, sin tener que explicar el motivo y sin costo (artículo 34 de la Ley 24.240 y Resolución 424/2020 de la Secretaría de Comercio Interior).</p>
+<p>Si todavía no pagaste, también podés usar este formulario para cancelar tu pedido.</p>
+<h2>Solicitar la revocación</h2>
+<form class="card" id="arrepentimientoForm" novalidate>
+<label for="arrNumero">Número de pedido (por ejemplo, P10-000123)</label>
+<input id="arrNumero" name="numero" autocomplete="off" required maxlength="20" placeholder="P10-000123"/>
+<label for="arrNombre">Nombre y apellido</label>
+<input id="arrNombre" name="nombre" autocomplete="name" required maxlength="120"/>
+<label for="arrContacto">Email o teléfono de contacto</label>
+<input id="arrContacto" name="contacto" autocomplete="email" required maxlength="160"/>
+<label for="arrComentario">Comentario (opcional)</label>
+<textarea id="arrComentario" name="comentario" rows="3" maxlength="500"></textarea>
+<div class="form-error" id="arrError" role="alert"></div>
+<button class="btn" type="submit">Enviar solicitud por WhatsApp</button>
+</form>
+<p>Al enviar, se abre WhatsApp con tu solicitud ya escrita. Te vamos a responder con la confirmación y los pasos para la devolución del producto, si corresponde.</p>
+<div class="pending-box">
+<p>Pendiente para el lanzamiento: habilitar un email de contacto como alternativa a WhatsApp y definir el procedimiento interno para responder cada solicitud con un código de identificación dentro de las 24 horas, como pide la Resolución 424/2020.</p>
+</div>
+<h2>Otros medios de contacto</h2>
+<dl class="seller">
+<dt>Nombre comercial</dt><dd data-store="nombreComercial">Padel10Store</dd>
+<dt>Titular / razón social</dt><dd data-store="razonSocial">Pendiente de completar</dd>
+<dt>CUIT</dt><dd data-store="cuit">Pendiente de completar</dd>
+<dt>Condición frente al IVA</dt><dd data-store="condicionIva">Pendiente de completar</dd>
+<dt>Domicilio</dt><dd data-store="domicilio">Pendiente de completar</dd>
+<dt>Email</dt><dd data-store="email">Pendiente de completar</dd>
+<dt>WhatsApp</dt><dd data-store="whatsappVisible">+54 9 341 363-7355</dd>
+<dt>Horario de atención</dt><dd data-store="horarioAtencion">Pendiente de completar</dd>
+</dl>
+<p><a class="btn" data-store-href="whatsapp" data-wa-text="Hola Padel10Store, tengo una consulta" href="https://wa.me/5493413637355" target="_blank" rel="noopener">Escribirnos por WhatsApp</a></p>
+<nav class="links" aria-label="Páginas legales">
+<a href="condiciones-de-compra.html">Condiciones de compra</a>
+<a href="envios.html">Envíos</a>
+<a href="cambios-y-devoluciones.html">Cambios y devoluciones</a>
+<a href="garantia.html">Garantía</a>
+<a href="privacidad.html">Privacidad</a>
+<a href="arrepentimiento.html">Botón de arrepentimiento</a>
+<a href="https://www.argentina.gob.ar/produccion/defensadelconsumidor/formulario" target="_blank" rel="noopener">Defensa de las y los Consumidores. Para reclamos ingrese aquí</a>
+</nav>
+</main>
+<script>
+(function(){
+  var form=document.getElementById('arrepentimientoForm');
+  if(!form)return;
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var err=document.getElementById('arrError');
+    var campo=function(id){return document.getElementById(id);};
+    var numero=campo('arrNumero').value.trim().toUpperCase();
+    var nombre=campo('arrNombre').value.trim();
+    var contacto=campo('arrContacto').value.trim();
+    var comentario=campo('arrComentario').value.trim();
+    if(!/^P10-[0-9]{6,}$/.test(numero)){err.textContent='Ingresá el número de pedido con el formato P10-000123.';campo('arrNumero').focus();return;}
+    if(!nombre){err.textContent='Ingresá tu nombre y apellido.';campo('arrNombre').focus();return;}
+    if(!contacto){err.textContent='Ingresá un email o teléfono de contacto.';campo('arrContacto').focus();return;}
+    err.textContent='';
+    var texto='Solicitud de ARREPENTIMIENTO / revocación de compra\nPedido: '+numero+'\nNombre: '+nombre+'\nContacto: '+contacto+(comentario?'\nComentario: '+comentario:'');
+    var url=window.PadelStoreInfo?window.PadelStoreInfo.whatsappUrl(texto):'https://wa.me/5493413637355?text='+encodeURIComponent(texto);
+    window.open(url,'_blank','noopener');
+  });
+})();
+</script>
+</body>
+</html>

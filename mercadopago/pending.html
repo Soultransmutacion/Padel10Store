@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="robots" content="noindex"/>
 <title>Pago pendiente — Padel10Store</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -15,20 +16,26 @@ p{font-size:14px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:1rem}
 p strong{color:#C9A227}
 .notice{background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.25);border-radius:8px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.75);text-align:left;margin-top:1.25rem;line-height:1.6}
 .thanks{font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#C9A227;font-size:14px;margin-top:1.5rem}
+.pedido-num{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 14px;margin:0 0 1rem;font-size:14px;color:rgba(255,255,255,0.75)}
+.pedido-num strong{color:#F2CB50;font-size:18px;letter-spacing:0.5px}
+.pedido-num[hidden]{display:none}
+a.wa{display:inline-block;margin-top:0.75rem;margin-left:6px;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;color:#fff;background:rgba(37,211,102,0.18);border:1px solid rgba(37,211,102,0.5);border-radius:6px;padding:10px 22px;text-decoration:none;letter-spacing:0.5px}
 a.back{display:inline-block;margin-top:1rem;font-family:'Barlow Condensed',Arial,sans-serif;font-weight:800;text-transform:uppercase;color:#111;background:#C9A227;border-radius:6px;padding:10px 22px;text-decoration:none;letter-spacing:0.5px}
 </style>
 </head>
-<body>
+<body data-retorno="pending">
 <div class="box">
 <div class="badge" id="envBadge" hidden>Entorno de prueba · Sandbox</div>
 <div class="icon">&#8987;</div>
 <h1>Pago pendiente</h1>
 <p>Mercado Pago informó que tu pago quedó <strong>pendiente</strong> de acreditación (por ejemplo, un medio de pago que demora en confirmarse). Tu pedido ya quedó registrado.</p>
+<div class="pedido-num" id="pedidoNumeroBox" hidden>Tu número de pedido: <strong id="pedidoNumero"></strong></div>
 <div class="notice">
 En cuanto Mercado Pago confirme la acreditación, tu pedido se actualiza automáticamente mediante una validación segura (no depende de esta página). Si tenés alguna duda sobre tu compra, conservá el número de pedido que te compartimos y contactanos.
 </div>
 <p class="thanks">Gracias por elegir Padel10Store</p>
 <a class="back" href="/">Volver a la tienda</a>
+<a class="wa" id="retornoWhatsapp" href="https://wa.me/5493413637355" target="_blank" rel="noopener">Escribirnos por WhatsApp</a>
 </div>
 <script>
 (function () {
@@ -45,5 +52,8 @@ En cuanto Mercado Pago confirme la acreditación, tu pedido se actualiza automá
   }
 })();
 </script>
+<script src="../lib/analytics-config.js" defer></script>
+<script src="../widget/padel-analytics.js" defer></script>
+<script src="retorno.js" defer></script>
 </body>
 </html>
