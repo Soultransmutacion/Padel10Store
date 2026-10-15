@@ -92,6 +92,24 @@ function tieneSoloClaves(obj, clavesPermitidas) {
   return Object.keys(obj).every((k) => clavesPermitidas.indexOf(k) !== -1);
 }
 
+function normalizarUbicacion(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+}
+
+// Solo se inicia el pago automáticamente cuando la entrega local sin cargo
+// se puede reconocer con provincia, localidad y código postal. El resto de
+// los destinos queda pendiente para cotizar Correo Argentino antes de cobrar.
+function esEntregaRosarioSinCargo(direccion) {
+  const provincia = normalizarUbicacion(direccion && direccion.provincia);
+  const localidad = normalizarUbicacion(direccion && direccion.localidad);
+  const codigoPostal = String((direccion && direccion.codigoPostal) || '').trim().toUpperCase();
+  return provincia === 'santa fe' && localidad === 'rosario' && /^(?:2000|S2000[A-Z]{3})$/.test(codigoPostal);
+}
+
 function getBodyAsString(rawBody) {
   if (typeof rawBody === 'string') return rawBody;
   try {
@@ -288,24 +306,26 @@ function createPedidosHandler(deps) {
         return sendGenericError(res, mapPedidoStoreErrorToStatus(err));
       }
 
-    // 9) El pedido YA EXISTE en este punto. Intentamos crear (o reutilizar)
-    // la preferencia de Mercado Pago en el mismo request. Un fallo aca
-    // NUNCA borra ni modifica el pedido: queda pendiente_pago. El pedido
-    // ya quedo registrado; informar esto al comprador es responsabilidad
-    // del frontend (redirectUrl en null = "registrado, pago no iniciado").
+    // 9) El pedido YA EXISTE en este punto. Las entregas fuera de Rosario
+    // esperan la cotizacion real de PAQ.AR para no cobrar el subtotal sin el
+    // envio. En Rosario (entrega propia sin cargo) se mantiene el pago online.
+    // Un fallo de Mercado Pago nunca borra ni modifica el pedido.
     // El mecanismo de reintento de pago es DISEÑO PENDIENTE: no se
     // improvisa reutilizando access_token (ver docs/CONTINUAR-FASE3.md).
     let redirectUrl = null;
-    try {
-      const items = await obtenerItemsPorPedido(pedido.id);
-      const resultado = await crearPreferenciaParaPedido({ pedido, items });
-      if (resultado && resultado.ok) {
-        redirectUrl = resultado.checkoutUrl;
+    const envioPendienteCotizacion = !esEntregaRosarioSinCargo(direccionEnvio);
+    if (!envioPendienteCotizacion) {
+      try {
+        const items = await obtenerItemsPorPedido(pedido.id);
+        const resultado = await crearPreferenciaParaPedido({ pedido, items });
+        if (resultado && resultado.ok) {
+          redirectUrl = resultado.checkoutUrl;
+        }
+      } catch (err) {
+        // Un error aca no debe impedir devolver el numero del pedido: ya
+        // esta creado y se puede reintentar la preferencia despues.
+        redirectUrl = null;
       }
-    } catch (err) {
-      // Un error aca no debe impedir devolver el numero del pedido: ya
-      // esta creado y se puede reintentar la preferencia despues.
-      redirectUrl = null;
     }
 
     // 10) Respuesta minima: nunca el id interno (UUID) del pedido, nunca
@@ -320,8 +340,8 @@ function createPedidosHandler(deps) {
     // se pudo crear). Si el flujo exitoso normal ya tiene redirectUrl,
     // el cliente no necesita ningun token todavia: se evita exponerlo en
     // el camino feliz.
-    const respuesta = { numero: pedido.numero, redirectUrl };
-    if (!redirectUrl && pedido.payment_retry_token) {
+    const respuesta = { numero: pedido.numero, redirectUrl, envioPendienteCotizacion };
+    if (!envioPendienteCotizacion && !redirectUrl && pedido.payment_retry_token) {
       respuesta.paymentRetryToken = pedido.payment_retry_token;
     }
     return res.status(201).json(respuesta);

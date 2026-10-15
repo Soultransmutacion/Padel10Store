@@ -184,6 +184,7 @@ testAsync('flujo completo: agrega productos, completa datos, confirma, y el carr
   assert.strictEqual(h.view(), 'revision');
   assert.ok(h.body().indexOf('Juana Perez') !== -1);
   assert.ok(h.body().indexOf('Rosario') !== -1);
+  assert.ok(h.body().indexOf('bonificamos $15.000') !== -1, 'debe mostrar la bonificacion de envio antes de confirmar');
 
   h.click(h.nextBtn()); // "Confirmar y crear pedido"
   await flushAll();
@@ -197,6 +198,27 @@ testAsync('flujo completo: agrega productos, completa datos, confirma, y el carr
 
   const pedidosCall = h.fetchCalls.find((u) => String(u).indexOf('/api/pedidos') !== -1);
   assert.ok(pedidosCall, 'debe haber llamado a /api/pedidos');
+});
+
+testAsync('destino nacional espera la cotizacion de envio antes de iniciar un pago', async () => {
+  const h = createHarness({ apiPedidosResponses: [{ ok: true, status: 201, body: {
+    numero: 'P10-000556', envioPendienteCotizacion: true,
+  } }] });
+  await withReadyCart(h, [{ productId: PRODUCT_SIN_TALLE, talle: null, cantidad: 1 }]);
+  h.click(h.continueBtn());
+  h.llenarFormularioValido();
+  h.setField('provincia', 'Córdoba');
+  h.setField('localidad', 'Córdoba');
+  h.setField('codigoPostal', '5000');
+  h.click(h.nextBtn());
+  assert.strictEqual(h.view(), 'revision');
+  h.click(h.nextBtn());
+  await flushAll();
+
+  assert.strictEqual(h.view(), 'confirmacion');
+  assert.ok(/confirmar el envío y el total final antes del pago/i.test(h.body()));
+  assert.ok(!h.body().includes('Pagar ahora'));
+  assert.strictEqual(h.window.location.href, 'https://padel10store.test/');
 });
 
 testAsync('el body enviado a /api/pedidos manda solo productId/talle/cantidad por linea (nunca precio ni nombre)', async () => {

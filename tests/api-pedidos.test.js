@@ -530,6 +530,7 @@ testAsync('pedido valido con multiples productos: 201 y numero de pedido', async
   assert.deepStrictEqual(res.body, {
     numero: 'P10-000777',
     redirectUrl: 'https://sandbox.mercadopago.com.ar/checkout/test-pref',
+    envioPendienteCotizacion: false,
   });
   assert.strictEqual(fakeCrearPedido.llamadas.length, 1);
 });
@@ -565,7 +566,25 @@ testAsync('la respuesta de exito no contiene el id (uuid) interno del pedido', a
   const res = await ejecutar(handler, { body: bodyValido() });
   assert.strictEqual(res.statusCode, 201);
   assert.strictEqual('id' in res.body, false);
-  assert.deepStrictEqual(Object.keys(res.body).sort(), ['numero', 'redirectUrl']);
+  assert.deepStrictEqual(Object.keys(res.body).sort(), ['envioPendienteCotizacion', 'numero', 'redirectUrl']);
+});
+
+testAsync('destino fuera de Rosario queda pendiente de cotizacion y no inicia el pago', async () => {
+  const { handler, fakeCrearPreferenciaParaPedido } = crearHandlerDePrueba();
+  const direccionEnvio = {
+    provincia: 'Córdoba',
+    localidad: 'Córdoba',
+    codigoPostal: '5000',
+    calle: 'San Martín',
+    numero: '100',
+  };
+  const res = await ejecutar(handler, { body: bodyValido({ direccionEnvio }) });
+
+  assert.strictEqual(res.statusCode, 201);
+  assert.strictEqual(res.body.envioPendienteCotizacion, true);
+  assert.strictEqual(res.body.redirectUrl, null);
+  assert.strictEqual('paymentRetryToken' in res.body, false);
+  assert.strictEqual(fakeCrearPreferenciaParaPedido.llamadas.length, 0);
 });
 
 testAsync('la respuesta de exito NUNCA incluye access_token ni accessToken (reservado para una futura consulta segura del estado del pedido, no viaja en la respuesta publica)', async () => {
@@ -655,7 +674,7 @@ testAsync('cuando la preferencia inicial se crea bien, la respuesta NUNCA incluy
   assert.strictEqual(res.statusCode, 201);
   assert.strictEqual(res.body.redirectUrl, 'https://sandbox.mercadopago.com.ar/checkout/abc123');
   assert.strictEqual('paymentRetryToken' in res.body, false);
-  assert.deepStrictEqual(Object.keys(res.body).sort(), ['numero', 'redirectUrl']);
+  assert.deepStrictEqual(Object.keys(res.body).sort(), ['envioPendienteCotizacion', 'numero', 'redirectUrl']);
 });
 
 testAsync('la respuesta de exito nunca incluye el payment_retry_token en formato snake_case', async () => {

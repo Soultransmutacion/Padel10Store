@@ -151,6 +151,7 @@
   // /api/pedidos SOLAMENTE cuando el pedido se registro correctamente
   // pero no se pudo iniciar el pago en el mismo request.
   var paymentRetryToken = null;
+  var envioPendienteCotizacion = false;
   var retrying = false;
   var retryError = null;
   // AbortController de la solicitud POST /api/pedidos en curso (null si no
@@ -451,8 +452,9 @@
       '</div>' +
       '<div class="ord-sum"><div class="os-t">PEDIDO</div>' +
       itemsHtml +
-      '<div class="os-total"><span class="os-tl">Total</span><span class="os-tv">' + escapeHtml(summary.totalFormateado) + '</span></div>' +
+      '<div class="os-total"><span class="os-tl">Subtotal productos</span><span class="os-tv">' + escapeHtml(summary.totalFormateado) + '</span></div>' +
       '</div>' +
+      '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;margin-bottom:12px">Rosario y alrededores: entrega sin cargo. Resto del país: PAQ.AR Clásico según tu CP. Desde $275.000 bonificamos $15.000; si el envío supera ese monto, pagás solo la diferencia. Te confirmamos el total antes de cobrar.</div>' +
       (submitError ? '<div class="mp-buy-error" role="alert" style="text-align:left;margin-bottom:8px">' + escapeHtml(submitError) + '</div>' : '') +
       '<div style="font-size:11px;color:rgba(255,255,255,0.35);line-height:1.5">Al confirmar, todavía no se realiza ningún cobro: solo se registra tu pedido.</div>';
   }
@@ -460,7 +462,10 @@
   function renderConfirmacionView() {
     if (els.title) els.title.textContent = '¡Pedido registrado!';
     var retryHtml = '';
-    if (paymentRetryToken) {
+    var mensajeSiguientePaso = envioPendienteCotizacion
+      ? 'Te contactamos para confirmar el envío y el total final antes del pago.'
+      : 'Nos vamos a comunicar para coordinar el pago.';
+    if (paymentRetryToken && !envioPendienteCotizacion) {
       // Interruptor de seguridad: si el checkout se deshabilito DESPUES
       // de que este pedido ya obtuviera un paymentRetryToken (caso raro:
       // requiere que se apague en medio de la misma sesion del
@@ -480,7 +485,7 @@
       '<div class="success">' +
       '<div class="succ-ico">&#9989;</div>' +
       '<div class="succ-t">Pedido ' + escapeHtml(pedidoConfirmadoNumero) + '</div>' +
-      '<div class="succ-s">Tu pedido quedó registrado correctamente.<br><strong>Todavía no se realizó ningún cobro.</strong><br>Nos vamos a comunicar para coordinar el pago.</div>' +
+      '<div class="succ-s">Tu pedido quedó registrado correctamente.<br><strong>Todavía no se realizó ningún cobro.</strong><br>' + mensajeSiguientePaso + '</div>' +
       retryHtml +
       '</div>';
   }
@@ -660,7 +665,10 @@
         sesionConIntentoPrevioSinConfirmar = false;
 
         pedidoConfirmadoNumero = result.data.numero;
-        paymentRetryToken = typeof result.data.paymentRetryToken === 'string' ? result.data.paymentRetryToken : null;
+        envioPendienteCotizacion = result.data.envioPendienteCotizacion === true;
+        paymentRetryToken = !envioPendienteCotizacion && typeof result.data.paymentRetryToken === 'string'
+          ? result.data.paymentRetryToken
+          : null;
         retryError = null;
         // El carrito se vacia UNICAMENTE aca, despues de una confirmacion
         // real del servidor (nunca antes, ni de forma optimista): el
